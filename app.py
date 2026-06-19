@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (SEMUA PINK)
+# app.py - VERSI FINAL (File Uploader Pink Total)
 # =====================================================
 
 import streamlit as st
@@ -11,7 +11,7 @@ import cv2
 import time
 
 # ==========================================
-# 1. PENGATURAN HALAMAN
+# 1. PENGATURAN HALAMAN & CSS
 # ==========================================
 st.set_page_config(
     page_title="PCA Face Similarity",
@@ -23,32 +23,23 @@ st.markdown("""
     <style>
         /* ===== BACKGROUND UTAMA ===== */
         .stApp {
-            background: linear-gradient(135deg, #FFF0F5, #FFE4E9, #FCE4EC);
+            background: linear-gradient(135deg, #FFF0F5, #FFE4E9, #FCE4EC) !important;
         }
         .main > div {
             background: transparent !important;
         }
         
-        /* ===== HEADER (TOP BAR) PINK GELAP ===== */
+        /* ===== HEADER / TOP BAR (PINK GELAP) ===== */
         header {
             background: linear-gradient(135deg, #880E4F, #AD1457, #880E4F) !important;
             border-bottom: 2px solid #F8BBD0 !important;
             box-shadow: 0 2px 15px rgba(136, 14, 79, 0.3) !important;
         }
         
-        /* Tulisan di header (gradasi) */
-        header .stMarkdown, header h1, header h2, header h3 {
-            background: linear-gradient(135deg, #FFE4EC, #FFF0F5) !important;
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            text-shadow: 0 2px 15px rgba(136, 14, 79, 0.5) !important;
-            font-weight: bold !important;
-        }
-        
-        /* ===== SEMUA JUDUL (H1-H6) ===== */
-        h1, h2, h3, h4, h5, h6 {
-            color: #AD1457 !important;
-            text-shadow: 0 1px 10px rgba(173, 20, 87, 0.15) !important;
+        /* ===== SIDEBAR (PINK SOFT) ===== */
+        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
+            border-right: 2px solid #F8BBD0 !important;
         }
         
         /* ===== JUDUL UTAMA ===== */
@@ -66,44 +57,66 @@ st.markdown("""
             text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
         }
         
-        /* ===== SIDEBAR ===== */
-        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
-            border-right: 2px solid #F8BBD0 !important;
+        /* ===== TULISAN DI AREA UTAMA ===== */
+        h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+            color: #AD1457 !important;
         }
         
-        /* Tombol sakura di sidebar */
-        .css-1d391kg .stButton button, .css-12w0qpk .stButton button {
-            background: transparent !important;
-            border: 2px solid #EC407A !important;
-            border-radius: 50% !important;
-            font-size: 32px !important;
-            padding: 8px 14px !important;
-            transition: 0.3s !important;
-            color: #EC407A !important;
-        }
-        .css-1d391kg .stButton button:hover, .css-12w0qpk .stButton button:hover {
-            transform: scale(1.1) rotate(15deg) !important;
-            background: rgba(236, 64, 122, 0.2) !important;
-        }
-        
-        /* ===== FILE UPLOADER (WARNA PINK) ===== */
-        .stFileUploader {
-            background: rgba(255, 255, 255, 0.7) !important;
+        /* ===== FILE UPLOADER (KOTAK PUTUS-PUTUS) ===== */
+        .stFileUploader > div:first-child {
+            background: linear-gradient(135deg, #FFF0F5, #FCE4EC) !important;
             border: 2px dashed #EC407A !important;
-            border-radius: 12px !important;
-            color: #6A1B4D !important;
+            border-radius: 15px !important;
+            padding: 20px !important;
+            transition: 0.3s !important;
         }
-        .stFileUploader:hover {
+        .stFileUploader > div:first-child:hover {
+            background: #FFF5F7 !important;
             border-color: #D81B60 !important;
-            background: rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.15) !important;
         }
-        .stFileUploader label {
-            color: #6A1B4D !important;
+        
+        /* ===== TEKS DI DALAM FILE UPLOADER ===== */
+        .stFileUploader > div:first-child p {
+            color: #AD1457 !important;
             font-weight: 500 !important;
         }
-        .stFileUploader .st-emotion-cache-1r6slb0 {
-            color: #6A1B4D !important;
+        .stFileUploader > div:first-child small {
+            color: #D81B60 !important;
+        }
+        .stFileUploader > div:first-child button {
+            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50px !important;
+            padding: 8px 20px !important;
+            transition: 0.3s !important;
+        }
+        .stFileUploader > div:first-child button:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
+        }
+        
+        /* ===== DRAG AND DROP TEXT ===== */
+        .stFileUploader > div:first-child div:first-child {
+            color: #AD1457 !important;
+            font-size: 16px !important;
+        }
+        
+        /* ===== BATAS FILE (JPG, PNG) ===== */
+        .stFileUploader > div:first-child div:last-child {
+            color: #D81B60 !important;
+            font-size: 13px !important;
+        }
+        
+        /* ===== CARD HASIL ===== */
+        .result-card {
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #F8BBD0;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
         }
         
         /* ===== TOMBOL PROSES ===== */
@@ -128,20 +141,28 @@ st.markdown("""
             border-radius: 10px !important;
         }
         
-        /* ===== CARD HASIL ===== */
-        .result-card {
-            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #F8BBD0;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
+        /* ===== METRIC ===== */
+        .stMetric {
+            background: rgba(255, 255, 255, 0.3) !important;
+            border-radius: 12px !important;
+            padding: 10px !important;
         }
         
-        /* ===== INFO / SUCCESS / WARNING ===== */
-        .stAlert {
-            background: #FCE4EC !important;
-            border-left: 4px solid #EC407A !important;
+        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
+        .stSidebar .stButton button {
+            background: transparent !important;
+            border: 2px solid #EC407A !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            padding: 8px 14px !important;
+            transition: 0.3s !important;
+            color: #EC407A !important;
+            box-shadow: none !important;
+        }
+        .stSidebar .stButton button:hover {
+            transform: scale(1.1) rotate(15deg) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -229,7 +250,7 @@ with st.sidebar:
 # ==========================================
 # 6. AREA UTAMA: UPLOAD 2 FOTO UJI
 # ==========================================
-st.header("🔍 Upload Dua Wajah untuk Dibandingkan")
+st.markdown("## 🔍 Upload Dua Wajah untuk Dibandingkan")
 
 col1, col2 = st.columns(2)
 with col1:
