@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (Tanpa Logo & Tombol Sakura di Main Area)
+# app.py - VERSI FINAL (Tampilan Pink Total)
 # =====================================================
 
 import streamlit as st
@@ -11,7 +11,7 @@ import cv2
 import time
 
 # ==========================================
-# 1. PENGATURAN HALAMAN
+# 1. PENGATURAN HALAMAN & CSS (TOTAL PINK)
 # ==========================================
 st.set_page_config(
     page_title="PCA Face Similarity",
@@ -21,44 +21,125 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        /* ===== BACKGROUND UTAMA ===== */
         .stApp {
             background: linear-gradient(135deg, #FFF0F5, #FFE4E9, #FCE4EC);
         }
+        .main > div {
+            background: transparent !important;
+        }
+        
+        /* ===== HEADER / TOP BAR (HITAM -> PINK GELAP) ===== */
+        header {
+            background: linear-gradient(135deg, #880E4F, #AD1457, #880E4F) !important;
+            border-bottom: 2px solid #F8BBD0 !important;
+            box-shadow: 0 2px 15px rgba(136, 14, 79, 0.3) !important;
+        }
+        
+        /* Tulisan di header (gradasi + bayangan) */
+        header .stMarkdown, header h1, header h2, header h3 {
+            background: linear-gradient(135deg, #FFE4EC, #FFF0F5) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 2px 15px rgba(136, 14, 79, 0.5) !important;
+            font-weight: bold !important;
+        }
+        
+        /* ===== SIDEBAR (PINK SOFT) ===== */
+        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
+            border-right: 2px solid #F8BBD0 !important;
+        }
+        
+        /* Tombol di sidebar */
+        .css-1d391kg .stButton button, .css-12w0qpk .stButton button {
+            background: transparent !important;
+            border: 2px solid #EC407A !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            padding: 8px 14px !important;
+            transition: 0.3s !important;
+            color: #EC407A !important;
+        }
+        .css-1d391kg .stButton button:hover, .css-12w0qpk .stButton button:hover {
+            transform: scale(1.1) rotate(15deg) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+        }
+        
+        /* ===== JUDUL UTAMA ===== */
         .main-title {
             text-align: center;
             color: #AD1457;
             font-size: 42px;
             font-weight: bold;
+            text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2);
         }
         .sub-title {
             text-align: center;
             color: #D81B60;
             font-size: 18px;
+            text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15);
         }
+        
+        /* ===== TULISAN FOTO 1 & FOTO 2 (GRADASI) ===== */
+        .stMarkdown h4, .stMarkdown h3, .stMarkdown h2 {
+            background: linear-gradient(135deg, #880E4F, #D81B60) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-shadow: 0 2px 10px rgba(136, 14, 79, 0.3) !important;
+            font-weight: bold !important;
+        }
+        
+        /* ===== HEADER DI SIDEBAR ===== */
+        .css-1d391kg h1, .css-1d391kg h2, .css-1d391kg h3,
+        .css-12w0qpk h1, .css-12w0qpk h2, .css-12w0qpk h3 {
+            color: #AD1457 !important;
+            text-shadow: 0 1px 10px rgba(173, 20, 87, 0.15) !important;
+        }
+        
+        /* ===== CARD HASIL ===== */
         .result-card {
-            background: #FCE4EC;
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
             border: 1px solid #F8BBD0;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
         }
-        /* Tombol sakura di sidebar */
-        .sakura-btn {
-            font-size: 32px;
-            background: transparent;
-            border: 2px solid #EC407A;
-            border-radius: 50%;
-            padding: 8px 14px;
-            cursor: pointer;
-            transition: 0.3s;
+        
+        /* ===== FILE UPLOADER ===== */
+        .stFileUploader {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border-radius: 12px !important;
+            border: 2px dashed #EC407A !important;
+            backdrop-filter: blur(5px);
         }
-        .sakura-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            background: rgba(236,64,122,0.2);
+        .stFileUploader:hover {
+            border-color: #D81B60 !important;
+            background: rgba(255, 255, 255, 0.8) !important;
         }
-        /* Sidebar background */
-        .css-1d391kg, .css-12w0qpk {
-            background: #FCE4EC !important;
+        
+        /* ===== TOMBOL PROSES ===== */
+        .stButton button {
+            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
+            color: white !important;
+            font-size: 18px !important;
+            border-radius: 50px !important;
+            padding: 10px 30px !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
+            transition: 0.3s !important;
+        }
+        .stButton button:hover {
+            transform: scale(1.03) translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4) !important;
+        }
+        
+        /* ===== SLIDER ===== */
+        .stSlider > div {
+            background: rgba(255, 255, 255, 0.4) !important;
+            border-radius: 10px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -92,25 +173,25 @@ def preprocess_with_face_detection(file_bytes, img_size=(100, 100)):
     return normalized.flatten(), resized, detected
 
 # ==========================================
-# 4. JUDUL (tanpa tombol sakura di main area)
+# 4. JUDUL
 # ==========================================
 st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
-# 5. SIDEBAR (HANYA TOMBOL SAKURA DI SINI, TANPA LOGO)
+# 5. SIDEBAR
 # ==========================================
 with st.sidebar:
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
+        # TOMBOL SAKURA (bukan panah)
         if st.button("🌸", key="toggle_sidebar"):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
-        st.caption("Klik Sakura untuk Toggle")
+        st.caption("Klik Sakura")
     st.markdown("---")
     
-    # === UPLOAD DATA LATIH (toggle) ===
     if st.session_state.show_upload:
         st.header("📂 Upload Data Latih")
         st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
@@ -131,13 +212,11 @@ with st.sidebar:
     
     st.divider()
     
-    # Threshold
     threshold = st.slider("🎯 Ambang Batas Kemiripan", 0.0, 1.0, 0.70, 0.05)
     st.caption(f"Threshold: {threshold:.2f}")
     
     st.divider()
     
-    # Anggota
     st.markdown("""
         <b>🌸 Kelompok 2</b><br>
         1. Gea Destadia Al-Zahra<br>
@@ -153,9 +232,11 @@ st.header("🔍 Upload Dua Wajah untuk Dibandingkan")
 
 col1, col2 = st.columns(2)
 with col1:
-    face1_file = st.file_uploader("Foto 1", type=["jpg","jpeg","png"], key="f1")
+    st.markdown("#### 📸 Foto Pertama")
+    face1_file = st.file_uploader("Upload Foto 1", type=["jpg","jpeg","png"], key="f1", label_visibility="collapsed")
 with col2:
-    face2_file = st.file_uploader("Foto 2", type=["jpg","jpeg","png"], key="f2")
+    st.markdown("#### 📸 Foto Kedua")
+    face2_file = st.file_uploader("Upload Foto 2", type=["jpg","jpeg","png"], key="f2", label_visibility="collapsed")
 
 # ==========================================
 # 7. TOMBOL PROSES
@@ -192,16 +273,20 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             
             progress_bar.empty()
             
-            # Tampilkan hasil
             st.markdown("---")
             st.subheader("📊 Hasil Deteksi")
             
             col_r1, col_r2, col_r3 = st.columns(3)
             with col_r1:
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.image(img1, caption="Foto 1 (Resize)", width=150)
+                st.markdown('</div>', unsafe_allow_html=True)
             with col_r2:
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.image(img2, caption="Foto 2 (Resize)", width=150)
+                st.markdown('</div>', unsafe_allow_html=True)
             with col_r3:
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.metric("Skor Kemiripan", f"{similarity:.2%}")
                 if similarity >= threshold:
                     st.success("✅ MIRIP")
@@ -210,8 +295,8 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                     st.error("❌ TIDAK MIRIP")
                 st.caption(f"Komponen PCA: {k}")
                 st.caption(f"Varians: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")
+                st.markdown('</div>', unsafe_allow_html=True)
             
-            # Grafik
             st.subheader("📈 Grafik Akumulasi Informasi")
             explained_variance = np.cumsum(pca.explained_variance_ratio_)
             fig, ax = plt.subplots()
