@@ -1,8 +1,4 @@
-# =====================================================
-# APLIKASI PCA - GRAYSCALE, KOMPRESI, DETEKSI WAJAH
-# =====================================================
-# Kelompok 2 - Aljabar Linier / Computer Vision
-# =====================================================
+# ========gvyuu
 
 import streamlit as st
 import numpy as np
