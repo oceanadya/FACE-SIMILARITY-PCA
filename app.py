@@ -193,7 +193,7 @@ st.markdown("""
             border-radius: 50% !important;
             border: none !important;
             background: transparent !important;
-            font-size: 120px !important;  /* Emoji besar */
+            font-size: 55px !important;  /* Emoji besar */
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
