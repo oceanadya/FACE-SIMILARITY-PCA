@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK + NAVIGASI EMOJI
+# 2. CSS - TEMA PINK + NAVIGASI EMOJI (TANPA TITIK)
 # ==========================================
 st.markdown("""
     <style>
@@ -181,7 +181,7 @@ st.markdown("""
         }
 
         /* =========================================================
-           ===== NAVIGASI EMOJI (HANYA EMOJI, AKTIF LEBIH BESAR) =====
+           ===== NAVIGASI EMOJI (TANPA TITIK, AKTIF LEBIH BESAR) =====
            ========================================================= */
         .stRadio [role="radiogroup"] {
             display: flex !important;
@@ -207,12 +207,18 @@ st.markdown("""
             text-align: center !important;
             line-height: 1 !important;
         }
-        /* HILANGKAN BULLET RADIO */
-        .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
+        /* === HILANGKAN BULLET RADIO === */
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj,
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0,
+        .stRadio [role="radiogroup"] label span:first-child,
+        .stRadio [role="radiogroup"] label svg,
+        .stRadio [role="radiogroup"] label input {
             display: none !important;
-        }
-        .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0 {
-            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            pointer-events: none !important;
         }
         /* HOVER EFEK */
         .stRadio [role="radiogroup"] label:hover {
@@ -623,7 +629,7 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (EMOJI SAJA, AKTIF LEBIH BESAR)
+# 5. NAVIGASI SIDEBAR (EMOJI SAJA, TANPA TITIK)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
 menu = st.sidebar.radio(
