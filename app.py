@@ -34,7 +34,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK SOFT + NAVIGASI EMOJI
+# 2. CSS - TEMA PINK SOFT + NAVIGASI EMOJI DENGAN BUNGA
 # ==========================================
 st.markdown("""
     <style>
@@ -115,7 +115,6 @@ st.markdown("""
             border-radius: 8px !important;
             padding: 20px !important;
         }
-        /* === TEKS UPLOADER JADI PUTIH === */
         .stFileUploader * {
             color: #FFFFFF !important;
         }
@@ -170,29 +169,33 @@ st.markdown("""
         }
 
         /* =========================================================
-           ===== NAVIGASI EMOJI (RADIO BUTTON HORIZONTAL) =====
+           ===== NAVIGASI EMOJI DENGAN BUNGA SAKURA DI BELAKANG =====
            ========================================================= */
-        /* Sembunyikan radio button default */
+        /* Container radio */
         .stRadio [role="radiogroup"] {
             display: flex !important;
             justify-content: center !important;
-            gap: 8px !important;
+            gap: 15px !important;
             background: transparent !important;
             border: none !important;
-            padding: 0 !important;
+            padding: 10px 0 !important;
         }
-        /* Gaya label emoji */
+        /* Setiap label (emoji) */
         .stRadio [role="radiogroup"] label {
             background: transparent !important;
             border: none !important;
-            padding: 4px 8px !important;
+            padding: 8px !important;
             font-size: 32px !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
             cursor: pointer !important;
-            display: inline-block !important;
-            min-width: 45px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 55px !important;
+            min-height: 55px !important;
             text-align: center !important;
             position: relative !important;
+            z-index: 1 !important;
         }
         /* Hilangkan bullet radio */
         .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
@@ -203,15 +206,40 @@ st.markdown("""
         }
         /* Hover effect */
         .stRadio [role="radiogroup"] label:hover {
-            transform: scale(1.25) rotate(5deg) !important;
-            background: transparent !important;
+            transform: scale(1.2) rotate(8deg) !important;
         }
-        /* Active / selected effect - lebih besar */
+        /* ===== BUNGA SAKURA DI BELAKANG EMOJI AKTIF ===== */
         .stRadio [role="radiogroup"] label[data-checked="true"] {
-            font-size: 48px !important;
+            font-size: 40px !important;
             transform: scale(1) !important;
             background: transparent !important;
-            text-shadow: 0 0 20px rgba(236, 64, 122, 0.4) !important;
+            z-index: 2 !important;
+            animation: sakuraPulse 2s ease-in-out infinite !important;
+        }
+        /* Bunga sakura (background shape) */
+        .stRadio [role="radiogroup"] label[data-checked="true"]::before {
+            content: "🌸" !important;
+            position: absolute !important;
+            font-size: 85px !important;
+            opacity: 0.45 !important;
+            color: #EC407A !important;
+            z-index: -1 !important;
+            animation: sakuraSpin 8s linear infinite !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+        }
+        /* Animasi denyut */
+        @keyframes sakuraPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        /* Animasi putar bunga */
+        @keyframes sakuraSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(10deg) scale(1.05); }
+            100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
         }
         /* Caption di bawah */
         .sidebar-caption {
@@ -509,7 +537,7 @@ def halaman_deteksi():
                 st.pyplot(fig)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (RADIO HORIZONTAL)
+# 5. NAVIGASI SIDEBAR (RADIO HORIZONTAL DENGAN BUNGA SAKURA)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
 menu = st.sidebar.radio(
