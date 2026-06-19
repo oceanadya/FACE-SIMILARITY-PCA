@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (TEMA PINK TOTAL, TAHAN DARK MODE)
+# app.py - VERSI FINAL (LABEL FOTO DI DALAM CARD)
 # =====================================================
 
 import streamlit as st
@@ -24,30 +24,21 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
     <style>
-        /* ===== FORCE LIGHT MODE + PINK ===== */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
             background-color: #FFF0F5 !important;
             background-image: none !important;
         }
-        
-        /* ===== SEMUA TEKS ===== */
         body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
             color: #6A1B4D !important;
         }
-        
-        /* ===== HEADER (BAR ATAS) ===== */
         header {
             background: linear-gradient(135deg, #880E4F, #AD1457) !important;
             border-bottom: 2px solid #F8BBD0 !important;
         }
-        
-        /* ===== SIDEBAR ===== */
         .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
             background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
-        
-        /* ===== JUDUL ===== */
         .main-title {
             color: #AD1457 !important;
             font-size: 42px !important;
@@ -59,16 +50,10 @@ st.markdown("""
             font-size: 18px !important;
             text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
         }
-        
-        /* ===== SEMUA HEADING ===== */
         h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
             color: #AD1457 !important;
             font-weight: bold !important;
         }
-        
-        /* =========================================================
-           ===== FILE UPLOADER (PAKSA PINK) =====
-           ========================================================= */
         div[data-testid="stFileUploader"],
         .stFileUploader,
         .st-emotion-cache-1v0mbdj,
@@ -107,8 +92,6 @@ st.markdown("""
             border-color: #D81B60 !important;
             background: linear-gradient(135deg, #F8BBD0, #FCE4EC) !important;
         }
-        
-        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
         .sakura-btn-container .stButton button {
             background: transparent !important;
             border: 2px solid #EC407A !important;
@@ -127,8 +110,6 @@ st.markdown("""
             transform: scale(1.1) rotate(15deg) !important;
             background: rgba(236, 64, 122, 0.2) !important;
         }
-        
-        /* ===== TOMBOL PROSES ===== */
         .stButton button {
             background: linear-gradient(135deg, #EC407A, #D81B60) !important;
             color: white !important;
@@ -141,8 +122,6 @@ st.markdown("""
         .stButton button:hover {
             transform: scale(1.03) translateY(-2px) !important;
         }
-        
-        /* ===== CARD HASIL ===== */
         .result-card {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
             padding: 20px !important;
@@ -151,8 +130,6 @@ st.markdown("""
             border: 1px solid #F8BBD0 !important;
             box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1) !important;
         }
-        
-        /* ===== METRIC HASIL ===== */
         .stMetric {
             background: rgba(255, 255, 255, 0.3) !important;
             border-radius: 12px !important;
@@ -161,23 +138,22 @@ st.markdown("""
         .stMetric label, .stMetric div, .stMetric span {
             color: #6A1B4D !important;
         }
-        
-        /* ===== SLIDER ===== */
         .stSlider > div {
             background: rgba(255, 255, 255, 0.4) !important;
             border-radius: 10px !important;
         }
-        
-        /* ===== SUCCESS / ERROR ===== */
         .stAlert p, .stSuccess p, .stError p, .stWarning p {
             color: #6A1B4D !important;
             font-weight: bold !important;
             font-size: 20px !important;
         }
-        
-        /* ===== GRAFIK ===== */
         .stPlotlyChart, .stMatplotlib {
             background: transparent !important;
+        }
+        /* LABEL FOTO DI DALAM CARD */
+        .result-card h4, .result-card h3, .result-card h2 {
+            color: #AD1457 !important;
+            margin-bottom: 8px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -335,7 +311,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             progress_bar.empty()
             
             # ==========================================
-            # 9. TAMPILKAN HASIL
+            # 9. TAMPILKAN HASIL (LABEL DI DALAM CARD)
             # ==========================================
             st.markdown("---")
             st.subheader("📊 Hasil Deteksi")
