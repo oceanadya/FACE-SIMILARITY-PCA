@@ -34,10 +34,11 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK SOFT
+# 2. CSS - TEMA PINK SOFT + NAVIGASI EMOJI
 # ==========================================
 st.markdown("""
     <style>
+        /* ===== BACKGROUND UTAMA ===== */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
             background-color: #FFF0F5 !important;
             background-image: none !important;
@@ -166,36 +167,57 @@ st.markdown("""
         .explanation-box b {
             color: #AD1457 !important;
         }
-        /* ===== SIDEBAR EMOJI BUTTON ===== */
-        .stSidebar .stButton button {
-            background: transparent !important;
-            border: 2px solid #EC407A !important;
-            border-radius: 12px !important;
-            font-size: 28px !important;
-            padding: 6px 0 !important;
-            color: #EC407A !important;
-            box-shadow: none !important;
-            transition: 0.3s !important;
-            width: 100% !important;
-            min-height: 55px !important;
+
+        /* =========================================================
+           ===== NAVIGASI EMOJI (RADIO BUTTON HORIZONTAL) =====
+           ========================================================= */
+        /* Hapus border dan background radio */
+        .stRadio [role="radiogroup"] {
             display: flex !important;
-            align-items: center !important;
             justify-content: center !important;
+            gap: 8px !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
         }
-        .stSidebar .stButton button:hover {
-            transform: scale(1.05) !important;
-            background: rgba(236, 64, 122, 0.15) !important;
-            border-color: #D81B60 !important;
-            box-shadow: 0 0 15px rgba(236, 64, 122, 0.2) !important;
+        .stRadio [role="radiogroup"] label {
+            background: transparent !important;
+            border: none !important;
+            padding: 4px 8px !important;
+            font-size: 32px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            display: inline-block !important;
+            min-width: 45px !important;
+            text-align: center !important;
         }
-        .stSidebar .stButton button:active {
-            transform: scale(0.95) !important;
+        /* Hover effect */
+        .stRadio [role="radiogroup"] label:hover {
+            transform: scale(1.25) rotate(5deg) !important;
+            background: transparent !important;
         }
-        /* Aktif (selected) */
-        .stSidebar .stButton button.selected {
-            background: rgba(236, 64, 122, 0.2) !important;
-            border-color: #D81B60 !important;
-            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+        /* Active / selected effect */
+        .stRadio [role="radiogroup"] label[data-checked="true"] {
+            font-size: 48px !important;
+            transform: scale(1) !important;
+            background: transparent !important;
+            text-shadow: 0 0 20px rgba(236, 64, 122, 0.4) !important;
+        }
+        /* Sembunyikan bullet radio default */
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
+            display: none !important;
+        }
+        /* Sembunyikan teks default (emoji tetap muncul) */
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0 {
+            display: none !important;
+        }
+        /* Style untuk caption keterangan di bawah */
+        .sidebar-caption {
+            text-align: center;
+            color: #AD1457;
+            font-weight: bold;
+            font-size: 16px;
+            padding-top: 5px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -207,7 +229,7 @@ if "page" not in st.session_state:
     st.session_state.page = "🏠 Home"
 
 # ==========================================
-# 4. FUNGSI HALAMAN
+# 4. FUNGSI HALAMAN (Home, Grayscale, Kompresi, Deteksi)
 # ==========================================
 
 # ---------- Home ----------
@@ -277,7 +299,6 @@ def halaman_kompresi():
         img_np = np.array(img, dtype=np.float64)
         h, w = img_np.shape
         
-        # Resize jika terlalu besar agar proses cepat
         if h > 300 or w > 300:
             st.warning("Gambar terlalu besar, akan di-resize ke 256x256 agar proses cepat")
             img_resized = img.resize((256, 256))
@@ -287,7 +308,6 @@ def halaman_kompresi():
         k_max = min(h, w)
         k = st.slider("Jumlah komponen PCA (k)", min_value=1, max_value=k_max, value=min(50, k_max), step=1)
         
-        # --- PCA untuk kompresi ---
         mean_col = np.mean(img_np, axis=0)
         centered = img_np - mean_col
         cov = np.cov(centered, rowvar=False)
@@ -300,7 +320,6 @@ def halaman_kompresi():
         rekon = proj @ Vk.T + mean_col
         rekon = np.clip(rekon, 0, 255).astype(np.uint8)
         
-        # Metrik
         img_uint8 = img_np.astype(np.uint8)
         if SKIMAGE_AVAILABLE:
             ssim_val = ssim(img_uint8, rekon, data_range=255)
@@ -309,27 +328,23 @@ def halaman_kompresi():
             ssim_val = "Tidak tersedia"
             psnr_val = "Tidak tersedia"
         
-        # Rasio kompresi
         original_size = h * w
-        compressed_size = h * k + w * k  # aproksimasi
+        compressed_size = h * k + w * k
         compression_ratio = compressed_size / original_size
         saving = (1 - compression_ratio) * 100
         
-        # Tampilkan hasil
         col1, col2 = st.columns(2)
         with col1:
             st.image(img_uint8, caption="Gambar Asli (Grayscale)", use_container_width=True)
         with col2:
             st.image(rekon, caption=f"Hasil Kompresi (k={k})", use_container_width=True)
         
-        # Metrik
         st.markdown("### 📊 Metrik Kualitas")
         metrik_col1, metrik_col2, metrik_col3 = st.columns(3)
         metrik_col1.metric("SSIM", f"{ssim_val:.4f}" if isinstance(ssim_val, float) else ssim_val)
         metrik_col2.metric("PSNR", f"{psnr_val:.2f} dB" if isinstance(psnr_val, float) else psnr_val)
         metrik_col3.metric("Penghematan", f"{saving:.1f}%")
         
-        # Detail tambahan
         st.markdown(f"""
         <div class="explanation-box">
         <b>Detail Kompresi:</b><br>
@@ -340,7 +355,6 @@ def halaman_kompresi():
         </div>
         """, unsafe_allow_html=True)
         
-        # Grafik akumulasi varians
         total_var = np.sum(eigen_vals)
         cum_var = np.cumsum(eigen_vals) / total_var
         fig, ax = plt.subplots(figsize=(8, 4))
@@ -493,38 +507,36 @@ def halaman_deteksi():
                 st.pyplot(fig)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (EMOJI 1 BARIS)
+# 5. NAVIGASI SIDEBAR (RADIO HORIZONTAL)
 # ==========================================
-st.sidebar.markdown("## 🌸")
-col1, col2, col3, col4 = st.sidebar.columns(4)
+st.sidebar.markdown("🌸 **Haloo!!**")
+menu = st.sidebar.radio(
+    "",
+    ["🏠", "🌫️", "🗜️", "🔍"],
+    index=0,
+    horizontal=True,
+    key="menu_radio"
+)
 
-with col1:
-    if st.button("🏠", key="home", use_container_width=True):
-        st.session_state.page = "🏠 Home"
-        st.rerun()
-with col2:
-    if st.button("🌫️", key="grayscale", use_container_width=True):
-        st.session_state.page = "🌫️ Grayscale"
-        st.rerun()
-with col3:
-    if st.button("🗜️", key="kompresi", use_container_width=True):
-        st.session_state.page = "🗜️ Kompresi"
-        st.rerun()
-with col4:
-    if st.button("🔍", key="deteksi", use_container_width=True):
-        st.session_state.page = "🔍 Deteksi Kemiripan"
-        st.rerun()
+# Map emoji ke halaman
+page_map = {
+    "🏠": "🏠 Home",
+    "🌫️": "🌫️ Grayscale",
+    "🗜️": "🗜️ Kompresi",
+    "🔍": "🔍 Deteksi Kemiripan"
+}
+st.session_state.page = page_map[menu]
 
 # Keterangan fitur di bawah emoji
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
-    st.sidebar.caption("📌 Beranda & Profil")
+    st.sidebar.markdown('<p class="sidebar-caption">📌 Beranda & Profil</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🌫️ Grayscale":
-    st.sidebar.caption("🌫️ Ubah ke hitam-putih")
+    st.sidebar.markdown('<p class="sidebar-caption">🌫️ Ubah ke hitam-putih</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🗜️ Kompresi":
-    st.sidebar.caption("🗜️ Kompresi dengan PCA")
+    st.sidebar.markdown('<p class="sidebar-caption">🗜️ Kompresi dengan PCA</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🔍 Deteksi Kemiripan":
-    st.sidebar.caption("🔍 Bandingkan dua wajah")
+    st.sidebar.markdown('<p class="sidebar-caption">🔍 Bandingkan dua wajah</p>', unsafe_allow_html=True)
 
 # ==========================================
 # 6. TAMPILKAN HALAMAN SESUAI SESSION STATE
