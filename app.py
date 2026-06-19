@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (SEMUA TEKS WARNA PUTIH/PINK MUDA)
+# app.py - VERSI FINAL (PINK SOFT + TEKS PUTIH)
 # =====================================================
 
 import streamlit as st
@@ -20,21 +20,21 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - SEMUA TEKS WARNA PUTIH / PINK MUDA
+# 2. CSS - PINK SOFT + TEKS PUTIH
 # ==========================================
 st.markdown("""
     <style>
-        /* ===== BACKGROUND UTAMA ===== */
+        /* ===== BACKGROUND PINK SOFT ===== */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
-            background-color: #6A1B4D !important;
+            background-color: #FFF0F5 !important;
             background-image: none !important;
         }
         
-        /* ===== SEMUA TEKS JADI PUTIH / PINK MUDA ===== */
+        /* ===== SEMUA TEKS JADI PUTIH ===== */
         body, p, div, span, label, h1, h2, h3, h4, h5, h6, 
         .stMarkdown, .stText, .stCaption, .stTitle, .stHeader,
         .stSubheader, .stAlert, .stInfo, .stSuccess, .stError, .stWarning {
-            color: #FFE4EC !important;
+            color: #FFFFFF !important;
         }
         
         /* ===== HEADER (BAR ATAS) ===== */
@@ -45,51 +45,60 @@ st.markdown("""
         
         /* ===== SIDEBAR ===== */
         .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #6A1B4D, #880E4F) !important;
+            background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
+        .css-1d391kg h1, .css-1d391kg h2, .css-1d391kg h3, .css-1d391kg h4,
+        .css-12w0qpk h1, .css-12w0qpk h2, .css-12w0qpk h3, .css-12w0qpk h4 {
+            color: #AD1457 !important;
+        }
+        .css-1d391kg p, .css-1d391kg div, .css-1d391kg span,
+        .css-12w0qpk p, .css-12w0qpk div, .css-12w0qpk span {
+            color: #6A1B4D !important;
+        }
         
-        /* ===== JUDUL ===== */
+        /* ===== JUDUL (PUTIH) ===== */
         .main-title {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
             font-size: 42px !important;
             font-weight: bold !important;
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3) !important;
+            text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2) !important;
             text-align: center !important;
         }
         .sub-title {
-            color: #FFE4EC !important;
+            color: #D81B60 !important;
             font-size: 18px !important;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2) !important;
+            text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
             text-align: center !important;
         }
         
         /* ===== SEMUA HEADING ===== */
         h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
             font-weight: bold !important;
         }
         
-        /* ===== FILE UPLOADER ===== */
+        /* ===== FILE UPLOADER (PINK SOFT) ===== */
         div[data-testid="stFileUploader"],
         .stFileUploader,
         .st-emotion-cache-1v0mbdj,
         .st-emotion-cache-1r6slb0,
         .st-emotion-cache-1wmy9hl {
-            background: linear-gradient(135deg, #6A1B4D, #880E4F) !important;
-            border: 2px dashed #F8BBD0 !important;
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
+            border: 2px dashed #EC407A !important;
             border-radius: 12px !important;
             padding: 10px !important;
         }
         div[data-testid="stFileUploader"] > div,
         .stFileUploader > div {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.5) !important;
             border-radius: 8px !important;
             padding: 20px !important;
         }
+        /* SEMUA TEKS DI UPLOADER JADI PUTIH */
         div[data-testid="stFileUploader"] *,
         .stFileUploader * {
-            color: #FFE4EC !important;
+            color: #6A1B4D !important;
             background: transparent !important;
         }
         div[data-testid="stFileUploader"] button,
@@ -106,18 +115,18 @@ st.markdown("""
         }
         div[data-testid="stFileUploader"]:hover,
         .stFileUploader:hover {
-            border-color: #FFFFFF !important;
-            background: linear-gradient(135deg, #880E4F, #6A1B4D) !important;
+            border-color: #D81B60 !important;
+            background: linear-gradient(135deg, #F8BBD0, #FCE4EC) !important;
         }
         
         /* ===== TOMBOL SAKURA ===== */
         .sakura-btn-container .stButton button {
             background: transparent !important;
-            border: 2px solid #F8BBD0 !important;
+            border: 2px solid #EC407A !important;
             border-radius: 50% !important;
             font-size: 32px !important;
             padding: 8px 14px !important;
-            color: #F8BBD0 !important;
+            color: #EC407A !important;
             width: 55px !important;
             height: 55px !important;
             display: flex !important;
@@ -127,7 +136,7 @@ st.markdown("""
         }
         .sakura-btn-container .stButton button:hover {
             transform: scale(1.1) rotate(15deg) !important;
-            background: rgba(248, 187, 208, 0.2) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
         }
         
         /* ===== TOMBOL PROSES ===== */
@@ -138,7 +147,7 @@ st.markdown("""
             border-radius: 50px !important;
             padding: 10px 30px !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
         }
         .stButton button:hover {
             transform: scale(1.03) translateY(-2px) !important;
@@ -146,67 +155,65 @@ st.markdown("""
         
         /* ===== METRIC ===== */
         .stMetric {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.3) !important;
             border-radius: 12px !important;
             padding: 10px !important;
         }
         .stMetric label, .stMetric div, .stMetric span {
-            color: #FFE4EC !important;
+            color: #6A1B4D !important;
         }
         
         /* ===== SLIDER ===== */
         .stSlider > div {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.4) !important;
             border-radius: 10px !important;
         }
         
         /* ===== ALERT ===== */
         .stAlert p, .stSuccess p, .stError p, .stWarning p {
-            color: #FFFFFF !important;
+            color: #6A1B4D !important;
             font-weight: bold !important;
             font-size: 20px !important;
         }
         .stWarning {
-            background-color: rgba(255, 193, 7, 0.2) !important;
+            background-color: rgba(255, 193, 7, 0.15) !important;
             border-radius: 12px !important;
             padding: 5px !important;
         }
         .stWarning p {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
         }
         .stSuccess {
-            background-color: rgba(46, 204, 113, 0.2) !important;
+            background-color: rgba(46, 204, 113, 0.15) !important;
         }
         .stSuccess p {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
         }
         .stError {
-            background-color: rgba(231, 76, 60, 0.2) !important;
+            background-color: rgba(231, 76, 60, 0.15) !important;
         }
         .stError p {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
         }
-        
-        /* ===== INFO ===== */
         .stInfo {
-            background-color: rgba(52, 152, 219, 0.2) !important;
+            background-color: rgba(52, 152, 219, 0.15) !important;
         }
         .stInfo p {
-            color: #FFFFFF !important;
+            color: #AD1457 !important;
         }
         
         /* ===== BADGE PINK FULL WIDTH ===== */
         .pink-badge {
             display: block !important;
             width: 100% !important;
-            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
-            color: #FFFFFF !important;
+            background: linear-gradient(135deg, #FCE4EC, #F8BBD0) !important;
+            color: #AD1457 !important;
             padding: 10px 18px !important;
             border-radius: 12px !important;
             font-weight: bold !important;
             font-size: 16px !important;
-            border: 1px solid #F8BBD0 !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid #EC407A !important;
+            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.12) !important;
             text-align: center !important;
             margin-bottom: 12px !important;
         }
@@ -216,15 +223,15 @@ st.markdown("""
         
         /* ===== PENJELASAN GRAFIK ===== */
         .explanation-box {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.5) !important;
             padding: 15px !important;
             border-radius: 12px !important;
             border-left: 4px solid #EC407A !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-            color: #FFE4EC !important;
+            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.08) !important;
+            color: #6A1B4D !important;
         }
         .explanation-box p, .explanation-box li, .explanation-box b {
-            color: #FFE4EC !important;
+            color: #6A1B4D !important;
         }
         .explanation-box ul {
             padding-left: 20px !important;
@@ -233,39 +240,10 @@ st.markdown("""
             margin-bottom: 6px !important;
         }
         
-        /* ===== STREAMLIT DEFAULT ELEMEN ===== */
-        .st-emotion-cache-1v0mbdj, .st-emotion-cache-1r6slb0 {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== LABEL ===== */
-        .stFileUploader label, .stFileUploader div, .stFileUploader span, .stFileUploader p {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== TEXT INPUT ===== */
-        .stTextInput label {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== SELECT BOX ===== */
-        .stSelectbox label {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== NUMBER INPUT ===== */
-        .stNumberInput label {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== CHECKBOX ===== */
-        .stCheckbox label {
-            color: #FFE4EC !important;
-        }
-        
-        /* ===== RADIO ===== */
-        .stRadio label {
-            color: #FFE4EC !important;
+        /* ===== TEKS SIDEBAR ===== */
+        .css-1d391kg p, .css-1d391kg div, .css-1d391kg span,
+        .css-12w0qpk p, .css-12w0qpk div, .css-12w0qpk span {
+            color: #6A1B4D !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -445,7 +423,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             with col_r3:
                 st.markdown('<div class="result-container">', unsafe_allow_html=True)
                 st.markdown('<div class="pink-badge">🎯 Skor Kemiripan</div>', unsafe_allow_html=True)
-                st.markdown(f"<h1 style='color:#FFFFFF;font-size:42px;'>{similarity:.2%}</h1>", unsafe_allow_html=True)
+                st.markdown(f"<h1 style='color:#AD1457;font-size:42px;'>{similarity:.2%}</h1>", unsafe_allow_html=True)
                 
                 if similarity >= threshold:
                     st.success("✅ **MIRIP**")
@@ -475,13 +453,12 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                 ax.plot(range(1, len(explained_variance)+1), explained_variance, 'bo-', linewidth=2, markersize=5)
                 ax.axhline(y=0.95, color='red', linestyle='--', linewidth=2, label='95% Varians')
                 ax.axhline(y=threshold, color='green', linestyle=':', linewidth=2, label=f'Threshold {threshold:.2f}')
-                ax.set_xlabel('Jumlah Komponen PCA (k)', fontsize=10, color='white')
-                ax.set_ylabel('Akumulasi Informasi', fontsize=10, color='white')
-                ax.set_title('Kurva Akumulasi Informasi PCA', fontsize=11, color='white')
+                ax.set_xlabel('Jumlah Komponen PCA (k)', fontsize=10)
+                ax.set_ylabel('Akumulasi Informasi', fontsize=10)
+                ax.set_title('Kurva Akumulasi Informasi PCA', fontsize=11)
                 ax.grid(True, alpha=0.3)
                 ax.legend(loc='lower right', fontsize=8)
                 ax.set_ylim(0, 1.05)
-                ax.tick_params(colors='white')
                 st.pyplot(fig)
             
             with col_exp:
