@@ -1,4 +1,6 @@
-# app.py - VERSI FINAL (Tombol Sakura Jelas di Atas Sidebar)
+# app.py - VERSI FINAL (Tombol Sakura Selalu Ada)
+# =====================================================
+# APLIKASI DETEKSI KEMIRIPAN WAJAH DENGAN PCA (EIGENFACES)
 # =====================================================
 
 import streamlit as st
@@ -22,16 +24,21 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        /* Background gradasi pink soft */
         .stApp {
             background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 50%, #FCE4EC 100%) !important;
         }
         .main > div {
             background: transparent !important;
         }
+        
+        /* Sidebar gradasi pink */
         .css-1d391kg, .css-12w0qpk {
             background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
+        
+        /* Judul */
         .main-title {
             text-align: center;
             color: #AD1457;
@@ -46,6 +53,8 @@ st.markdown("""
             font-size: 18px;
             margin-bottom: 30px;
         }
+        
+        /* Card hasil */
         .result-card {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
             padding: 20px;
@@ -59,9 +68,13 @@ st.markdown("""
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(233, 30, 99, 0.2);
         }
+        
+        /* Sembunyikan elemen default */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
+        
+        /* Tombol proses */
         .stButton button {
             background: linear-gradient(135deg, #EC407A, #D81B60);
             color: white;
@@ -77,9 +90,12 @@ st.markdown("""
             transform: scale(1.03) translateY(-2px);
             box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
         }
+        
         h1, h2, h3 {
             color: #AD1457;
         }
+        
+        /* Logo bulat */
         .rounded-logo {
             border-radius: 50%;
             border: 3px solid #EC407A;
@@ -92,6 +108,8 @@ st.markdown("""
             transform: rotate(10deg) scale(1.05);
             box-shadow: 0 8px 30px rgba(233, 30, 99, 0.35);
         }
+        
+        /* Daftar anggota */
         .member-list {
             color: #6A1B4D;
             font-size: 14px;
@@ -101,6 +119,8 @@ st.markdown("""
             border-radius: 12px;
             backdrop-filter: blur(5px);
         }
+        
+        /* Info preprocessing */
         .preprocess-info {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
             padding: 15px;
@@ -111,6 +131,8 @@ st.markdown("""
             margin-bottom: 15px;
             box-shadow: 0 2px 10px rgba(233, 30, 99, 0.1);
         }
+        
+        /* File uploader */
         .stFileUploader {
             background: rgba(255,255,255,0.6) !important;
             border-radius: 12px !important;
@@ -122,6 +144,8 @@ st.markdown("""
             border-color: #D81B60 !important;
             background: rgba(255,255,255,0.8) !important;
         }
+        
+        /* Animasi upload section */
         .upload-section {
             animation: fadeSlide 0.4s ease;
         }
@@ -129,20 +153,23 @@ st.markdown("""
             0% { opacity: 0; transform: translateY(-8px); }
             100% { opacity: 1; transform: translateY(0); }
         }
+        
+        /* Slider */
         .stSlider > div {
             background: rgba(255,255,255,0.4) !important;
             border-radius: 10px !important;
         }
-        /* TOMBOL SAKURA BESAR DI ATAS */
-        .sakura-big-btn {
+        
+        /* TOMBOL SAKURA BESAR */
+        .sakura-btn {
             background: transparent !important;
             border: 2px solid #EC407A !important;
             border-radius: 50% !important;
-            font-size: 36px !important;
+            font-size: 32px !important;
             cursor: pointer !important;
             padding: 8px !important;
-            width: 60px !important;
-            height: 60px !important;
+            width: 55px !important;
+            height: 55px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -150,36 +177,49 @@ st.markdown("""
             transition: all 0.4s ease !important;
             box-shadow: 0 0 20px rgba(233, 30, 99, 0.15) !important;
         }
-        .sakura-big-btn:hover {
+        .sakura-btn:hover {
             transform: scale(1.15) rotate(20deg) !important;
             background: rgba(236, 64, 122, 0.2) !important;
             box-shadow: 0 0 40px rgba(233, 30, 99, 0.3) !important;
             border-color: #D81B60 !important;
         }
-        .sakura-big-btn:active {
+        .sakura-btn:active {
             transform: scale(0.85) !important;
         }
-        /* Tombol proses di sidebar tetap */
-        .stSidebar .stButton button {
-            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
+        
+        /* Metric */
+        .stMetric {
+            background: rgba(255,255,255,0.3) !important;
+            border-radius: 12px !important;
+            padding: 10px !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. FUNGSI DETEKSI WAJAH
+# 2. SESSION STATE
+# ==========================================
+if "show_upload" not in st.session_state:
+    st.session_state.show_upload = True  # default: muncul
+
+# ==========================================
+# 3. FUNGSI DETEKSI WAJAH
 # ==========================================
 def detect_and_crop_face(image_bytes):
     np_arr = np.frombuffer(image_bytes, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
     )
+    
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(50, 50))
+    
     if len(faces) > 0:
         x, y, w, h = max(faces, key=lambda rect: rect[2] * rect[3])
-        return gray[y:y+h, x:x+w], True
+        face_crop = gray[y:y+h, x:x+w]
+        return face_crop, True
     else:
         return gray, False
 
@@ -187,13 +227,8 @@ def preprocess_with_face_detection(file_bytes, img_size=(100, 100)):
     face_crop, detected = detect_and_crop_face(file_bytes)
     resized = cv2.resize(face_crop, img_size)
     normalized = resized / 255.0
-    return normalized.flatten(), resized, detected
-
-# ==========================================
-# 3. SESSION STATE
-# ==========================================
-if "show_upload" not in st.session_state:
-    st.session_state.show_upload = True
+    vector = normalized.flatten()
+    return vector, resized, detected
 
 # ==========================================
 # 4. JUDUL
@@ -202,27 +237,27 @@ st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_all
 st.markdown('<p class="sub-title">Menggunakan Metode PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
-# 5. SIDEBAR (DENGAN TOMBOL SAKURA DI ATAS)
+# 5. SIDEBAR (DENGAN TOMBOL SAKURA)
 # ==========================================
 with st.sidebar:
-    # ===== TOMBOL SAKURA (DI PALING ATAS) =====
+    # --- TOMBOL SAKURA DI ATAS (Selalu Ada) ---
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        # Tombol sakura besar di tengah
+        # Tombol sakura besar
         if st.button("🌸", key="toggle_upload", use_container_width=False):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
         st.caption("Klik Sakura untuk Toggle")
     st.markdown("---")
     
-    # ===== LOGO =====
+    # --- LOGO ---
     st.markdown(
         '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" class="rounded-logo">',
         unsafe_allow_html=True
     )
     
-    # ===== UPLOAD DATA LATIH (Muncul/Sembunyi) =====
+    # --- UPLOAD DATA LATIH (Muncul/Sembunyi) ---
     if st.session_state.show_upload:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
         st.header("📂 Upload Data Latih")
@@ -241,17 +276,17 @@ with st.sidebar:
             st.warning("⬆️ Upload foto di sini")
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.info("🌸 Upload data latih sedang disembunyikan. Klik sakura di atas untuk menampilkan.")
-
+        st.info("🌸 Upload data latih disembunyikan. Klik sakura di atas untuk menampilkan.")
+    
     st.divider()
     
-    # ===== SLIDER THRESHOLD =====
+    # --- SLIDER THRESHOLD ---
     threshold = st.slider("🎯 Atur Ambang Batas Kemiripan", 0.0, 1.0, 0.70, 0.05)
     st.caption(f"Threshold saat ini: {threshold:.2f}")
     
     st.divider()
     
-    # ===== DAFTAR ANGGOTA =====
+    # --- DAFTAR ANGGOTA ---
     st.markdown(
         """
         <div class="member-list">
@@ -293,32 +328,41 @@ with col_button_proses:
 # 8. LOGIKA PEMROSESAN
 # ==========================================
 if proses_button:
-    if not uploaded_train_files or len(uploaded_train_files) < 10:
+    # Cek apakah uploaded_train_files ada (dari sidebar)
+    if 'uploaded_train_files' not in locals() or not uploaded_train_files or len(uploaded_train_files) < 10:
         st.error("⚠️ **Data Latih Kurang!** Upload minimal 10 gambar wajah (2 orang, masing-masing 5 foto).")
+        st.info("💡 **Tips:** Klik tombol 🌸 di sidebar untuk menampilkan bagian upload data latih.")
     elif not face1_file or not face2_file:
         st.error("⚠️ **Foto Uji Kurang!** Upload kedua foto yang akan dibandingkan.")
     else:
         with st.spinner("⏳ Sedang memproses... Mohon tunggu."):
             time.sleep(0.5)
             
+            # --- A. Preprocessing Data Latih ---
             IMG_SIZE = (100, 100)
             X_train = []
+            train_detected_status = []
             
             progress_bar = st.progress(0, text="Mengolah data latih...")
             for i, file in enumerate(uploaded_train_files):
                 file_bytes = file.getvalue()
-                vector, _, _ = preprocess_with_face_detection(file_bytes, IMG_SIZE)
+                vector, _, detected = preprocess_with_face_detection(file_bytes, IMG_SIZE)
                 X_train.append(vector)
+                train_detected_status.append(detected)
                 progress_bar.progress((i + 1) / len(uploaded_train_files))
             
             X_train = np.array(X_train)
             
+            # --- B. Preprocessing Foto Uji ---
             progress_bar.progress(50, text="Memproses foto uji...")
+            
             face1_bytes = face1_file.getvalue()
             vec1, img1_resized, detected1 = preprocess_with_face_detection(face1_bytes, IMG_SIZE)
+            
             face2_bytes = face2_file.getvalue()
             vec2, img2_resized, detected2 = preprocess_with_face_detection(face2_bytes, IMG_SIZE)
             
+            # --- C. Jalankan PCA ---
             progress_bar.progress(70, text="Menjalankan PCA & mencari Eigenfaces...")
             k = min(50, len(X_train) - 1) if len(X_train) > 1 else 1
             pca = PCA(n_components=k)
@@ -326,13 +370,16 @@ if proses_button:
             
             proj1 = pca.transform([vec1])
             proj2 = pca.transform([vec2])
+            
             similarity = cosine_similarity(proj1, proj2)[0][0]
             
             progress_bar.progress(100, text="Selesai!")
             time.sleep(0.3)
             progress_bar.empty()
             
-            # --- TAMPILKAN HASIL ---
+            # ==========================================
+            # 9. TAMPILKAN HASIL
+            # ==========================================
             st.markdown("---")
             st.subheader("📊 Hasil Deteksi Foto Kamu ^^")
             
@@ -351,40 +398,47 @@ if proses_button:
             
             with col_res1:
                 st.markdown('<div class="result-card">', unsafe_allow_html=True)
-                st.image(img1_resized, width=180, caption="Foto 1 (Setelah Resize)")
+                st.image(img1_resized, width=180, caption="Foto 1 (Setelah Resize)", use_container_width=False)
                 st.caption(f"Ukuran: {IMG_SIZE[0]}x{IMG_SIZE[1]}")
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with col_res2:
                 st.markdown('<div class="result-card">', unsafe_allow_html=True)
-                st.image(img2_resized, width=180, caption="Foto 2 (Setelah Resize)")
+                st.image(img2_resized, width=180, caption="Foto 2 (Setelah Resize)", use_container_width=False)
                 st.caption(f"Ukuran: {IMG_SIZE[0]}x{IMG_SIZE[1]}")
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with col_res3:
                 st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.metric(label="Skor Kemiripan", value=f"{similarity:.2%}", delta=None)
+                
                 if similarity >= threshold:
                     st.success("✅ **Kesimpulan: MIRIP**")
+                    st.markdown("*(Kemungkinan besar orang yang sama)*")
                     st.balloons()
                 elif similarity >= 0.50:
                     st.warning("⚠️ **Kesimpulan: CUKUP MIRIP**")
+                    st.markdown("*(Perlu verifikasi tambahan)*")
                 else:
                     st.error("❌ **Kesimpulan: TIDAK MIRIP**")
+                    st.markdown("*(Kemungkinan besar orang berbeda)*")
+                
                 st.caption(f"Jumlah Komponen PCA: {k}")
                 st.caption(f"Varians data: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")
+                st.caption(f"Threshold yang digunakan: {threshold:.2f}")
                 st.markdown('</div>', unsafe_allow_html=True)
             
-            # --- Grafik ---
+            # --- Grafik PCA ---
             st.subheader("📈 Grafik Akumulasi Informasi PCA")
             explained_variance = np.cumsum(pca.explained_variance_ratio_)
+            
             fig, ax = plt.subplots(figsize=(10, 4))
             ax.plot(range(1, len(explained_variance)+1), explained_variance, 'bo-', linewidth=2, markersize=6)
             ax.axhline(y=0.95, color='red', linestyle='--', linewidth=2, label='95% Varians')
             ax.axhline(y=threshold, color='green', linestyle=':', linewidth=2, label=f'Threshold: {threshold:.2f}')
-            ax.set_xlabel('Jumlah Komponen PCA (k)')
-            ax.set_ylabel('Akumulasi Informasi')
-            ax.set_title('Kurva Akumulasi Informasi PCA')
+            ax.set_xlabel('Jumlah Komponen PCA (k)', fontsize=12)
+            ax.set_ylabel('Akumulasi Informasi', fontsize=12)
+            ax.set_title('Kurva Akumulasi Informasi PCA', fontsize=14)
             ax.grid(True, alpha=0.3)
             ax.legend(loc='lower right')
             ax.set_ylim(0, 1.05)
