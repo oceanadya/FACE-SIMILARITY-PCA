@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (File Uploader Pink Total)
+# app.py - VERSI FINAL (SEMUA WARNA PINK)
 # =====================================================
 
 import streamlit as st
@@ -11,7 +11,7 @@ import cv2
 import time
 
 # ==========================================
-# 1. PENGATURAN HALAMAN & CSS
+# 1. PENGATURAN HALAMAN
 # ==========================================
 st.set_page_config(
     page_title="PCA Face Similarity",
@@ -57,66 +57,76 @@ st.markdown("""
             text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
         }
         
-        /* ===== TULISAN DI AREA UTAMA ===== */
-        h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+        /* ===== UBAH SEMUA HEADING JADI PINK ===== */
+        h1, h2, h3, h4, h5, h6 {
             color: #AD1457 !important;
         }
         
-        /* ===== FILE UPLOADER (KOTAK PUTUS-PUTUS) ===== */
-        .stFileUploader > div:first-child {
-            background: linear-gradient(135deg, #FFF0F5, #FCE4EC) !important;
-            border: 2px dashed #EC407A !important;
-            border-radius: 15px !important;
-            padding: 20px !important;
-            transition: 0.3s !important;
+        /* ===== JUDUL "Upload Dua Wajah untuk Dibandingkan" ===== */
+        .stMarkdown h2, .stMarkdown h3, .stHeader {
+            color: #AD1457 !important;
+            font-weight: bold !important;
         }
-        .stFileUploader > div:first-child:hover {
-            background: #FFF5F7 !important;
+        
+        /* ===== TULISAN "Foto Pertama" & "Foto Kedua" ===== */
+        .stMarkdown h4, .stSubheader {
+            color: #AD1457 !important;
+            font-weight: bold !important;
+        }
+        
+        /* ===== FILE UPLOADER (BORDER & TEKS) ===== */
+        .stFileUploader {
+            background: rgba(255, 255, 255, 0.5) !important;
+            border-radius: 12px !important;
+            border: 2px dashed #EC407A !important;
+            backdrop-filter: blur(5px) !important;
+            color: #6A1B4D !important;
+        }
+        .stFileUploader:hover {
             border-color: #D81B60 !important;
-            box-shadow: 0 0 20px rgba(236, 64, 122, 0.15) !important;
+            background: rgba(255, 255, 255, 0.8) !important;
         }
         
         /* ===== TEKS DI DALAM FILE UPLOADER ===== */
-        .stFileUploader > div:first-child p {
-            color: #AD1457 !important;
-            font-weight: 500 !important;
+        .stFileUploader label, .stFileUploader div, .stFileUploader span {
+            color: #6A1B4D !important;
         }
-        .stFileUploader > div:first-child small {
-            color: #D81B60 !important;
+        .stFileUploader .st-emotion-cache-1v0mbdj {
+            color: #6A1B4D !important;
         }
-        .stFileUploader > div:first-child button {
+        
+        /* ===== TOMBOL UPLOAD (yang "Browse files") ===== */
+        .stFileUploader button {
             background: linear-gradient(135deg, #EC407A, #D81B60) !important;
             color: white !important;
+            border-radius: 20px !important;
             border: none !important;
-            border-radius: 50px !important;
-            padding: 8px 20px !important;
-            transition: 0.3s !important;
+            padding: 5px 20px !important;
         }
-        .stFileUploader > div:first-child button:hover {
+        .stFileUploader button:hover {
             transform: scale(1.05) !important;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
         }
         
-        /* ===== DRAG AND DROP TEXT ===== */
-        .stFileUploader > div:first-child div:first-child {
-            color: #AD1457 !important;
-            font-size: 16px !important;
+        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
+        .sakura-btn-container .stButton button {
+            background: transparent !important;
+            border: 2px solid #EC407A !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            padding: 8px 14px !important;
+            transition: 0.3s !important;
+            color: #EC407A !important;
+            width: 55px !important;
+            height: 55px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto !important;
         }
-        
-        /* ===== BATAS FILE (JPG, PNG) ===== */
-        .stFileUploader > div:first-child div:last-child {
-            color: #D81B60 !important;
-            font-size: 13px !important;
-        }
-        
-        /* ===== CARD HASIL ===== */
-        .result-card {
-            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #F8BBD0;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
+        .sakura-btn-container .stButton button:hover {
+            transform: scale(1.1) rotate(15deg) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
         }
         
         /* ===== TOMBOL PROSES ===== */
@@ -135,6 +145,16 @@ st.markdown("""
             box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4) !important;
         }
         
+        /* ===== CARD HASIL ===== */
+        .result-card {
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
+            padding: 20px !important;
+            border-radius: 15px !important;
+            text-align: center !important;
+            border: 1px solid #F8BBD0 !important;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1) !important;
+        }
+        
         /* ===== SLIDER ===== */
         .stSlider > div {
             background: rgba(255, 255, 255, 0.4) !important;
@@ -146,23 +166,6 @@ st.markdown("""
             background: rgba(255, 255, 255, 0.3) !important;
             border-radius: 12px !important;
             padding: 10px !important;
-        }
-        
-        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
-        .stSidebar .stButton button {
-            background: transparent !important;
-            border: 2px solid #EC407A !important;
-            border-radius: 50% !important;
-            font-size: 32px !important;
-            padding: 8px 14px !important;
-            transition: 0.3s !important;
-            color: #EC407A !important;
-            box-shadow: none !important;
-        }
-        .stSidebar .stButton button:hover {
-            transform: scale(1.1) rotate(15deg) !important;
-            background: rgba(236, 64, 122, 0.2) !important;
-            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -206,12 +209,14 @@ st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similari
 # ==========================================
 with st.sidebar:
     st.markdown("---")
+    st.markdown('<div class="sakura-btn-container">', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("🌸", key="toggle_sidebar"):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
         st.caption("Klik Sakura")
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("---")
     
     if st.session_state.show_upload:
@@ -253,11 +258,13 @@ with st.sidebar:
 st.markdown("## 🔍 Upload Dua Wajah untuk Dibandingkan")
 
 col1, col2 = st.columns(2)
+
 with col1:
-    st.markdown("#### 📸 Foto Pertama")
+    st.markdown("### 📸 Foto Pertama")
     face1_file = st.file_uploader("Upload Foto 1", type=["jpg","jpeg","png"], key="f1", label_visibility="collapsed")
+
 with col2:
-    st.markdown("#### 📸 Foto Kedua")
+    st.markdown("### 📸 Foto Kedua")
     face2_file = st.file_uploader("Upload Foto 2", type=["jpg","jpeg","png"], key="f2", label_visibility="collapsed")
 
 # ==========================================
