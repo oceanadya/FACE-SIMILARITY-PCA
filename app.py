@@ -147,7 +147,7 @@ st.markdown("""
             margin-bottom: 8px !important;
         }
 
-        /* ===== CARD ===== */
+        /* ===== CARD HASIL (FLEXBOX, TULISAN TENGAH) ===== */
         .result-card {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
             padding: 20px !important;
@@ -156,7 +156,12 @@ st.markdown("""
             border: 1px solid #F8BBD0 !important;
             box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1) !important;
             height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
+
         .explanation-box {
             background: rgba(255, 255, 255, 0.5) !important;
             padding: 15px !important;
@@ -404,7 +409,6 @@ def halaman_deteksi():
     </div>
     """, unsafe_allow_html=True)
 
-    # TETAP ADA file_uploader untuk upload data latih (tetap diperlukan untuk proses)
     file_latih = st.file_uploader(
         "Pilih minimal 10 foto wajah (2 orang, masing-masing 5+ foto)",
         type=["jpg", "jpeg", "png"],
@@ -416,7 +420,6 @@ def halaman_deteksi():
     else:
         st.warning("⬆️ Upload foto di sini")
 
-    # Upload dua foto uji
     col1, col2 = st.columns(2)
     with col1:
         file1 = st.file_uploader("Foto Pertama", type=["jpg","jpeg","png"], key="f1_deteksi")
