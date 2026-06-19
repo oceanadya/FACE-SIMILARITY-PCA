@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (SEMUA WARNA TERBACA)
+# app.py - VERSI FINAL (WARNA TEKS PUTIH/PINK MUDA + JUDUL TENGAH)
 # =====================================================
 
 import streamlit as st
@@ -20,88 +20,76 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS (SEMUA WARNA TERBACA)
+# 2. CSS - PERBAIKAN WARNA TEKS
 # ==========================================
 st.markdown("""
     <style>
-        /* ===== BACKGROUND UTAMA ===== */
-        .stApp, .main, .block-container, section.main {
-            background: linear-gradient(135deg, #FFF0F5, #FFE4E9, #FCE4EC) !important;
+        /* ===== BACKGROUND ===== */
+        .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
+            background-color: #FFF0F5 !important;
             background-image: none !important;
         }
-        div[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
-            border-right: 2px solid #F8BBD0 !important;
+        
+        /* ===== SEMUA TEKS ===== */
+        body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
+            color: #6A1B4D !important;
         }
         
-        /* ===== HEADER (BAR ATAS) - TULISAN PUTIH ===== */
+        /* ===== HEADER (BAR ATAS) ===== */
         header {
             background: linear-gradient(135deg, #880E4F, #AD1457) !important;
             border-bottom: 2px solid #F8BBD0 !important;
         }
-        header *, header div, header span, header button, header a {
+        
+        /* ===== SEMUA ELEMEN DI HEADER JADI PUTIH ===== */
+        header * {
             color: #FFFFFF !important;
+            fill: #FFFFFF !important;
         }
-        header .stButton button, header button {
+        
+        /* Tombol Share, menu, dll di header */
+        header button, header svg, header span, header div {
             color: #FFFFFF !important;
-            background: transparent !important;
+            fill: #FFFFFF !important;
         }
-        /* Tulisan "Share" dan menu header */
+        
+        /* Ikon di header */
         header .st-emotion-cache-1v0mbdj, header .st-emotion-cache-1r6slb0 {
             color: #FFFFFF !important;
         }
         
-        /* ===== SIDEBAR - SEMUA TULISAN PUTIH ATAU PINK MUDA ===== */
-        div[data-testid="stSidebar"] *,
-        div[data-testid="stSidebar"] p,
-        div[data-testid="stSidebar"] label,
-        div[data-testid="stSidebar"] h1,
-        div[data-testid="stSidebar"] h2,
-        div[data-testid="stSidebar"] h3,
-        div[data-testid="stSidebar"] h4,
-        div[data-testid="stSidebar"] span,
-        div[data-testid="stSidebar"] div,
-        div[data-testid="stSidebar"] .stMarkdown {
-            color: #4A1A2E !important;
-        }
-        /* Tulisan "Pilih Foto" di sidebar */
-        div[data-testid="stSidebar"] .stFileUploader label {
-            color: #4A1A2E !important;
-            font-weight: bold !important;
-        }
-        /* Teks di file uploader sidebar */
-        div[data-testid="stSidebar"] .stFileUploader p,
-        div[data-testid="stSidebar"] .stFileUploader span {
-            color: #4A1A2E !important;
-        }
-        /* Tombol di sidebar */
-        div[data-testid="stSidebar"] .stButton button {
-            color: #FFFFFF !important;
-            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
+        /* ===== SIDEBAR ===== */
+        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
+            border-right: 2px solid #F8BBD0 !important;
         }
         
-        /* ===== SEMUA HEADING (Utama) ===== */
-        h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
-            color: #AD1457 !important;
-            font-weight: bold !important;
-        }
-        
-        /* ===== JUDUL UTAMA DI TENGAH ===== */
+        /* ===== JUDUL UTAMA (DI TENGAH) ===== */
         .main-title {
             text-align: center !important;
             color: #AD1457 !important;
             font-size: 42px !important;
             font-weight: bold !important;
             text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2) !important;
+            display: block !important;
+            width: 100% !important;
         }
         .sub-title {
             text-align: center !important;
             color: #D81B60 !important;
             font-size: 18px !important;
             text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
+            display: block !important;
+            width: 100% !important;
         }
         
-        /* ===== FILE UPLOADER (Utama) ===== */
+        /* ===== SEMUA HEADING ===== */
+        h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+            color: #AD1457 !important;
+            font-weight: bold !important;
+        }
+        
+        /* ===== FILE UPLOADER ===== */
         div[data-testid="stFileUploader"],
         .stFileUploader,
         .st-emotion-cache-1v0mbdj,
@@ -141,7 +129,7 @@ st.markdown("""
             background: linear-gradient(135deg, #F8BBD0, #FCE4EC) !important;
         }
         
-        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
+        /* ===== TOMBOL SAKURA ===== */
         .sakura-btn-container .stButton button {
             background: transparent !important;
             border: 2px solid #EC407A !important;
@@ -161,7 +149,7 @@ st.markdown("""
             background: rgba(236, 64, 122, 0.2) !important;
         }
         
-        /* ===== TOMBOL PROSES (Utama) ===== */
+        /* ===== TOMBOL PROSES ===== */
         .stButton button {
             background: linear-gradient(135deg, #EC407A, #D81B60) !important;
             color: white !important;
@@ -227,22 +215,17 @@ st.markdown("""
         
         /* ===== PENJELASAN GRAFIK ===== */
         .explanation-box {
-            background: rgba(255, 255, 255, 0.6) !important;
+            background: rgba(255, 255, 255, 0.5) !important;
             padding: 15px !important;
             border-radius: 12px !important;
             border-left: 4px solid #EC407A !important;
             box-shadow: 0 2px 10px rgba(233, 30, 99, 0.08) !important;
         }
-        .explanation-box * {
-            color: #4A1A2E !important;
+        .explanation-box ul {
+            padding-left: 20px !important;
         }
-        
-        /* ===== STREAMLIT DEFAULT ELEMEN ===== */
-        .st-emotion-cache-1v0mbdj {
-            color: #6A1B4D !important;
-        }
-        .st-emotion-cache-1r6slb0 {
-            color: #6A1B4D !important;
+        .explanation-box li {
+            margin-bottom: 6px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -295,7 +278,7 @@ def load_color_image(file_bytes, img_size=(100, 100)):
 # ==========================================
 # 5. JUDUL (DI TENGAH)
 # ==========================================
-st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title">🌸 Deteksi Kemiripan Wajah</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
@@ -400,7 +383,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             progress_bar.empty()
             
             # ==========================================
-            # 9. TAMPILKAN HASIL (BADGE PINK FULL WIDTH)
+            # 9. TAMPILKAN HASIL
             # ==========================================
             st.markdown("---")
             st.subheader("📊 Hasil Deteksi")
@@ -462,12 +445,16 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                 st.subheader("📖 Penjelasan Grafik")
                 st.markdown("""
                 <div class="explanation-box">
-                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika menggunakan sejumlah komponen PCA (k).
+                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
+                
                 <br><br>
+                
                 <b>🔵 Garis biru</b> → kurva akumulasi varians. <br>
                 <b>🔴 Garis merah putus-putus</b> → 95% varians data sudah terwakili. <br>
                 <b>🟢 Garis hijau titik-titik</b> → <b>Threshold</b> (batas kemiripan) yang kamu atur di sidebar.
+                
                 <br><br>
+                
                 <b>💡 Cara baca:</b><br>
                 Dari 10.000 pixel wajah, PCA bisa meringkasnya jadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
                 </div>
