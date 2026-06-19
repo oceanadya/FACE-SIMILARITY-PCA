@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK SOFT + NAVIGASI EMOJI
+# 2. CSS - TEMA PINK SOFT + EFEK BUNGA SAKURA PADA EMOJI AKTIF
 # ==========================================
 st.markdown("""
     <style>
@@ -215,7 +215,9 @@ st.markdown("""
             margin-bottom: 6px !important;
         }
         
-        /* ===== NAVIGASI EMOJI (RADIO HORIZONTAL) ===== */
+        /* =========================================================
+           ===== NAVIGASI EMOJI DENGAN BUNGA SAKURA DI BELAKANG =====
+           ========================================================= */
         .stRadio [role="radiogroup"] {
             display: flex !important;
             justify-content: center !important;
@@ -234,33 +236,53 @@ st.markdown("""
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-width: 50px !important;
-            min-height: 50px !important;
+            min-width: 55px !important;
+            min-height: 55px !important;
             text-align: center !important;
             position: relative !important;
+            z-index: 1 !important;
         }
+        /* Hilangkan bullet radio */
         .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
             display: none !important;
         }
         .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0 {
             display: none !important;
         }
+        /* Hover effect */
         .stRadio [role="radiogroup"] label:hover {
-            transform: scale(1.25) rotate(5deg) !important;
-            background: transparent !important;
+            transform: scale(1.2) rotate(5deg) !important;
         }
+        /* ===== BUNGA SAKURA DI BELAKANG EMOJI AKTIF ===== */
         .stRadio [role="radiogroup"] label[data-checked="true"] {
-            font-size: 42px !important;
+            font-size: 38px !important;
             transform: scale(1) !important;
-            background: transparent !important;
-            text-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+            z-index: 2 !important;
+            animation: sakuraPulse 2s ease-in-out infinite !important;
         }
-        .sidebar-caption {
-            text-align: center;
-            color: #AD1457;
-            font-weight: bold;
-            font-size: 15px;
-            padding-top: 5px;
+        .stRadio [role="radiogroup"] label[data-checked="true"]::before {
+            content: "🌸" !important;
+            position: absolute !important;
+            font-size: 80px !important;
+            opacity: 0.35 !important;
+            color: #EC407A !important;
+            z-index: -1 !important;
+            animation: sakuraSpin 6s linear infinite !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+        }
+        /* Animasi denyut */
+        @keyframes sakuraPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        /* Animasi putar bunga */
+        @keyframes sakuraSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(10deg) scale(1.05); }
+            100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
         }
         
         /* ===== SAKURA BUTTON DI SIDEBAR ===== */
@@ -283,6 +305,15 @@ st.markdown("""
             transform: scale(1.1) rotate(15deg) !important;
             background: rgba(236, 64, 122, 0.2) !important;
             box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+        }
+        
+        /* ===== CAPTION DI BAWAH EMOJI ===== */
+        .sidebar-caption {
+            text-align: center;
+            color: #AD1457;
+            font-weight: bold;
+            font-size: 15px;
+            padding-top: 5px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -433,7 +464,7 @@ def halaman_kompresi():
         ax.grid(True, alpha=0.3)
         st.pyplot(fig)
 
-# ---------- DETEKSI KEMIRIPAN (FIX - PAKAI KODE YANG SUDAH BAGUS) ----------
+# ---------- DETEKSI KEMIRIPAN ----------
 def halaman_deteksi():
     st.markdown('<h1 class="main-title">🔍 Deteksi Kemiripan Wajah</h1>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">Bandingkan dua wajah dengan metode Eigenfaces (PCA)</p>', unsafe_allow_html=True)
@@ -656,7 +687,7 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (EMOJI HORIZONTAL)
+# 5. NAVIGASI SIDEBAR (EMOJI HORIZONTAL DENGAN BUNGA SAKURA)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
 menu = st.sidebar.radio(
