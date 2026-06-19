@@ -1,4 +1,4 @@
-# app.py - PERBAIKAN WARNA TEKS & BORDER UPLOAD
+# app.py - VERSI FINAL (SEMUA PINK)
 # =====================================================
 
 import streamlit as st
@@ -11,7 +11,7 @@ import cv2
 import time
 
 # ==========================================
-# 1. PENGATURAN HALAMAN & CSS
+# 1. PENGATURAN HALAMAN
 # ==========================================
 st.set_page_config(
     page_title="PCA Face Similarity",
@@ -29,14 +29,14 @@ st.markdown("""
             background: transparent !important;
         }
         
-        /* ===== HEADER / TOP BAR ===== */
+        /* ===== HEADER (TOP BAR) PINK GELAP ===== */
         header {
             background: linear-gradient(135deg, #880E4F, #AD1457, #880E4F) !important;
             border-bottom: 2px solid #F8BBD0 !important;
             box-shadow: 0 2px 15px rgba(136, 14, 79, 0.3) !important;
         }
         
-        /* Tulisan di header */
+        /* Tulisan di header (gradasi) */
         header .stMarkdown, header h1, header h2, header h3 {
             background: linear-gradient(135deg, #FFE4EC, #FFF0F5) !important;
             -webkit-background-clip: text !important;
@@ -45,70 +45,64 @@ st.markdown("""
             font-weight: bold !important;
         }
         
-        /* ===== SIDEBAR ===== */
-        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
-            border-right: 2px solid #F8BBD0 !important;
+        /* ===== SEMUA JUDUL (H1-H6) ===== */
+        h1, h2, h3, h4, h5, h6 {
+            color: #AD1457 !important;
+            text-shadow: 0 1px 10px rgba(173, 20, 87, 0.15) !important;
         }
         
         /* ===== JUDUL UTAMA ===== */
         .main-title {
             text-align: center;
             color: #AD1457 !important;
-            font-size: 42px;
-            font-weight: bold;
-            text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2);
+            font-size: 42px !important;
+            font-weight: bold !important;
+            text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2) !important;
         }
         .sub-title {
             text-align: center;
             color: #D81B60 !important;
-            font-size: 18px;
-            text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15);
+            font-size: 18px !important;
+            text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
         }
         
-        /* ===== TULISAN "Upload Dua Wajah..." (SAMA KAYA JUDUL) ===== */
-        .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, 
-        .stMarkdown h4, .stMarkdown h5, .stMarkdown h6,
-        .css-1v3fvcr h1, .css-1v3fvcr h2, .css-1v3fvcr h3,
-        .css-1v3fvcr h4 {
-            color: #AD1457 !important;
-            text-shadow: 0 1px 10px rgba(173, 20, 87, 0.1) !important;
+        /* ===== SIDEBAR ===== */
+        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #FCE4EC 0%, #FFF0F5 100%) !important;
+            border-right: 2px solid #F8BBD0 !important;
         }
         
-        /* ===== TULISAN "📸 Foto Pertama" & "📸 Foto Kedua" ===== */
-        .stMarkdown h4, .css-1v3fvcr h4 {
-            color: #AD1457 !important;
-            text-shadow: 0 1px 10px rgba(173, 20, 87, 0.15) !important;
-            font-weight: 600 !important;
+        /* Tombol sakura di sidebar */
+        .css-1d391kg .stButton button, .css-12w0qpk .stButton button {
+            background: transparent !important;
+            border: 2px solid #EC407A !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            padding: 8px 14px !important;
+            transition: 0.3s !important;
+            color: #EC407A !important;
+        }
+        .css-1d391kg .stButton button:hover, .css-12w0qpk .stButton button:hover {
+            transform: scale(1.1) rotate(15deg) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
         }
         
-        /* ===== CARD HASIL ===== */
-        .result-card {
-            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #F8BBD0;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
-        }
-        
-        /* ===== FILE UPLOADER (BORDER JADI PINK) ===== */
+        /* ===== FILE UPLOADER (WARNA PINK) ===== */
         .stFileUploader {
-            background: rgba(255, 255, 255, 0.6) !important;
-            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.7) !important;
             border: 2px dashed #EC407A !important;
-            backdrop-filter: blur(5px);
+            border-radius: 12px !important;
             color: #6A1B4D !important;
         }
         .stFileUploader:hover {
             border-color: #D81B60 !important;
-            background: rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
         }
         .stFileUploader label {
-            color: #AD1457 !important;
+            color: #6A1B4D !important;
             font-weight: 500 !important;
         }
-        .stFileUploader div {
+        .stFileUploader .st-emotion-cache-1r6slb0 {
             color: #6A1B4D !important;
         }
         
@@ -134,27 +128,20 @@ st.markdown("""
             border-radius: 10px !important;
         }
         
-        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
-        .css-1d391kg .stButton button, .css-12w0qpk .stButton button {
-            background: transparent !important;
-            border: 2px solid #EC407A !important;
-            border-radius: 50% !important;
-            font-size: 32px !important;
-            padding: 8px 14px !important;
-            transition: 0.3s !important;
-            color: #EC407A !important;
-            box-shadow: none !important;
-        }
-        .css-1d391kg .stButton button:hover, .css-12w0qpk .stButton button:hover {
-            transform: scale(1.1) rotate(15deg) !important;
-            background: rgba(236, 64, 122, 0.2) !important;
-            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+        /* ===== CARD HASIL ===== */
+        .result-card {
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #F8BBD0;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
         }
         
-        /* ===== UPLOADER DI SIDEBAR ===== */
-        .css-1d391kg .stFileUploader, .css-12w0qpk .stFileUploader {
-            background: rgba(255,255,255,0.5) !important;
-            border: 2px dashed #EC407A !important;
+        /* ===== INFO / SUCCESS / WARNING ===== */
+        .stAlert {
+            background: #FCE4EC !important;
+            border-left: 4px solid #EC407A !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -190,7 +177,7 @@ def preprocess_with_face_detection(file_bytes, img_size=(100, 100)):
 # ==========================================
 # 4. JUDUL
 # ==========================================
-st.markdown('<p class="main-title">Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
@@ -242,28 +229,14 @@ with st.sidebar:
 # ==========================================
 # 6. AREA UTAMA: UPLOAD 2 FOTO UJI
 # ==========================================
-# Tulisan "Upload Dua Wajah..." dengan warna pink (sama seperti judul)
-st.markdown("""
-    <h3 style="color: #AD1457; text-shadow: 0 1px 10px rgba(173,20,87,0.15);">
-        🔍 Upload Dua Wajah untuk Dibandingkan
-    </h3>
-""", unsafe_allow_html=True)
+st.header("🔍 Upload Dua Wajah untuk Dibandingkan")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("""
-        <h4 style="color: #AD1457; text-shadow: 0 1px 10px rgba(173,20,87,0.15);">
-            📸 Foto Pertama
-        </h4>
-    """, unsafe_allow_html=True)
+    st.markdown("#### 📸 Foto Pertama")
     face1_file = st.file_uploader("Upload Foto 1", type=["jpg","jpeg","png"], key="f1", label_visibility="collapsed")
-
 with col2:
-    st.markdown("""
-        <h4 style="color: #AD1457; text-shadow: 0 1px 10px rgba(173,20,87,0.15);">
-            📸 Foto Kedua
-        </h4>
-    """, unsafe_allow_html=True)
+    st.markdown("#### 📸 Foto Kedua")
     face2_file = st.file_uploader("Upload Foto 2", type=["jpg","jpeg","png"], key="f2", label_visibility="collapsed")
 
 # ==========================================
