@@ -186,35 +186,48 @@ st.markdown("""
         .nav-container {
             display: flex !important;
             justify-content: center !important;
-            gap: 12px !important;
-            padding: 10px 0 !important;
+            gap: 10px !important;
+            padding: 5px 0 !important;
         }
-        .nav-btn {
-            width: 55px !important;
-            height: 55px !important;
+        
+        /* Tombol navigation di sidebar */
+        .stSidebar .stButton button {
+            width: 48px !important;
+            height: 48px !important;
+            min-width: 48px !important;
+            min-height: 48px !important;
+            max-width: 48px !important;
+            max-height: 48px !important;
             border-radius: 50% !important;
-            border: 2px solid #EC407A !important;
+            border: 2px solid transparent !important;
             background: transparent !important;
-            font-size: 26px !important;
+            font-size: 22px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
             padding: 0 !important;
-            color: #6A1B4D !important;
+            margin: 0 auto !important;
+            box-shadow: none !important;
+            transition: all 0.3s ease !important;
+            line-height: 1 !important;
+        }
+        
+        /* Hover untuk semua tombol */
+        .stSidebar .stButton button:hover {
+            transform: scale(1.08) !important;
+            background: rgba(236, 64, 122, 0.1) !important;
+            border-color: #EC407A !important;
             box-shadow: none !important;
         }
-        .nav-btn:hover {
-            transform: scale(1.08) !important;
-            background: rgba(236, 64, 122, 0.15) !important;
-        }
-        .nav-btn.active {
-            background: rgba(236, 64, 122, 0.25) !important;
-            border-color: #D81B60 !important;
-            box-shadow: 0 0 20px rgba(236, 64, 122, 0.2) !important;
+        
+        /* Tombol aktif (akan ditandai dengan JS) */
+        .stSidebar .stButton button.active {
+            background: rgba(236, 64, 122, 0.2) !important;
+            border-color: #EC407A !important;
+            box-shadow: 0 0 15px rgba(236, 64, 122, 0.15) !important;
             transform: scale(1.05) !important;
         }
+        
         .sidebar-caption {
             text-align: center;
             color: #AD1457;
@@ -612,7 +625,7 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (TOMBOL LINGKARAN)
+# 5. NAVIGASI SIDEBAR (TOMBOL LINGKARAN BULAT)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
 
@@ -630,18 +643,18 @@ cols = st.sidebar.columns(4)
 for col, (emoji, page_name) in zip(cols, menus):
     with col:
         is_active = (st.session_state.page == page_name)
-        # Tombol dengan CSS class dinamis
+        # Tombol
         if st.button(emoji, key=f"nav_{emoji}", use_container_width=True):
             st.session_state.page = page_name
             st.rerun()
-        # Tandai tombol aktif dengan CSS
+        # Tandai tombol aktif dengan CSS via markdown
         if is_active:
             st.markdown(f"""
                 <style>
-                    div[data-testid="stVerticalBlock"] button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}")) {{
+                    .stSidebar .stButton button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}")) {{
                         background: rgba(236, 64, 122, 0.25) !important;
-                        border-color: #D81B60 !important;
-                        box-shadow: 0 0 20px rgba(236, 64, 122, 0.2) !important;
+                        border: 2px solid #EC407A !important;
+                        box-shadow: 0 0 15px rgba(236, 64, 122, 0.2) !important;
                         transform: scale(1.05) !important;
                     }}
                 </style>
