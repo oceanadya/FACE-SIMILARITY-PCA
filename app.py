@@ -1,4 +1,4 @@
-# app.py - VERSI SEDERHANA (Tombol Sakura di 2 Tempat)
+# app.py - VERSI FINAL (Tanpa Logo & Tombol Sakura di Main Area)
 # =====================================================
 
 import streamlit as st
@@ -19,7 +19,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CSS sederhana ---
 st.markdown("""
     <style>
         .stApp {
@@ -43,6 +42,7 @@ st.markdown("""
             text-align: center;
             border: 1px solid #F8BBD0;
         }
+        /* Tombol sakura di sidebar */
         .sakura-btn {
             font-size: 32px;
             background: transparent;
@@ -55,6 +55,10 @@ st.markdown("""
         .sakura-btn:hover {
             transform: scale(1.1) rotate(15deg);
             background: rgba(236,64,122,0.2);
+        }
+        /* Sidebar background */
+        .css-1d391kg, .css-12w0qpk {
+            background: #FCE4EC !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -88,35 +92,23 @@ def preprocess_with_face_detection(file_bytes, img_size=(100, 100)):
     return normalized.flatten(), resized, detected
 
 # ==========================================
-# 4. JUDUL + TOMBOL SAKURA DI MAIN AREA
+# 4. JUDUL (tanpa tombol sakura di main area)
 # ==========================================
-col_title, col_toggle = st.columns([6, 1])
-with col_title:
-    st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
-with col_toggle:
-    # Tombol sakura di pojok kanan atas (backup)
-    if st.button("🌸", key="toggle_main"):
-        st.session_state.show_upload = not st.session_state.show_upload
-        st.rerun()
-    st.caption("Toggle")
+st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
-# 5. SIDEBAR (dengan tombol sakura di atas)
+# 5. SIDEBAR (HANYA TOMBOL SAKURA DI SINI, TANPA LOGO)
 # ==========================================
 with st.sidebar:
     st.markdown("---")
-    # Tombol sakura di sidebar
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("🌸", key="toggle_sidebar"):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
-        st.caption("Klik Sakura")
+        st.caption("Klik Sakura untuk Toggle")
     st.markdown("---")
-    
-    # Logo
-    st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=80)
     
     # === UPLOAD DATA LATIH (toggle) ===
     if st.session_state.show_upload:
@@ -135,7 +127,7 @@ with st.sidebar:
         else:
             st.warning("⬆️ Upload foto di sini")
     else:
-        st.info("🌸 Upload disembunyikan. Klik sakura di atas atau di pojok kanan atas.")
+        st.info("🌸 Upload disembunyikan. Klik sakura di atas.")
     
     st.divider()
     
@@ -169,10 +161,9 @@ with col2:
 # 7. TOMBOL PROSES
 # ==========================================
 if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
-    # Cek apakah uploaded_train_files ada
     if 'uploaded_train_files' not in locals() or not uploaded_train_files or len(uploaded_train_files) < 10:
         st.error("⚠️ **Data Latih Kurang!** Upload minimal 10 foto.")
-        st.info("💡 Klik tombol 🌸 di sidebar atau pojok kanan atas untuk menampilkan bagian upload.")
+        st.info("💡 Klik tombol 🌸 di sidebar untuk menampilkan bagian upload.")
     elif not face1_file or not face2_file:
         st.error("⚠️ Upload kedua foto uji!")
     else:
@@ -227,7 +218,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             ax.plot(range(1, len(explained_variance)+1), explained_variance, 'bo-')
             ax.axhline(y=0.95, color='r', linestyle='--', label='95%')
             ax.axhline(y=threshold, color='g', linestyle=':', label=f'Threshold {threshold:.2f}')
-            ax.set_xlabel('k')
+            ax.set_xlabel('Jumlah Komponen PCA (k)')
             ax.set_ylabel('Akumulasi Informasi')
             ax.legend()
             st.pyplot(fig)
