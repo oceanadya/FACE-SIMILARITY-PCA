@@ -1,7 +1,7 @@
 # =====================================================
-# APLIKASI PCA DENGAN NAVIGASI SAKURA (PASTI)
+# APLIKASI PCA - GRAYSCALE, KOMPRESI, DETEKSI WAJAH
 # =====================================================
-# Pakai st.button + CSS custom
+# Kelompok 2 - Aljabar Linier / Computer Vision
 # =====================================================
 
 import streamlit as st
@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK + EFEK SAKURA (PASTI)
+# 2. CSS - TEMA PINK + NAVIGASI EMOJI
 # ==========================================
 st.markdown("""
     <style>
@@ -181,55 +181,50 @@ st.markdown("""
         }
 
         /* =========================================================
-           ===== NAVIGASI EMOJI DENGAN SAKURA (PASTI) =====
+           ===== NAVIGASI EMOJI (HANYA EMOJI, AKTIF LEBIH BESAR) =====
            ========================================================= */
-        .sakura-nav {
+        .stRadio [role="radiogroup"] {
             display: flex !important;
             justify-content: center !important;
-            gap: 15px !important;
-            padding: 10px 0 !important;
+            gap: 20px !important;
             background: transparent !important;
+            border: none !important;
+            padding: 10px 0 !important;
         }
-        .sakura-nav-item {
-            position: relative !important;
+        .stRadio [role="radiogroup"] label {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-size: 32px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-width: 60px !important;
-            min-height: 60px !important;
-            font-size: 32px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            text-align: center !important;
+            line-height: 1 !important;
+        }
+        /* HILANGKAN BULLET RADIO */
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
+            display: none !important;
+        }
+        .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0 {
+            display: none !important;
+        }
+        /* HOVER EFEK */
+        .stRadio [role="radiogroup"] label:hover {
+            transform: scale(1.15) rotate(3deg) !important;
             background: transparent !important;
-            border: none !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            padding: 0 !important;
-            z-index: 1 !important;
         }
-        .sakura-nav-item:hover {
-            transform: scale(1.2) rotate(5deg) !important;
-        }
-        /* SAKURA DI BELAKANG ITEM AKTIF */
-        .sakura-nav-item.active {
-            font-size: 40px !important;
+        /* AKTIF: LEBIH BESAR */
+        .stRadio [role="radiogroup"] label[data-checked="true"] {
+            font-size: 44px !important;
             transform: scale(1) !important;
-            z-index: 2 !important;
-        }
-        .sakura-nav-item.active::before {
-            content: "🌸" !important;
-            position: absolute !important;
-            font-size: 85px !important;
-            opacity: 0.5 !important;
-            color: #EC407A !important;
-            z-index: -1 !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            animation: sakuraSpin 6s linear infinite !important;
-        }
-        @keyframes sakuraSpin {
-            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-            50% { transform: translate(-50%, -50%) rotate(8deg) scale(1.05); }
-            100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            background: transparent !important;
+            text-shadow: 0 0 15px rgba(236, 64, 122, 0.25) !important;
         }
         .sidebar-caption {
             text-align: center;
@@ -628,55 +623,24 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (BUTTON + SAKURA)
+# 5. NAVIGASI SIDEBAR (EMOJI SAJA, AKTIF LEBIH BESAR)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
+menu = st.sidebar.radio(
+    "",
+    ["🏠", "🌫️", "🗜️", "🔍"],
+    index=0,
+    horizontal=True,
+    key="menu_radio"
+)
 
-# Buat 4 tombol dalam 1 baris
-cols = st.sidebar.columns(4)
-
-# Daftar emoji dan halaman
-menu_items = [
-    ("🏠", "🏠 Home"),
-    ("🌫️", "🌫️ Grayscale"),
-    ("🗜️", "🗜️ Kompresi"),
-    ("🔍", "🔍 Deteksi Kemiripan")
-]
-
-for col, (emoji, page_name) in zip(cols, menu_items):
-    with col:
-        # Tentukan apakah tombol ini aktif
-        is_active = (st.session_state.page == page_name)
-        # Buat tombol, jika diklik set session state
-        if st.button(emoji, key=f"nav_{emoji}", use_container_width=True):
-            st.session_state.page = page_name
-            st.rerun()
-        # Tambahkan CSS class "active" jika aktif
-        if is_active:
-            st.markdown(f"""
-                <style>
-                    div[data-testid="stVerticalBlock"] button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}")) {{
-                        font-size: 40px !important;
-                        position: relative !important;
-                        z-index: 2 !important;
-                        background: transparent !important;
-                        border: none !important;
-                        box-shadow: none !important;
-                    }}
-                    div[data-testid="stVerticalBlock"] button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}"))::before {{
-                        content: "🌸" !important;
-                        position: absolute !important;
-                        font-size: 85px !important;
-                        opacity: 0.45 !important;
-                        color: #EC407A !important;
-                        z-index: -1 !important;
-                        top: 50% !important;
-                        left: 50% !important;
-                        transform: translate(-50%, -50%) !important;
-                        animation: sakuraSpin 6s linear infinite !important;
-                    }}
-                </style>
-            """, unsafe_allow_html=True)
+page_map = {
+    "🏠": "🏠 Home",
+    "🌫️": "🌫️ Grayscale",
+    "🗜️": "🗜️ Kompresi",
+    "🔍": "🔍 Deteksi Kemiripan"
+}
+st.session_state.page = page_map[menu]
 
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
