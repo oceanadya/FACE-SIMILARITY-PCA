@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (Tombol Sakura Tetap Ada)
+# app.py - VERSI FINAL (Tombol Sakura Jelas di Atas Sidebar)
 # =====================================================
 
 import streamlit as st
@@ -85,6 +85,8 @@ st.markdown("""
             border: 3px solid #EC407A;
             box-shadow: 0 4px 15px rgba(233, 30, 99, 0.25);
             transition: all 0.5s ease;
+            display: block;
+            margin: 0 auto;
         }
         .rounded-logo:hover {
             transform: rotate(10deg) scale(1.05);
@@ -131,36 +133,35 @@ st.markdown("""
             background: rgba(255,255,255,0.4) !important;
             border-radius: 10px !important;
         }
-        /* TOMBOL SAKURA KHUSUS */
-        .sakura-btn-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .sakura-btn-container button {
+        /* TOMBOL SAKURA BESAR DI ATAS */
+        .sakura-big-btn {
             background: transparent !important;
-            border: none !important;
-            font-size: 30px !important;
-            cursor: pointer !important;
-            padding: 5px !important;
+            border: 2px solid #EC407A !important;
             border-radius: 50% !important;
-            transition: all 0.4s ease !important;
-            line-height: 1 !important;
-            width: 50px !important;
-            height: 50px !important;
+            font-size: 36px !important;
+            cursor: pointer !important;
+            padding: 8px !important;
+            width: 60px !important;
+            height: 60px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             margin: 0 auto !important;
-            box-shadow: none !important;
+            transition: all 0.4s ease !important;
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.15) !important;
         }
-        .sakura-btn-container button:hover {
-            transform: scale(1.25) rotate(20deg) !important;
+        .sakura-big-btn:hover {
+            transform: scale(1.15) rotate(20deg) !important;
             background: rgba(236, 64, 122, 0.2) !important;
-            box-shadow: 0 0 30px rgba(236, 64, 122, 0.3) !important;
+            box-shadow: 0 0 40px rgba(233, 30, 99, 0.3) !important;
+            border-color: #D81B60 !important;
         }
-        .sakura-btn-container button:active {
+        .sakura-big-btn:active {
             transform: scale(0.85) !important;
+        }
+        /* Tombol proses di sidebar tetap */
+        .stSidebar .stButton button {
+            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -201,26 +202,27 @@ st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_all
 st.markdown('<p class="sub-title">Menggunakan Metode PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
-# 5. SIDEBAR (DENGAN TOMBOL SAKURA)
+# 5. SIDEBAR (DENGAN TOMBOL SAKURA DI ATAS)
 # ==========================================
 with st.sidebar:
-    # --- BARIS ATAS: LOGO + TOMBOL SAKURA ---
-    col_logo, col_sakura = st.columns([4, 1])
-    with col_logo:
-        st.markdown(
-            '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="60" class="rounded-logo">',
-            unsafe_allow_html=True
-        )
-    with col_sakura:
-        # Tombol SAKURA (tetap ada, tidak pernah hilang)
-        # Gunakan div container biar CSS-nya jalan
-        st.markdown('<div class="sakura-btn-container">', unsafe_allow_html=True)
-        if st.button("🌸", key="toggle_upload_sidebar", use_container_width=False):
+    # ===== TOMBOL SAKURA (DI PALING ATAS) =====
+    st.markdown("---")
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        # Tombol sakura besar di tengah
+        if st.button("🌸", key="toggle_upload", use_container_width=False):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    # --- BAGIAN UPLOAD DATA LATIH (muncul/sembunyi sesuai state) ---
+        st.caption("Klik Sakura untuk Toggle")
+    st.markdown("---")
+    
+    # ===== LOGO =====
+    st.markdown(
+        '<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" class="rounded-logo">',
+        unsafe_allow_html=True
+    )
+    
+    # ===== UPLOAD DATA LATIH (Muncul/Sembunyi) =====
     if st.session_state.show_upload:
         st.markdown('<div class="upload-section">', unsafe_allow_html=True)
         st.header("📂 Upload Data Latih")
@@ -239,17 +241,17 @@ with st.sidebar:
             st.warning("⬆️ Upload foto di sini")
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.caption("🌸 Upload data latih disembunyikan. Klik sakura di atas untuk muncul.")
+        st.info("🌸 Upload data latih sedang disembunyikan. Klik sakura di atas untuk menampilkan.")
 
     st.divider()
     
-    # --- SLIDER THRESHOLD ---
+    # ===== SLIDER THRESHOLD =====
     threshold = st.slider("🎯 Atur Ambang Batas Kemiripan", 0.0, 1.0, 0.70, 0.05)
     st.caption(f"Threshold saat ini: {threshold:.2f}")
     
     st.divider()
     
-    # --- DAFTAR ANGGOTA ---
+    # ===== DAFTAR ANGGOTA =====
     st.markdown(
         """
         <div class="member-list">
