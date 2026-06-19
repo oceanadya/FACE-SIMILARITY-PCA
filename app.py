@@ -262,6 +262,28 @@ st.markdown("""
             font-size: 15px;
             padding-top: 5px;
         }
+        
+        /* ===== SAKURA BUTTON DI SIDEBAR ===== */
+        .sakura-btn-container .stButton button {
+            background: transparent !important;
+            border: 2px solid #EC407A !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            padding: 8px 14px !important;
+            color: #EC407A !important;
+            width: 55px !important;
+            height: 55px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto !important;
+            transition: 0.3s !important;
+        }
+        .sakura-btn-container .stButton button:hover {
+            transform: scale(1.1) rotate(15deg) !important;
+            background: rgba(236, 64, 122, 0.2) !important;
+            box-shadow: 0 0 20px rgba(236, 64, 122, 0.3) !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -413,7 +435,6 @@ def halaman_kompresi():
 
 # ---------- DETEKSI KEMIRIPAN (FIX - PAKAI KODE YANG SUDAH BAGUS) ----------
 def halaman_deteksi():
-    # === INI KODE DARI VERSI FIX YANG TAMPILANNYA SUDAH BAGUS ===
     st.markdown('<h1 class="main-title">🔍 Deteksi Kemiripan Wajah</h1>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">Bandingkan dua wajah dengan metode Eigenfaces (PCA)</p>', unsafe_allow_html=True)
     
