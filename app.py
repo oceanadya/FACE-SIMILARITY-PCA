@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK + NAVIGASI RADIO (FINAL)
+# 2. CSS - TEMA PINK
 # ==========================================
 st.markdown("""
     <style>
@@ -181,48 +181,40 @@ st.markdown("""
         }
 
         /* =========================================================
-           ===== NAVIGASI RADIO (BACKGROUND PINK AKTIF) =====
+           ===== NAVIGASI TOMBOL (BLOK WARNA AKTIF) =====
            ========================================================= */
-        div[role="radiogroup"] {
-            display: flex !important;
-            justify-content: center !important;
-            gap: 8px !important;
-            background: transparent !important;
-            border: none !important;
-            padding: 5px 0 !important;
-        }
-        div[role="radiogroup"] label {
-            background: transparent !important;
-            border: none !important;
+        /* Tombol navigasi di sidebar (semua tombol) */
+        .stSidebar .stButton button {
             width: 48px !important;
             height: 48px !important;
+            min-width: 48px !important;
+            min-height: 48px !important;
+            max-width: 48px !important;
+            max-height: 48px !important;
             border-radius: 50% !important;
-            display: inline-flex !important;
+            border: none !important;
+            background: transparent !important;
+            font-size: 24px !important;
+            display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 24px !important;
             padding: 0 !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
+            box-shadow: none !important;
             transition: all 0.2s ease !important;
-            cursor: pointer !important;
-            color: #6A1B4D !important;
+            line-height: 1 !important;
         }
-        /* HILANGKAN BULLET RADIO */
-        div[role="radiogroup"] label input[type="radio"] {
-            display: none !important;
-        }
-        /* Hover */
-        div[role="radiogroup"] label:hover {
+        /* Hover efek */
+        .stSidebar .stButton button:hover {
             transform: scale(1.05) !important;
             background: rgba(236, 64, 122, 0.1) !important;
+            box-shadow: none !important;
         }
-        /* AKTIF: background pink solid */
-        div[role="radiogroup"] label[data-checked="true"] {
+        /* Tombol aktif: background block pink */
+        .stSidebar .stButton button.active {
             background: #F8BBD0 !important;
-            border: none !important;
             box-shadow: none !important;
             transform: scale(1) !important;
-            color: #6A1B4D !important;
         }
         .sidebar-caption {
             text-align: center;
@@ -621,24 +613,38 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (RADIO HORIZONTAL)
+# 5. NAVIGASI SIDEBAR (TOMBOL BLOK WARNA)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
-menu = st.sidebar.radio(
-    "",
-    ["🏠", "🌫️", "🗜️", "🔍"],
-    index=0,
-    horizontal=True,
-    key="menu_radio_final"
-)
 
-page_map = {
-    "🏠": "🏠 Home",
-    "🌫️": "🌫️ Grayscale",
-    "🗜️": "🗜️ Kompresi",
-    "🔍": "🔍 Deteksi Kemiripan"
-}
-st.session_state.page = page_map[menu]
+# Daftar menu
+menus = [
+    ("🏠", "🏠 Home"),
+    ("🌫️", "🌫️ Grayscale"),
+    ("🗜️", "🗜️ Kompresi"),
+    ("🔍", "🔍 Deteksi Kemiripan")
+]
+
+# Buat 4 kolom untuk tombol
+cols = st.sidebar.columns(4)
+
+for col, (emoji, page_name) in zip(cols, menus):
+    with col:
+        is_active = (st.session_state.page == page_name)
+        # Tombol aktif: background block pink
+        if is_active:
+            st.markdown(f"""
+                <style>
+                    .stSidebar .stButton button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}")) {{
+                        background: #F8BBD0 !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                    }}
+                </style>
+            """, unsafe_allow_html=True)
+        if st.button(emoji, key=f"nav_{emoji}", use_container_width=True):
+            st.session_state.page = page_name
+            st.rerun()
 
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
