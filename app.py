@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK + NAVIGASI RADIO
+# 2. CSS - TEMA PINK + NAVIGASI RADIO (FINAL)
 # ==========================================
 st.markdown("""
     <style>
@@ -183,8 +183,7 @@ st.markdown("""
         /* =========================================================
            ===== NAVIGASI RADIO (BACKGROUND PINK AKTIF) =====
            ========================================================= */
-        /* Container radio */
-        .stRadio [role="radiogroup"] {
+        div[role="radiogroup"] {
             display: flex !important;
             justify-content: center !important;
             gap: 8px !important;
@@ -192,10 +191,9 @@ st.markdown("""
             border: none !important;
             padding: 5px 0 !important;
         }
-        /* Setiap label (tombol) */
-        .stRadio [role="radiogroup"] label {
+        div[role="radiogroup"] label {
             background: transparent !important;
-            border: 2px solid transparent !important;
+            border: none !important;
             width: 48px !important;
             height: 48px !important;
             border-radius: 50% !important;
@@ -207,25 +205,24 @@ st.markdown("""
             margin: 0 !important;
             transition: all 0.2s ease !important;
             cursor: pointer !important;
+            color: #6A1B4D !important;
         }
         /* HILANGKAN BULLET RADIO */
-        .stRadio [role="radiogroup"] label .st-emotion-cache-1v0mbdj {
-            display: none !important;
-        }
-        .stRadio [role="radiogroup"] label .st-emotion-cache-1r6slb0 {
+        div[role="radiogroup"] label input[type="radio"] {
             display: none !important;
         }
         /* Hover */
-        .stRadio [role="radiogroup"] label:hover {
+        div[role="radiogroup"] label:hover {
             transform: scale(1.05) !important;
             background: rgba(236, 64, 122, 0.1) !important;
         }
         /* AKTIF: background pink solid */
-        .stRadio [role="radiogroup"] label[data-checked="true"] {
+        div[role="radiogroup"] label[data-checked="true"] {
             background: #F8BBD0 !important;
-            border-color: #F8BBD0 !important;
+            border: none !important;
             box-shadow: none !important;
             transform: scale(1) !important;
+            color: #6A1B4D !important;
         }
         .sidebar-caption {
             text-align: center;
@@ -632,7 +629,7 @@ menu = st.sidebar.radio(
     ["🏠", "🌫️", "🗜️", "🔍"],
     index=0,
     horizontal=True,
-    key="menu_radio"
+    key="menu_radio_final"
 )
 
 page_map = {
