@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - TEMA PINK + TOMBOL 48px, EMOJI 48px
+# 2. CSS - TEMA PINK + TOMBOL 48px EMOJI 60px
 # ==========================================
 st.markdown("""
     <style>
@@ -181,7 +181,7 @@ st.markdown("""
         }
 
         /* =========================================================
-           ===== NAVIGASI TOMBOL (48px, EMOJI 48px) =====
+           ===== NAVIGASI TOMBOL (48px, EMOJI 60px) =====
            ========================================================= */
         .stSidebar .stButton button {
             width: 48px !important;
@@ -193,7 +193,7 @@ st.markdown("""
             border-radius: 50% !important;
             border: none !important;
             background: transparent !important;
-            font-size: 48px !important;
+            font-size: 60px !important;  /* Emoji besar */
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -204,7 +204,7 @@ st.markdown("""
             line-height: 1 !important;
         }
         .stSidebar .stButton button:hover {
-            transform: scale(1.08) !important;
+            transform: scale(1.05) !important;
             background: rgba(236, 64, 122, 0.1) !important;
             box-shadow: none !important;
         }
@@ -605,7 +605,7 @@ def halaman_deteksi():
                     """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. NAVIGASI SIDEBAR (TOMBOL 48px, EMOJI 48px)
+# 5. NAVIGASI SIDEBAR (TOMBOL 48px EMOJI 60px)
 # ==========================================
 st.sidebar.markdown("🌸 **Haloo!!**")
 
@@ -623,7 +623,7 @@ cols = st.sidebar.columns(4)
 for col, (emoji, page_name) in zip(cols, menus):
     with col:
         is_active = (st.session_state.page == page_name)
-        # Tombol aktif: background pink + turun sedikit + bayangan
+        # Tombol aktif: background pink + turun + shadow
         if is_active:
             st.markdown(f"""
                 <style>
