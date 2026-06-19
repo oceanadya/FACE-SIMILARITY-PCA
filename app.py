@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (WARNA TEKS PUTIH/PINK MUDA + JUDUL TENGAH)
+# app.py - VERSI FINAL (SEMUA TEKS WARNA PUTIH/PINK MUDA)
 # =====================================================
 
 import streamlit as st
@@ -20,19 +20,21 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS - PERBAIKAN WARNA TEKS
+# 2. CSS - SEMUA TEKS WARNA PUTIH / PINK MUDA
 # ==========================================
 st.markdown("""
     <style>
-        /* ===== BACKGROUND ===== */
+        /* ===== BACKGROUND UTAMA ===== */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
-            background-color: #FFF0F5 !important;
+            background-color: #6A1B4D !important;
             background-image: none !important;
         }
         
-        /* ===== SEMUA TEKS ===== */
-        body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
-            color: #6A1B4D !important;
+        /* ===== SEMUA TEKS JADI PUTIH / PINK MUDA ===== */
+        body, p, div, span, label, h1, h2, h3, h4, h5, h6, 
+        .stMarkdown, .stText, .stCaption, .stTitle, .stHeader,
+        .stSubheader, .stAlert, .stInfo, .stSuccess, .stError, .stWarning {
+            color: #FFE4EC !important;
         }
         
         /* ===== HEADER (BAR ATAS) ===== */
@@ -41,51 +43,30 @@ st.markdown("""
             border-bottom: 2px solid #F8BBD0 !important;
         }
         
-        /* ===== SEMUA ELEMEN DI HEADER JADI PUTIH ===== */
-        header * {
-            color: #FFFFFF !important;
-            fill: #FFFFFF !important;
-        }
-        
-        /* Tombol Share, menu, dll di header */
-        header button, header svg, header span, header div {
-            color: #FFFFFF !important;
-            fill: #FFFFFF !important;
-        }
-        
-        /* Ikon di header */
-        header .st-emotion-cache-1v0mbdj, header .st-emotion-cache-1r6slb0 {
-            color: #FFFFFF !important;
-        }
-        
         /* ===== SIDEBAR ===== */
         .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
+            background: linear-gradient(180deg, #6A1B4D, #880E4F) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
         
-        /* ===== JUDUL UTAMA (DI TENGAH) ===== */
+        /* ===== JUDUL ===== */
         .main-title {
-            text-align: center !important;
-            color: #AD1457 !important;
+            color: #FFFFFF !important;
             font-size: 42px !important;
             font-weight: bold !important;
-            text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2) !important;
-            display: block !important;
-            width: 100% !important;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3) !important;
+            text-align: center !important;
         }
         .sub-title {
-            text-align: center !important;
-            color: #D81B60 !important;
+            color: #FFE4EC !important;
             font-size: 18px !important;
-            text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
-            display: block !important;
-            width: 100% !important;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2) !important;
+            text-align: center !important;
         }
         
         /* ===== SEMUA HEADING ===== */
         h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
-            color: #AD1457 !important;
+            color: #FFFFFF !important;
             font-weight: bold !important;
         }
         
@@ -95,20 +76,20 @@ st.markdown("""
         .st-emotion-cache-1v0mbdj,
         .st-emotion-cache-1r6slb0,
         .st-emotion-cache-1wmy9hl {
-            background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
-            border: 2px dashed #EC407A !important;
+            background: linear-gradient(135deg, #6A1B4D, #880E4F) !important;
+            border: 2px dashed #F8BBD0 !important;
             border-radius: 12px !important;
             padding: 10px !important;
         }
         div[data-testid="stFileUploader"] > div,
         .stFileUploader > div {
-            background: rgba(255, 255, 255, 0.6) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             border-radius: 8px !important;
             padding: 20px !important;
         }
         div[data-testid="stFileUploader"] *,
         .stFileUploader * {
-            color: #6A1B4D !important;
+            color: #FFE4EC !important;
             background: transparent !important;
         }
         div[data-testid="stFileUploader"] button,
@@ -125,18 +106,18 @@ st.markdown("""
         }
         div[data-testid="stFileUploader"]:hover,
         .stFileUploader:hover {
-            border-color: #D81B60 !important;
-            background: linear-gradient(135deg, #F8BBD0, #FCE4EC) !important;
+            border-color: #FFFFFF !important;
+            background: linear-gradient(135deg, #880E4F, #6A1B4D) !important;
         }
         
         /* ===== TOMBOL SAKURA ===== */
         .sakura-btn-container .stButton button {
             background: transparent !important;
-            border: 2px solid #EC407A !important;
+            border: 2px solid #F8BBD0 !important;
             border-radius: 50% !important;
             font-size: 32px !important;
             padding: 8px 14px !important;
-            color: #EC407A !important;
+            color: #F8BBD0 !important;
             width: 55px !important;
             height: 55px !important;
             display: flex !important;
@@ -146,7 +127,7 @@ st.markdown("""
         }
         .sakura-btn-container .stButton button:hover {
             transform: scale(1.1) rotate(15deg) !important;
-            background: rgba(236, 64, 122, 0.2) !important;
+            background: rgba(248, 187, 208, 0.2) !important;
         }
         
         /* ===== TOMBOL PROSES ===== */
@@ -157,7 +138,7 @@ st.markdown("""
             border-radius: 50px !important;
             padding: 10px 30px !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
         }
         .stButton button:hover {
             transform: scale(1.03) translateY(-2px) !important;
@@ -165,47 +146,67 @@ st.markdown("""
         
         /* ===== METRIC ===== */
         .stMetric {
-            background: rgba(255, 255, 255, 0.3) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             border-radius: 12px !important;
             padding: 10px !important;
         }
         .stMetric label, .stMetric div, .stMetric span {
-            color: #6A1B4D !important;
+            color: #FFE4EC !important;
         }
         
         /* ===== SLIDER ===== */
         .stSlider > div {
-            background: rgba(255, 255, 255, 0.4) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             border-radius: 10px !important;
         }
         
         /* ===== ALERT ===== */
         .stAlert p, .stSuccess p, .stError p, .stWarning p {
-            color: #6A1B4D !important;
+            color: #FFFFFF !important;
             font-weight: bold !important;
             font-size: 20px !important;
         }
         .stWarning {
-            background-color: rgba(255, 193, 7, 0.15) !important;
+            background-color: rgba(255, 193, 7, 0.2) !important;
             border-radius: 12px !important;
             padding: 5px !important;
         }
         .stWarning p {
-            color: #AD1457 !important;
+            color: #FFFFFF !important;
+        }
+        .stSuccess {
+            background-color: rgba(46, 204, 113, 0.2) !important;
+        }
+        .stSuccess p {
+            color: #FFFFFF !important;
+        }
+        .stError {
+            background-color: rgba(231, 76, 60, 0.2) !important;
+        }
+        .stError p {
+            color: #FFFFFF !important;
+        }
+        
+        /* ===== INFO ===== */
+        .stInfo {
+            background-color: rgba(52, 152, 219, 0.2) !important;
+        }
+        .stInfo p {
+            color: #FFFFFF !important;
         }
         
         /* ===== BADGE PINK FULL WIDTH ===== */
         .pink-badge {
             display: block !important;
             width: 100% !important;
-            background: linear-gradient(135deg, #FCE4EC, #F8BBD0) !important;
-            color: #AD1457 !important;
+            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
+            color: #FFFFFF !important;
             padding: 10px 18px !important;
             border-radius: 12px !important;
             font-weight: bold !important;
             font-size: 16px !important;
-            border: 1px solid #EC407A !important;
-            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.12) !important;
+            border: 1px solid #F8BBD0 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
             text-align: center !important;
             margin-bottom: 12px !important;
         }
@@ -215,17 +216,56 @@ st.markdown("""
         
         /* ===== PENJELASAN GRAFIK ===== */
         .explanation-box {
-            background: rgba(255, 255, 255, 0.5) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             padding: 15px !important;
             border-radius: 12px !important;
             border-left: 4px solid #EC407A !important;
-            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.08) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+            color: #FFE4EC !important;
+        }
+        .explanation-box p, .explanation-box li, .explanation-box b {
+            color: #FFE4EC !important;
         }
         .explanation-box ul {
             padding-left: 20px !important;
         }
         .explanation-box li {
             margin-bottom: 6px !important;
+        }
+        
+        /* ===== STREAMLIT DEFAULT ELEMEN ===== */
+        .st-emotion-cache-1v0mbdj, .st-emotion-cache-1r6slb0 {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== LABEL ===== */
+        .stFileUploader label, .stFileUploader div, .stFileUploader span, .stFileUploader p {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== TEXT INPUT ===== */
+        .stTextInput label {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== SELECT BOX ===== */
+        .stSelectbox label {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== NUMBER INPUT ===== */
+        .stNumberInput label {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== CHECKBOX ===== */
+        .stCheckbox label {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== RADIO ===== */
+        .stRadio label {
+            color: #FFE4EC !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -276,9 +316,9 @@ def load_color_image(file_bytes, img_size=(100, 100)):
         return cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
 
 # ==========================================
-# 5. JUDUL (DI TENGAH)
+# 5. JUDUL
 # ==========================================
-st.markdown('<h1 class="main-title">🌸 Deteksi Kemiripan Wajah</h1>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">🌸 Deteksi Kemiripan Wajah</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Menggunakan PCA (Eigenfaces) & Cosine Similarity</p>', unsafe_allow_html=True)
 
 # ==========================================
@@ -405,7 +445,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             with col_r3:
                 st.markdown('<div class="result-container">', unsafe_allow_html=True)
                 st.markdown('<div class="pink-badge">🎯 Skor Kemiripan</div>', unsafe_allow_html=True)
-                st.markdown(f"<h1 style='color:#AD1457;font-size:42px;'>{similarity:.2%}</h1>", unsafe_allow_html=True)
+                st.markdown(f"<h1 style='color:#FFFFFF;font-size:42px;'>{similarity:.2%}</h1>", unsafe_allow_html=True)
                 
                 if similarity >= threshold:
                     st.success("✅ **MIRIP**")
@@ -430,32 +470,35 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                 st.subheader("📈 Grafik Akumulasi Informasi")
                 explained_variance = np.cumsum(pca.explained_variance_ratio_)
                 fig, ax = plt.subplots(figsize=(5, 3.5))
+                fig.patch.set_facecolor('none')
+                ax.set_facecolor('none')
                 ax.plot(range(1, len(explained_variance)+1), explained_variance, 'bo-', linewidth=2, markersize=5)
                 ax.axhline(y=0.95, color='red', linestyle='--', linewidth=2, label='95% Varians')
                 ax.axhline(y=threshold, color='green', linestyle=':', linewidth=2, label=f'Threshold {threshold:.2f}')
-                ax.set_xlabel('Jumlah Komponen PCA (k)', fontsize=10)
-                ax.set_ylabel('Akumulasi Informasi', fontsize=10)
-                ax.set_title('Kurva Akumulasi Informasi PCA', fontsize=11)
+                ax.set_xlabel('Jumlah Komponen PCA (k)', fontsize=10, color='white')
+                ax.set_ylabel('Akumulasi Informasi', fontsize=10, color='white')
+                ax.set_title('Kurva Akumulasi Informasi PCA', fontsize=11, color='white')
                 ax.grid(True, alpha=0.3)
                 ax.legend(loc='lower right', fontsize=8)
                 ax.set_ylim(0, 1.05)
+                ax.tick_params(colors='white')
                 st.pyplot(fig)
             
             with col_exp:
                 st.subheader("📖 Penjelasan Grafik")
                 st.markdown("""
                 <div class="explanation-box">
-                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
+                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika menggunakan sejumlah komponen PCA (k).
                 
                 <br><br>
                 
-                <b>🔵 Garis biru</b> → kurva akumulasi varians. <br>
-                <b>🔴 Garis merah putus-putus</b> → 95% varians data sudah terwakili. <br>
+                <b>🔵 Garis biru</b> → kurva akumulasi varians. Semakin tinggi, semakin baik.<br>
+                <b>🔴 Garis merah putus-putus</b> → titik 95% informasi data sudah terwakili.<br>
                 <b>🟢 Garis hijau titik-titik</b> → <b>Threshold</b> (batas kemiripan) yang kamu atur di sidebar.
                 
                 <br><br>
                 
                 <b>💡 Cara baca:</b><br>
-                Dari 10.000 pixel wajah, PCA bisa meringkasnya jadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
+                Dari 10.000 pixel wajah, PCA bisa meringkas menjadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
                 </div>
                 """, unsafe_allow_html=True)
