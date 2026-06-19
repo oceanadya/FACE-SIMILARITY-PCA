@@ -1,4 +1,4 @@
-# app.py - VERSI FINAL (GRAFIK KECIL + PENJELASAN)
+# app.py - VERSI FINAL (WARNA TOTAL PINK, SEMUA TERBACA)
 # =====================================================
 
 import streamlit as st
@@ -20,40 +20,84 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS
+# 2. CSS SUPER KUAT
 # ==========================================
 st.markdown("""
     <style>
+        /* ===== BACKGROUND UTAMA ===== */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
             background-color: #FFF0F5 !important;
             background-image: none !important;
         }
-        body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
-            color: #6A1B4D !important;
-        }
-        header {
+        
+        /* ===== HEADER (BAR ATAS) - PAKSA PINK GELAP ===== */
+        header, .st-emotion-cache-1r6slb0, .st-emotion-cache-1v0mbdj {
             background: linear-gradient(135deg, #880E4F, #AD1457) !important;
             border-bottom: 2px solid #F8BBD0 !important;
         }
+        
+        /* ===== SEMUA TEKS DI HEADER JADI PUTIH/PINK MUDA ===== */
+        header * {
+            color: #FFE4EC !important;
+        }
+        header button, header span, header div {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== TOMBOL SHARE & PANAH DI HEADER ===== */
+        .st-emotion-cache-1gv3hhu, .st-emotion-cache-1wmy9hl, .st-emotion-cache-1v3m2zr {
+            color: #FFE4EC !important;
+            fill: #FFE4EC !important;
+        }
+        .st-emotion-cache-1gv3hhu svg, .st-emotion-cache-1wmy9hl svg {
+            stroke: #FFE4EC !important;
+            fill: #FFE4EC !important;
+        }
+        
+        /* ===== SIDEBAR ===== */
         .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
             background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
+        
+        /* ===== JUDUL UTAMA (DI TENGAH) ===== */
         .main-title {
+            text-align: center !important;
             color: #AD1457 !important;
             font-size: 42px !important;
             font-weight: bold !important;
             text-shadow: 0 2px 15px rgba(173, 20, 87, 0.2) !important;
+            display: block !important;
         }
         .sub-title {
+            text-align: center !important;
             color: #D81B60 !important;
             font-size: 18px !important;
             text-shadow: 0 1px 10px rgba(216, 27, 96, 0.15) !important;
+            display: block !important;
         }
+        
+        /* ===== SEMUA HEADING JADI PINK GELAP (TERBACA) ===== */
         h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
-            color: #AD1457 !important;
+            color: #6A1B4D !important;
             font-weight: bold !important;
         }
+        
+        /* ===== JUDUL "Upload Dua Wajah untuk Dibandingkan" ===== */
+        .stMarkdown h2, .stMarkdown h3, .stHeader {
+            color: #6A1B4D !important;
+            font-weight: bold !important;
+        }
+        
+        /* ===== TULISAN "Foto Pertama" & "Foto Kedua" ===== */
+        .stMarkdown h4, .stSubheader {
+            color: #6A1B4D !important;
+            font-weight: bold !important;
+        }
+        
+        /* =========================================================
+           ===== FILE UPLOADER =====
+           ========================================================= */
         div[data-testid="stFileUploader"],
         .stFileUploader,
         .st-emotion-cache-1v0mbdj,
@@ -92,6 +136,8 @@ st.markdown("""
             border-color: #D81B60 !important;
             background: linear-gradient(135deg, #F8BBD0, #FCE4EC) !important;
         }
+        
+        /* ===== TOMBOL SAKURA DI SIDEBAR ===== */
         .sakura-btn-container .stButton button {
             background: transparent !important;
             border: 2px solid #EC407A !important;
@@ -110,6 +156,8 @@ st.markdown("""
             transform: scale(1.1) rotate(15deg) !important;
             background: rgba(236, 64, 122, 0.2) !important;
         }
+        
+        /* ===== TOMBOL PROSES ===== */
         .stButton button {
             background: linear-gradient(135deg, #EC407A, #D81B60) !important;
             color: white !important;
@@ -122,6 +170,8 @@ st.markdown("""
         .stButton button:hover {
             transform: scale(1.03) translateY(-2px) !important;
         }
+        
+        /* ===== METRIC ===== */
         .stMetric {
             background: rgba(255, 255, 255, 0.3) !important;
             border-radius: 12px !important;
@@ -130,10 +180,14 @@ st.markdown("""
         .stMetric label, .stMetric div, .stMetric span {
             color: #6A1B4D !important;
         }
+        
+        /* ===== SLIDER ===== */
         .stSlider > div {
             background: rgba(255, 255, 255, 0.4) !important;
             border-radius: 10px !important;
         }
+        
+        /* ===== ALERT ===== */
         .stAlert p, .stSuccess p, .stError p, .stWarning p {
             color: #6A1B4D !important;
             font-weight: bold !important;
@@ -183,6 +237,28 @@ st.markdown("""
         }
         .explanation-box li {
             margin-bottom: 6px !important;
+        }
+        
+        /* ===== PAKSA SEMUA TEKS JADI GELAP (TERBACA) ===== */
+        body, p, div, span, label, .stMarkdown, .stText, .stCaption {
+            color: #6A1B4D !important;
+        }
+        
+        /* ===== TOMBOL SHARE & PANAH (TARGET PASTI) ===== */
+        .st-emotion-cache-1p2s3n1, .st-emotion-cache-1gv3hhu, .st-emotion-cache-1wmy9hl {
+            color: #FFE4EC !important;
+        }
+        .st-emotion-cache-1p2s3n1 svg, .st-emotion-cache-1gv3hhu svg, .st-emotion-cache-1wmy9hl svg {
+            fill: #FFE4EC !important;
+            stroke: #FFE4EC !important;
+        }
+        .st-emotion-cache-1p2s3n1 button, .st-emotion-cache-1gv3hhu button {
+            color: #FFE4EC !important;
+        }
+        
+        /* ===== SEMUA LINK DI HEADER ===== */
+        header a, header button, header div {
+            color: #FFE4EC !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -340,7 +416,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
             progress_bar.empty()
             
             # ==========================================
-            # 9. TAMPILKAN HASIL (BADGE PINK FULL WIDTH)
+            # 9. TAMPILKAN HASIL
             # ==========================================
             st.markdown("---")
             st.subheader("📊 Hasil Deteksi")
@@ -378,7 +454,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                 st.markdown('</div>', unsafe_allow_html=True)
             
             # ==========================================
-            # 10. GRAFIK (DIPERKECIL) + PENJELASAN
+            # 10. GRAFIK + PENJELASAN
             # ==========================================
             st.markdown("---")
             col_graf, col_exp = st.columns([1, 1])
@@ -402,7 +478,7 @@ if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
                 st.subheader("📖 Penjelasan Grafik")
                 st.markdown("""
                 <div class="explanation-box">
-                Grafik ini menunjukkan seberapa banyak **informasi wajah** yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
+                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
                 
                 <br><br>
                 
