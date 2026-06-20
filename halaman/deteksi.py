@@ -9,64 +9,41 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 def tampilkan():
     # ==========================================
-    # SIDEBAR: UPLOAD DATA LATIH + THRESHOLD (Gabung)
+    # SIDEBAR: UPLOAD DATA LATIH + THRESHOLD
     # ==========================================
     with st.sidebar:
-    st.markdown('<div class="sakura-btn-container" style="margin-top: 5px;">', unsafe_allow_html=True)
-    kol1, kol2, kol3 = st.columns([1, 2, 1])
-    with kol2:
-        if st.button("🌸", key="toggle_sidebar_deteksi"):
-            st.session_state.show_upload = not st.session_state.show_upload
-            st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+        # --- Tombol Sakura (tanpa garis dan caption) ---
+        st.markdown('<div class="sakura-btn-container" style="margin-top: 5px;">', unsafe_allow_html=True)
+        kol1, kol2, kol3 = st.columns([1, 2, 1])
+        with kol2:
+            if st.button("🌸", key="toggle_sidebar_deteksi"):
+                st.session_state.show_upload = not st.session_state.show_upload
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- BLOK YANG MUNCUL/HILANG ---
-    if st.session_state.show_upload:
-        st.header("📂 Upload Data Latih")
-        st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
+        # --- BLOK YANG MUNCUL/HILANG BERSAMAAN ---
+        if st.session_state.show_upload:
+            st.header("📂 Upload Data Latih")
+            st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
 
-        file_latih = st.file_uploader(
-            "Pilih Foto",
-            type=["jpg", "jpeg", "png"],
-            accept_multiple_files=True,
-            key="deteksi_train"
-        )
+            file_latih = st.file_uploader(
+                "Pilih Foto",
+                type=["jpg", "jpeg", "png"],
+                accept_multiple_files=True,
+                key="deteksi_train"
+            )
 
-        if file_latih:
-            st.success(f"✅ {len(file_latih)} foto berhasil terupload!")
+            if file_latih:
+                st.success(f"✅ {len(file_latih)} foto berhasil terupload!")
+            else:
+                st.warning("⬆️ Upload foto di sini")
+
+            st.header("🎯 Ambang Batas Kemiripan")
+            ambang = st.slider("Atur batas kemiripan", 0.0, 1.0, 0.70, 0.05, key="threshold_deteksi")
+            st.caption(f"Threshold saat ini: {ambang:.2f}")
+
         else:
-            st.warning("⬆️ Upload foto di sini")
-
-        st.header("🎯 Ambang Batas Kemiripan")
-        ambang = st.slider("Atur batas kemiripan", 0.0, 1.0, 0.70, 0.05, key="threshold_deteksi")
-        st.caption(f"Threshold saat ini: {ambang:.2f}")
-
-    else:
-        st.info("🌸 Upload dan pengaturan disembunyikan. Klik sakura di atas.")
-
-    # --- Penjelasan halaman (tetap muncul) ---
-    st.divider()
-    st.markdown("""
-    <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A;">
-        <h4 style="color: #AD1457; margin-top: 0;">🌸 Halo! Selamat datang di halaman Deteksi Kemiripan Wajah.</h4>
-        <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
-            Di sini kamu bisa membandingkan dua foto wajah untuk melihat apakah kedua orang tersebut 
-            <b>mirip</b> atau <b>tidak mirip</b>.
-        </p>
-        <h5 style="color: #AD1457; margin-top: 10px;">📌 Cara Menggunakan:</h5>
-        <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
-            <li><b>1.</b> Klik <b>"🌸"</b> di atas untuk menampilkan upload data latih & pengaturan.</li>
-            <li><b>2.</b> Upload minimal <b>10 foto wajah</b> dari 2 orang berbeda (masing-masing 5 foto).</li>
-            <li><b>3.</b> Upload dua foto uji di bagian bawah.</li>
-            <li><b>4.</b> Atur threshold (batas kemiripan) dengan slider.</li>
-            <li><b>5.</b> Klik <b>"Proses Deteksi"</b> untuk melihat hasil.</li>
-        </ul>
-        <p style="color: #6A1B4D; font-size: 12px; margin-top: 8px; background: #FCE4EC; padding: 6px 12px; border-radius: 6px;">
-            💡 <b>Tips:</b> Pastikan foto wajah terlihat jelas dan tidak menggunakan filter.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
+            st.info("🌸 Upload dan pengaturan disembunyikan. Klik sakura di atas.")
 
         # --- Penjelasan halaman (tetap muncul) ---
         st.divider()
@@ -79,7 +56,7 @@ def tampilkan():
             </p>
             <h5 style="color: #AD1457; margin-top: 10px;">📌 Cara Menggunakan:</h5>
             <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
-                <li><b>1.</b> Klik <b>"🌸 Klik Sakura"</b> untuk menampilkan upload data latih & pengaturan.</li>
+                <li><b>1.</b> Klik <b>"🌸"</b> di atas untuk menampilkan upload data latih & pengaturan.</li>
                 <li><b>2.</b> Upload minimal <b>10 foto wajah</b> dari 2 orang berbeda (masing-masing 5 foto).</li>
                 <li><b>3.</b> Upload dua foto uji di bagian bawah.</li>
                 <li><b>4.</b> Atur threshold (batas kemiripan) dengan slider.</li>
