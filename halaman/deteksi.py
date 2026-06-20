@@ -81,12 +81,30 @@ def tampilkan():
 
         # ===== DAFTAR ANGGOTA =====
         st.markdown("""
-            <b>🌸 Kelompok 2</b><br>
-            1. Gea Destadia Al-Zahra<br>
-            2. Luna Amilia<br>
-            3. Dalilah Arifah Ariandi DJR<br>
-            4. Nadia Azzizah
-        """, unsafe_allow_html=True)
+    <div style="background: rgba(255,255,255,0.4); padding: 20px; border-radius: 15px; border-left: 5px solid #EC407A; margin-bottom: 20px;">
+        <h2 style="color: #AD1457; margin-top: 0;">🌸 Halo! Selamat datang di halaman Deteksi Kemiripan Wajah.</h2>
+        <p style="color: #6A1B4D; font-size: 16px; line-height: 1.6;">
+            Di sini kamu bisa membandingkan dua foto wajah untuk melihat apakah kedua orang tersebut 
+            <b>mirip</b> atau <b>tidak mirip</b>.
+        </p>
+        <h4 style="color: #AD1457; margin-top: 15px;">📌 Cara Menggunakan:</h4>
+        <ul style="color: #6A1B4D; font-size: 15px; line-height: 1.8;">
+            <li><b>1. Upload data latih</b> – Klik tombol <b>"🌸 Klik Sakura"</b> di sidebar untuk menampilkan bagian upload. Upload minimal <b>10 foto wajah</b> dari 2 orang berbeda (masing-masing 5 foto).</li>
+            <li><b>2. Upload dua foto uji</b> – Pilih dua foto wajah yang ingin dibandingkan di bagian bawah.</li>
+            <li><b>3. Atur threshold</b> – Geser slider untuk menentukan batas kemiripan (default 0.70).</li>
+            <li><b>4. Klik "Proses Deteksi"</b> – Sistem akan memproses dan menampilkan skor kemiripan.</li>
+        </ul>
+        <h4 style="color: #AD1457; margin-top: 15px;">📊 Hasil yang Muncul:</h4>
+        <ul style="color: #6A1B4D; font-size: 15px; line-height: 1.8;">
+            <li>Skor kemiripan (0% – 100%)</li>
+            <li>Kesimpulan: <b>MIRIP</b> / <b>CUKUP MIRIP</b> / <b>TIDAK MIRIP</b></li>
+            <li>Grafik akumulasi informasi PCA</li>
+        </ul>
+        <p style="color: #6A1B4D; font-size: 14px; margin-top: 10px; background: #FCE4EC; padding: 8px 15px; border-radius: 8px;">
+            💡 <b>Tips:</b> Pastikan foto wajah terlihat jelas dan tidak menggunakan filter agar hasil lebih akurat.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ===== AREA UTAMA: UPLOAD 2 FOTO UJI =====
     st.markdown("## 🔍 Upload Dua Wajah untuk Dibandingkan")
