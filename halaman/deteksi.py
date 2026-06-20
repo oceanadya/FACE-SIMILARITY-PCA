@@ -194,13 +194,40 @@ def tampilkan():
                 # ==========================================
                 # GRAFIK + PENJELASAN (SEJAJAR, TANPA GARIS)
                 # ==========================================
+                # CSS agar kedua kolom sejajar dan konten di tengah vertikal
+                st.markdown(
+                    """
+                    <style>
+                        .graf-container {
+                            display: flex;
+                            align-items: stretch;
+                            gap: 20px;
+                            margin-top: 10px;
+                        }
+                        .graf-item {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                        }
+                        .graf-item:first-child {
+                            align-items: center;
+                        }
+                        .graf-item:last-child {
+                            align-items: flex-start;
+                        }
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
                 col_graf, col_exp = st.columns([1, 1], gap="medium")
-                
+
                 with col_graf:
                     st.subheader("📈 Grafik Akumulasi Informasi")
                     varians = np.cumsum(pca.explained_variance_ratio_)
                     fig, ax = plt.subplots(figsize=(5, 3.5))
-                    ax.plot(range(1, len(varians)+1), varians, 'bo-', linewidth=2)
+                    ax.plot(range(1, len(varians) + 1), varians, 'bo-', linewidth=2)
                     ax.axhline(y=0.95, color='r', linestyle='--', label='95% Varians')
                     ax.axhline(y=ambang, color='g', linestyle=':', label=f'Threshold {ambang:.2f}')
                     ax.set_xlabel('Jumlah Komponen (k)')
@@ -209,21 +236,24 @@ def tampilkan():
                     ax.legend()
                     ax.grid(True, alpha=0.3)
                     st.pyplot(fig)
-                
+
                 with col_exp:
-                    st.markdown("""
-                    <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                        <h4 style="color: #AD1457; margin-top: 0;">📖 Penjelasan Grafik</h4>
-                        <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
-                            Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
-                        </p>
-                        <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
-                            <li><b>🔵 Garis biru</b> → kurva akumulasi varians. Semakin tinggi, semakin baik.</li>
-                            <li><b>🔴 Garis merah putus-putus</b> → 95% varians data sudah terwakili.</li>
-                            <li><b>🟢 Garis hijau titik-titik</b> → <b>Threshold</b> (batas kemiripan) yang kamu atur di sidebar.</li>
-                        </ul>
-                        <p style="color: #6A1B4D; font-size: 13px; margin-top: 8px;">
-                            💡 <b>Cara baca:</b> Dari 10.000 pixel wajah, PCA bisa meringkasnya menjadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
-                        </p>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(
+                        """
+                        <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                            <h4 style="color: #AD1457; margin-top: 0;">📖 Penjelasan Grafik</h4>
+                            <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
+                                Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
+                            </p>
+                            <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
+                                <li><b>🔵 Garis biru</b> → kurva akumulasi varians. Semakin tinggi, semakin baik.</li>
+                                <li><b>🔴 Garis merah putus-putus</b> → 95% varians data sudah terwakili.</li>
+                                <li><b>🟢 Garis hijau titik-titik</b> → <b>Threshold</b> (batas kemiripan) yang kamu atur di sidebar.</li>
+                            </ul>
+                            <p style="color: #6A1B4D; font-size: 13px; margin-top: 8px;">
+                                💡 <b>Cara baca:</b> Dari 10.000 pixel wajah, PCA bisa meringkasnya menjadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
+                            </p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
