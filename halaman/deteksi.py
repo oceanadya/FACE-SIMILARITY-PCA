@@ -11,21 +11,20 @@ def tampilkan():
     # ==========================================
     # INISIALISASI: Sembunyikan upload saat pertama kali buka halaman deteksi
     # ==========================================
-    # Cek apakah ini pertama kali halaman deteksi dibuka
     if "deteksi_initialized" not in st.session_state:
         st.session_state.deteksi_initialized = True
-        st.session_state.show_upload = False  # Upload disembunyikan
+        st.session_state.show_upload = False
 
     # ==========================================
     # SIDEBAR: UPLOAD DATA LATIH + THRESHOLD
     # ==========================================
     with st.sidebar:
-        # --- Tombol Sakura (kiri, default) ---
+        # --- Tombol Sakura ---
         if st.button("🌸", key="toggle_sidebar_deteksi", use_container_width=False):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
 
-        # --- BLOK YANG MUNCUL/HILANG BERSAMAAN ---
+        # --- BLOK YANG MUNCUL/HILANG ---
         if st.session_state.show_upload:
             st.header("📂 Upload Data Latih")
             st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
@@ -46,7 +45,7 @@ def tampilkan():
             ambang = st.slider("Atur batas kemiripan", 0.0, 1.0, 0.70, 0.05, key="threshold_deteksi")
             st.caption(f"Threshold saat ini: {ambang:.2f}")
 
-        # --- Penjelasan halaman (tetap muncul) ---
+        # --- Penjelasan halaman ---
         st.markdown("""
         <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; margin-top: 15px;">
             <h4 style="color: #AD1457; margin-top: 0;">🌸 Halo! Selamat datang di halaman Deteksi Kemiripan Wajah.</h4>
@@ -193,16 +192,39 @@ def tampilkan():
                     st.caption(f"Varians: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-                # ----- GRAFIK -----
-                st.subheader("📈 Grafik Akumulasi Informasi")
-                varians = np.cumsum(pca.explained_variance_ratio_)
-                fig, ax = plt.subplots(figsize=(8, 4))
-                ax.plot(range(1, len(varians)+1), varians, 'bo-', linewidth=2)
-                ax.axhline(y=0.95, color='r', linestyle='--', label='95% Varians')
-                ax.axhline(y=ambang, color='g', linestyle=':', label=f'Threshold {ambang:.2f}')
-                ax.set_xlabel('Jumlah Komponen (k)')
-                ax.set_ylabel('Akumulasi Varians')
-                ax.set_title('Kurva Akumulasi Informasi PCA')
-                ax.legend()
-                ax.grid(True, alpha=0.3)
-                st.pyplot(fig)
+                # ==========================================
+                # GRAFIK + PENJELASAN (2 KOLOM)
+                # ==========================================
+                col_graf, col_exp = st.columns([1, 1])
+                
+                with col_graf:
+                    st.subheader("📈 Grafik Akumulasi Informasi")
+                    varians = np.cumsum(pca.explained_variance_ratio_)
+                    fig, ax = plt.subplots(figsize=(5, 3.5))
+                    ax.plot(range(1, len(varians)+1), varians, 'bo-', linewidth=2)
+                    ax.axhline(y=0.95, color='r', linestyle='--', label='95% Varians')
+                    ax.axhline(y=ambang, color='g', linestyle=':', label=f'Threshold {ambang:.2f}')
+                    ax.set_xlabel('Jumlah Komponen (k)')
+                    ax.set_ylabel('Akumulasi Varians')
+                    ax.set_title('Kurva Akumulasi Informasi PCA')
+                    ax.legend()
+                    ax.grid(True, alpha=0.3)
+                    st.pyplot(fig)
+                
+                with col_exp:
+                    st.markdown("""
+                    <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A;">
+                        <h4 style="color: #AD1457; margin-top: 0;">📖 Penjelasan Grafik</h4>
+                        <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
+                            Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
+                        </p>
+                        <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
+                            <li><b>🔵 Garis biru</b> → kurva akumulasi varians. Semakin tinggi, semakin baik.</li>
+                            <li><b>🔴 Garis merah putus-putus</b> → 95% varians data sudah terwakili.</li>
+                            <li><b>🟢 Garis hijau titik-titik</b> → <b>Threshold</b> (batas kemiripan) yang kamu atur di sidebar.</li>
+                        </ul>
+                        <p style="color: #6A1B4D; font-size: 13px; margin-top: 8px;">
+                            💡 <b>Cara baca:</b> Dari 10.000 pixel wajah, PCA bisa meringkasnya menjadi 50 angka saja tanpa kehilangan banyak informasi. Semakin tinggi garis biru, semakin baik representasi wajahnya.
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
