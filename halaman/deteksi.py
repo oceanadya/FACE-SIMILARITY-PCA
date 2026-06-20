@@ -40,7 +40,7 @@ def tampilkan():
             ambang = st.slider("Atur batas kemiripan", 0.0, 1.0, 0.70, 0.05, key="threshold_deteksi")
             st.caption(f"Threshold saat ini: {ambang:.2f}")
 
-        # --- Penjelasan halaman (tanpa divider, langsung di bawah) ---
+        # --- Penjelasan halaman (TANPA DIVIDER) ---
         st.markdown("""
         <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; margin-top: 15px;">
             <h4 style="color: #AD1457; margin-top: 0;">🌸 Halo! Selamat datang di halaman Deteksi Kemiripan Wajah.</h4>
