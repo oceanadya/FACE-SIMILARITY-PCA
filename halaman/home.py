@@ -1,9 +1,4 @@
-# =====================================================
-# HALAMAN HOME - BERANDA & PROFIL
-# =====================================================
-# Dikerjakan oleh: [Nama Anggota 1]
-# =====================================================
-
+# halaman/home.py - Halaman Beranda
 import streamlit as st
 
 def tampilkan():
@@ -26,7 +21,7 @@ def tampilkan():
         </div>
         """, unsafe_allow_html=True)
     with col2:
-        st.smarkdown("""
+        st.markdown("""
         <div class="result-card">
         <h4>👥 Anggota Kelompok</h4>
         <p>1. Gea Destadia Al-Zahra<br>
