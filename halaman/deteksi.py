@@ -106,6 +106,7 @@ def tampilkan():
 
         # --- Penjelasan halaman ---
         st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; margin-top: 15px;">
             <h4 style="color: #AD1457; margin-top: 0;">HAII! ^^ Ini adalah halaman Deteksi Kemiripan Wajah.</h4>
             <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
                 Di sini kamu bisa membandingkan dua foto wajah untuk melihat apakah kedua orang tersebut 
