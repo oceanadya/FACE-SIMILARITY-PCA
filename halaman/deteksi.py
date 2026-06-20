@@ -1,4 +1,3 @@
-# halaman/deteksi.py - Halaman Deteksi Kemiripan Wajah
 import streamlit as st
 import numpy as np
 import cv2
@@ -8,25 +7,19 @@ from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 
 def tampilkan():
-    # ==========================================
-    # INISIALISASI: Sembunyikan upload saat pertama kali buka halaman deteksi
-    # ==========================================
     if "deteksi_initialized" not in st.session_state:
         st.session_state.deteksi_initialized = True
         st.session_state.show_upload = False
-
-    # ==========================================
-    # SIDEBAR: UPLOAD DATA LATIH + THRESHOLD
-    # ==========================================
+    #up data
     with st.sidebar:
         # --- Tombol Sakura ---
         if st.button("🌸", key="toggle_sidebar_deteksi", use_container_width=False):
             st.session_state.show_upload = not st.session_state.show_upload
             st.rerun()
 
-        # --- BLOK YANG MUNCUL/HILANG ---
+        # --- interaksi tombol ---
         if st.session_state.show_upload:
-            st.header("📂 Upload Data Latih")
+            st.header("Upload Data Latih Kamu ^^")
             st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
 
             file_latih = st.file_uploader(
@@ -41,35 +34,33 @@ def tampilkan():
             else:
                 st.warning("⬆️ Upload foto di sini")
 
-            st.header("🎯 Ambang Batas Kemiripan")
+            st.header("Atur Ambang Batas Kemiripan Juga!!")
             ambang = st.slider("Atur batas kemiripan", 0.0, 1.0, 0.70, 0.05, key="threshold_deteksi")
             st.caption(f"Threshold saat ini: {ambang:.2f}")
 
         # --- Penjelasan halaman ---
         st.markdown("""
         <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; margin-top: 15px;">
-            <h4 style="color: #AD1457; margin-top: 0;">🌸 Halo! Selamat datang di halaman Deteksi Kemiripan Wajah.</h4>
+            <h4 style="color: #AD1457; margin-top: 0;">HAII! ^^ Ini adalah halaman Deteksi Kemiripan Wajah.</h4>
             <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
                 Di sini kamu bisa membandingkan dua foto wajah untuk melihat apakah kedua orang tersebut 
                 <b>mirip</b> atau <b>tidak mirip</b>.
             </p>
-            <h5 style="color: #AD1457; margin-top: 10px;">📌 Cara Menggunakan:</h5>
+            <h5 style="color: #AD1457; margin-top: 10px;">Cara Menggunakannya:</h5>
             <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
-                <li><b>1.</b> Klik <b>"🌸"</b> di atas untuk menampilkan upload data latih & pengaturan.</li>
-                <li><b>2.</b> Upload minimal <b>10 foto wajah</b> dari 2 orang berbeda (masing-masing 5 foto).</li>
-                <li><b>3.</b> Upload dua foto uji di bagian bawah.</li>
-                <li><b>4.</b> Atur threshold (batas kemiripan) dengan slider.</li>
+                <li><b>1.</b> Klik <b>"🌸"</b> di atas untuk menampilkan bagian upload data latih & pengaturan.</li>
+                <li><b>2.</b> Kamu harus upload minimal <b>10 foto wajah</b> dari 2 orang berbeda (masing-masing 5 foto). Ini cuma buat data latihan kok ^^</li>
+                <li><b>3.</b> Upload dua foto yang mau kalian analisa di halaman utama.</li>
+                <li><b>4.</b> Atur threshold. Ini opsional, jatuhnya kaya kkm gitu, kamu mau naruh dimana batas buat itu di sebut mirip di berapa persen, gitu maksudnya ^^</li>
                 <li><b>5.</b> Klik <b>"Proses Deteksi"</b> untuk melihat hasil.</li>
             </ul>
             <p style="color: #6A1B4D; font-size: 12px; margin-top: 8px; background: #FCE4EC; padding: 6px 12px; border-radius: 6px;">
-                💡 <b>Tips:</b> Pastikan foto wajah terlihat jelas dan tidak menggunakan filter.
+                💡 <b>Tips:</b> Pastikan foto wajah terlihat jelas, tidak menggunakan filter, tidak menggunakan aksesori yang menutupi wajah, dan tidak berekspresi terlalu berlebihan.
             </p>
         </div>
         """, unsafe_allow_html=True)
 
-    # ==========================================
-    # AREA UTAMA: UPLOAD 2 FOTO UJI
-    # ==========================================
+    #up uji
     st.markdown("<h2 style='text-align: center; color: #AD1457; margin-bottom: 50px;'>🔍 Upload Dua Wajah untuk Dibandingkan</h2>", unsafe_allow_html=True)
 
     kolom1, kolom2 = st.columns(2)
@@ -80,9 +71,7 @@ def tampilkan():
         st.markdown("### 📸 Foto Kedua")
         file2 = st.file_uploader("Upload Foto 2", type=["jpg","jpeg","png"], key="f2_deteksi", label_visibility="collapsed")
 
-    # ==========================================
-    # TOMBOL PROSES
-    # ==========================================
+    #tombol proses
     if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
         try:
             train_files = file_latih
@@ -164,7 +153,7 @@ def tampilkan():
                 progress.empty()
 
                 # ----- TAMPILKAN HASIL -----
-                st.subheader("📊 Hasil Deteksi")
+                st.subheader("Hasil Deteksi Foto Kamu ^^")
                 kolom_r1, kolom_r2, kolom_r3 = st.columns([2, 2, 1.5])
                 with kolom_r1:
                     st.markdown('<div class="result-container">', unsafe_allow_html=True)
@@ -181,24 +170,22 @@ def tampilkan():
                     st.markdown('<div class="pink-badge">🎯 Skor Kemiripan</div>', unsafe_allow_html=True)
                     st.markdown(f"<h1 style='color:#AD1457;font-size:42px;'>{kemiripan:.2%}</h1>", unsafe_allow_html=True)
                     if kemiripan >= ambang:
-                        st.success("✅ **MIRIP**")
+                        st.success("**WAH MIRIP**")
                         st.balloons()
                     elif kemiripan >= 0.50:
-                        st.warning("⚠️ **CUKUP MIRIP**")
+                        st.warning("**HMM CUKUP MIRIP LAH YA**")
                     else:
-                        st.error("❌ **TIDAK MIRIP**")
+                        st.error("**TIDAK MIRIP ^^**")
                     st.caption(f"Komponen PCA: {k}")
                     st.caption(f"Varians: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-            # ==========================================
-            # 10. GRAFIK + PENJELASAN
-            # ==========================================
+            #grafik sama penjelasan
             st.markdown("---")
             kolom_graf, kolom_exp = st.columns([1, 1])
             
             with kolom_graf:
-                st.subheader("📈 Grafik Akumulasi Informasi")
+                st.subheader("Grafik Akumulasi Informasi")
                 varians = np.cumsum(pca.explained_variance_ratio_)
                 fig, ax = plt.subplots(figsize=(5, 3.5))
                 ax.plot(range(1, len(varians)+1), varians, 'bo-', linewidth=2, markersize=5)
@@ -213,7 +200,7 @@ def tampilkan():
                 st.pyplot(fig)
             
             with kolom_exp:
-                st.subheader("📖 Penjelasan Grafik")
+                st.subheader("Penjelasan Grafik!!")
                 st.markdown("""
                 <div class="explanation-box">
                 Grafik ini menunjukkan seberapa banyak <b>informasi wajah</b> yang bisa dipertahankan jika kita menggunakan sejumlah komponen PCA (k).
