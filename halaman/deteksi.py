@@ -1,4 +1,3 @@
-# halaman/deteksi.py - Halaman Deteksi Kemiripan Wajah
 import streamlit as st
 import numpy as np
 import cv2
@@ -9,50 +8,36 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.datasets import fetch_lfw_people
 
 def tampilkan():
-    # ==========================================
-    # 1. INISIALISASI SESSION STATE (WAJIB DI AWAL)
-    # ==========================================
     if "deteksi_initialized" not in st.session_state:
         st.session_state.deteksi_initialized = True
         st.session_state.show_upload = False
-        st.session_state.model_loaded = False   # Apakah model PCA sudah dilatih?
-        st.session_state.pca_model = None       # Menyimpan model PCA
-        st.session_state.X_train = None         # Menyimpan data latih (jika perlu)
-
-    # ==========================================
-    # 2. LOAD DATA LATIH & LATIH PCA (SEKALI SAJA)
-    # ==========================================
+        st.session_state.model_loaded = False
+        st.session_state.pca_model = None
+        st.session_state.X_train = None
+#load sama download data
     if not st.session_state.model_loaded:
-        with st.spinner("⏳ Sedang memuat dataset LFW & melatih PCA... (butuh internet, sekali saja)"):
+        with st.spinner("⏳ Sedang memuat dataset LFW & melatih PCA... Tunggu sebentar yaa!! ^^"):
             try:
-                # Download dataset LFW (Labeled Faces in the Wild)
                 lfw = fetch_lfw_people(
-                    min_faces_per_person=5,  # minimal 5 foto per orang
-                    resize=0.4,              # resize ke ukuran kecil
-                    color=False,             # grayscale
-                    slice_=(slice(50, 200), slice(50, 200))  # crop area wajah
+                    min_faces_per_person=5,
+                    resize=0.4,
+                    color=False,
+                    slice_=(slice(50, 200), slice(50, 200))
                 )
-                
-                # Ambil semua gambar
                 X_all = lfw.images
-                # Ambil minimal 2 orang yang punya >=5 foto
                 unique_labels = np.unique(lfw.target)
                 valid_labels = [label for label in unique_labels if np.sum(lfw.target == label) >= 5]
                 
                 if len(valid_labels) < 2:
                     st.error("⚠️ Dataset LFW tidak memiliki cukup orang dengan minimal 5 foto.")
                     st.stop()
-                
-                # Pilih 2 orang pertama (bisa ditambah jika mau)
+                #ambil berapa orang
                 selected_labels = valid_labels[:2]
-                
-                # Kumpulkan foto dari orang-orang terpilih (masing-masing 5 foto)
                 X_train = []
                 for label in selected_labels:
                     idx = np.where(lfw.target == label)[0]
-                    for i in idx[:5]:  # ambil 5 foto per orang
+                    for i in idx[:5]:
                         img = lfw.images[i]
-                        # Resize ke 100x100 agar konsisten
                         img_resized = cv2.resize(img, (100, 100))
                         X_train.append(img_resized.flatten() / 255.0)
                 
@@ -74,10 +59,7 @@ def tampilkan():
                 st.error(f"⚠️ Gagal memuat dataset LFW: {e}")
                 st.info("💡 Pastikan koneksi internet aktif. Jika gagal, upload data latih manual.")
                 st.session_state.model_loaded = False
-
-    # ==========================================
-    # 3. SIDEBAR
-    # ==========================================
+#side bar
     with st.sidebar:
         # --- Tombol Sakura ---
         if st.button("🌸", key="toggle_sidebar_deteksi", use_container_width=False):
@@ -88,7 +70,7 @@ def tampilkan():
         if st.session_state.show_upload:
             st.header("Upload Data Latih Kamu ^^")
             st.markdown("Upload **minimal 10 foto** wajah (2 orang, masing-masing 5+ foto)")
-            st.caption("💡 Ini opsional. Data latih default sudah tersedia dari LFW.")
+            st.caption("💡 Ini opsional. Tadi kamu sudah download data latih dari internet kok ^^.")
 
             file_latih = st.file_uploader(
                 "Pilih Foto",
@@ -108,7 +90,7 @@ def tampilkan():
 
         # --- Penjelasan halaman ---
         st.markdown("""
-        <div style="background: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 12px; border-left: 4px solid #EC407A; margin-top: 15px;">
+        <div>
             <h4 style="color: #AD1457; margin-top: 0;">HAII! ^^ Ini adalah halaman Deteksi Kemiripan Wajah.</h4>
             <p style="color: #6A1B4D; font-size: 14px; line-height: 1.6;">
                 Di sini kamu bisa membandingkan dua foto wajah untuk melihat apakah kedua orang tersebut 
@@ -116,7 +98,7 @@ def tampilkan():
             </p>
             <h5 style="color: #AD1457; margin-top: 10px;">Cara Menggunakannya:</h5>
             <ul style="color: #6A1B4D; font-size: 13px; line-height: 1.8; padding-left: 18px;">
-                <li><b>1.</b> Data latih otomatis dimuat dari dataset LFW! Tinggal upload dua foto uji.</li>
+                <li><b>1.</b> Kamu bisa langsung upload foto yang mau kamu analisis kok di halaman utama ini ^^</li>
                 <li><b>2.</b> (Opsional) Klik <b>"🌸"</b> di atas untuk upload data latih sendiri.</li>
                 <li><b>3.</b> Atur threshold. Ini opsional, kaya KKM gitu, mau naruh dimana batas 'mirip'.</li>
                 <li><b>4.</b> Klik <b>"Proses Deteksi"</b> untuk melihat hasil.</li>
@@ -126,10 +108,7 @@ def tampilkan():
             </p>
         </div>
         """, unsafe_allow_html=True)
-
-    # ==========================================
-    # 4. AREA UTAMA: UPLOAD 2 FOTO UJI
-    # ==========================================
+#up foto uji
     st.markdown("<h2 style='text-align: center; color: #AD1457; margin-bottom: 50px;'>🔍 Upload Dua Wajah untuk Dibandingkan</h2>", unsafe_allow_html=True)
 
     kolom1, kolom2 = st.columns(2)
@@ -139,18 +118,12 @@ def tampilkan():
     with kolom2:
         st.markdown("### 📸 Foto Kedua")
         file2 = st.file_uploader("Upload Foto 2", type=["jpg","jpeg","png"], key="f2_deteksi", label_visibility="collapsed")
-
-    # ==========================================
-    # 5. AMBANG BATAS (threshold)
-    # ==========================================
+#kkm
     if "threshold_deteksi" in st.session_state:
         ambang = st.session_state.threshold_deteksi
     else:
         ambang = 0.70
-
-    # ==========================================
-    # 6. TOMBOL PROSES
-    # ==========================================
+#proses
     if st.button("🚀 Proses Deteksi Sekarang", use_container_width=True):
         # --- Cek data latih ---
         if not st.session_state.model_loaded:
@@ -227,13 +200,13 @@ def tampilkan():
                     st.markdown('</div>', unsafe_allow_html=True)
                 with kolom_r3:
                     st.markdown('<div class="result-container">', unsafe_allow_html=True)
-                    st.markdown('<div class="pink-badge">🎯 Skor Kemiripan</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="pink-badge">Skor Kemiripan Foto!!</div>', unsafe_allow_html=True)
                     st.markdown(f"<h1 style='color:#AD1457;font-size:42px;'>{kemiripan:.2%}</h1>", unsafe_allow_html=True)
                     if kemiripan >= ambang:
-                        st.success("**WAH MIRIP**")
+                        st.success("**WAH MIRIP!! :D**")
                         st.balloons()
                     elif kemiripan >= 0.50:
-                        st.warning("**HMM CUKUP MIRIP LAH YA**")
+                        st.warning("**HMM CUKUP MIRIP LAH YA ;D**")
                     else:
                         st.error("**TIDAK MIRIP ^^**")
                     st.caption(f"Komponen PCA: {pca.n_components_}")
