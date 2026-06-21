@@ -797,7 +797,7 @@ elif page == "🌫️ Grayscale":
     """, unsafe_allow_html=True)
 
 elif page == "🗜️ Kompresi":
-    # ==================== KOMPRESI PCA WARNA (RGB) ====================
+    # ==================== KOMPRESI PCA WARNA (RGB) - TIDAK DIUBAH KE GRAYSCALE ====================
     if not st.session_state.kompresi_visited:
         st.balloons()
         st.session_state.kompresi_visited = True
@@ -881,6 +881,11 @@ elif page == "🗜️ Kompresi":
                         k = max_k
                     st.info(f"Untuk mempertahankan {variance_target*100:.0f}% varians, diperlukan k = {k} komponen.")
 
+                # Pastikan k tidak melebihi dimensi
+                if k > max_k:
+                    k = max_k
+                    st.warning(f"k dibatasi hingga {max_k} karena dimensi gambar.")
+
                 # Lakukan PCA pada setiap channel dengan k komponen
                 channels_recon = []
                 for i in range(3):
@@ -898,7 +903,8 @@ elif page == "🗜️ Kompresi":
                 # Hitung metrik kualitas (multichannel)
                 img_norm = img_array / 255.0
                 recon_norm = reconstructed / 255.0
-                ssim_val = ssim(img_norm, recon_norm, multichannel=True, data_range=1.0, channel_axis=2)
+                # SSIM dengan channel_axis=2
+                ssim_val = ssim(img_norm, recon_norm, channel_axis=2, data_range=1.0)
                 # PSNR rata-rata per channel
                 psnr_vals = []
                 for i in range(3):
@@ -955,6 +961,30 @@ elif page == "🗜️ Kompresi":
                         <li><b>Rasio kompresi:</b> {rasio:.4f}</li>
                         <li><b>Jumlah komponen PCA (per channel):</b> {k}</li>
                     </ul>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # --- Kesimpulan Kualitas Kompresi ---
+                st.markdown("### 📝 Kesimpulan Kualitas Kompresi")
+                if ssim_val > 0.95 and penghematan > 30:
+                    kesimpulan = "✅ **Kompresi sangat baik!** Gambar terkompresi memiliki kualitas hampir sama dengan asli (SSIM > 0.95) dengan penghematan ukuran yang signifikan (>30%)."
+                elif ssim_val > 0.85 and penghematan > 20:
+                    kesimpulan = "👍 **Kompresi baik.** Kualitas visual masih sangat terjaga (SSIM > 0.85) dengan penghematan ukuran yang cukup (>20%)."
+                elif ssim_val > 0.70:
+                    kesimpulan = "⚠️ **Kompresi cukup.** Kualitas visual masih dapat diterima (SSIM > 0.70), namun beberapa detail mungkin hilang. Pertimbangkan menaikkan k untuk kualitas lebih baik."
+                else:
+                    kesimpulan = "❌ **Kompresi kurang baik.** Kualitas visual menurun signifikan (SSIM ≤ 0.70). Sebaiknya naikkan jumlah komponen (k) untuk hasil lebih baik."
+                st.markdown(f'<div class="info-box">{kesimpulan}</div>', unsafe_allow_html=True)
+
+                # Tambahan keterangan interpretasi metrik
+                st.markdown("""
+                <div style="background: #FCE4EC; padding: 1rem; border-radius: 12px; margin-top: 1rem; border: 1px solid #EC407A;">
+                    <p style="margin:0;"><b>💡 Interpretasi Metrik:</b><br>
+                    • <b>SSIM</b> (Structural Similarity) – mendekati 1 berarti sangat mirip dengan asli.<br>
+                    • <b>PSNR</b> (Peak Signal-to-Noise Ratio) – > 40 dB biasanya kualitas sangat baik.<br>
+                    • <b>Penghematan</b> – persentase pengurangan ukuran (positif = lebih kecil).<br>
+                    • <b>Rasio kompresi</b> – nilai < 1 berarti ukuran berkurang.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
 
