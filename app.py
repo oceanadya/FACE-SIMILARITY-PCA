@@ -4,6 +4,8 @@ import io
 import base64
 import numpy as np
 import os
+import requests
+from urllib.parse import urlparse
 
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
@@ -125,13 +127,12 @@ st.markdown("""
             padding-top: 5px;
         }
 
-        /* ----- PROFIL TIM DI SIDEBAR ----- */
+        /* ----- PROFIL TIM DI SIDEBAR (tanpa background putih) ----- */
         .sidebar-profile {
             margin-top: 10px;
             padding: 8px 5px;
-            background: transparent !important; /* hilangkan background putih */
-            border: none !important; /* hilangkan border */
-            border-radius: 0;
+            background: transparent !important;
+            border: none !important;
         }
         .sidebar-profile h4 {
             color: #AD1457;
@@ -142,14 +143,21 @@ st.markdown("""
         .sidebar-profile .profile-item {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            padding: 5px 8px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.5);
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(173,20,87,0.08);
+            border: 1px solid #F8BBD0;
+            transition: 0.2s;
+        }
+        .sidebar-profile .profile-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(173,20,87,0.15);
         }
         .sidebar-profile .profile-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #EC407A, #D81B60);
             display: flex;
@@ -157,10 +165,11 @@ st.markdown("""
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 14px;
-            margin-right: 10px;
+            font-size: 16px;
+            margin-right: 12px;
             flex-shrink: 0;
             overflow: hidden;
+            border: 2px solid white;
         }
         .sidebar-profile .profile-avatar img {
             width: 100%;
@@ -273,6 +282,28 @@ if "page" not in st.session_state:
 if "grayscale_visited" not in st.session_state:
     st.session_state.grayscale_visited = False
 
+# ======================== FUNGSI BANTU UNTUK FOTO ========================
+def get_image_base64(path_or_url):
+    """Mengambil gambar dari path lokal atau URL, return base64 string atau None jika gagal."""
+    try:
+        # Cek apakah URL
+        parsed = urlparse(path_or_url)
+        if parsed.scheme in ('http', 'https'):
+            # Download dari URL
+            response = requests.get(path_or_url, timeout=5)
+            if response.status_code == 200:
+                img_data = response.content
+                return base64.b64encode(img_data).decode()
+        else:
+            # File lokal
+            if os.path.exists(path_or_url):
+                with open(path_or_url, "rb") as f:
+                    img_data = f.read()
+                    return base64.b64encode(img_data).decode()
+    except Exception as e:
+        print(f"Gagal memuat gambar: {e}")
+    return None
+
 # ======================== SIDEBAR NAVIGASI & PROFIL ========================
 st.sidebar.markdown("🌸 **Haloo!!**")
 
@@ -322,45 +353,42 @@ st.sidebar.markdown('<div class="sidebar-profile">', unsafe_allow_html=True)
 st.sidebar.markdown("### 👥 Anggota Kelompok")
 st.sidebar.markdown("**Teknik Informatika**")
 
-# DATA ANGGOTA – GANTI DENGAN NAMA, KONTAK, DAN PATH FOTO (gunakan gambar di folder 'assets' atau URL)
-# Jika foto tidak ditemukan, akan ditampilkan inisial.
+# DATA ANGGOTA – GANTI DENGAN NAMA, KONTAK, DAN PATH FOTO (lokal atau URL)
 anggota = [
     {
         "nama": "Gea Destadia Al-Zahra",
         "ig": "@gea_destadia_10",
         "telp": "0831-5068-7481",
-        "foto": "assets/https://scholar.googleusercontent.com/citations?view_op=medium_photo&user=IKgMGc0AAAAJ&citpid=6"  # ganti dengan path foto Anda
+        "foto": "assets/gea.jpg"  # ganti dengan path foto Anda
     },
     {
         "nama": "Luna Amilia",
         "ig": "@luunaaamiiii",
         "telp": "0895-3780-96802",
-        "foto": "assets/budi.jpg"
+        "foto": "assets/luna.jpg"
     },
     {
         "nama": "Nadia Azizah",
         "ig": "@ndyyzh",
         "telp": "0858-4631-3309",
-        "foto": "assets/citra.jpg"
+        "foto": "assets/nadia.jpg"
     },
     {
         "nama": "Dalilah Arifah Ariandi DJR",
         "ig": "@adellianav",
         "telp": "0813-1211-6787",
-        "foto": "assets/dian.jpg"
+        "foto": "assets/dalilah.jpg"
     },
 ]
 
 for member in anggota:
     inisial = ''.join([kata[0] for kata in member["nama"].split()])
-    foto_path = member.get("foto", "")
-    # Cek apakah file foto ada
-    if os.path.exists(foto_path):
-        # Tampilkan gambar
-        avatar_html = f'<img src="data:image/jpeg;base64,{base64.b64encode(open(foto_path, "rb").read()).decode()}" />'
+    # Coba dapatkan base64 foto
+    foto_b64 = get_image_base64(member["foto"])
+    if foto_b64:
+        avatar_html = f'<img src="data:image/jpeg;base64,{foto_b64}" />'
     else:
-        # Gunakan inisial
-        avatar_html = inisial
+        avatar_html = inisial  # fallback ke inisial
 
     st.sidebar.markdown(f"""
     <div class="profile-item">
@@ -374,13 +402,12 @@ for member in anggota:
     """, unsafe_allow_html=True)
 
 st.sidebar.markdown('<div class="sidebar-university">🎓 Universitas Negeri Semarang</div>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)  # tutup sidebar-profile
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 
 # ======================== HALAMAN UTAMA (full width) ========================
 page = st.session_state.page
 
-# Tidak ada kolom kiri lagi, hanya satu kolom penuh
 if page == "🏠 Home":
     # ==================== HOME ====================
     st.markdown("""
