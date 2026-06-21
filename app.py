@@ -41,34 +41,26 @@ st.markdown("""
             font-weight: bold !important;
         }
 
-        /* ----- SIDEBAR UTAMA - Rapat ke atas ----- */
-        section[data-testid="stSidebar"] {
-            padding-top: 0 !important;
-        }
-        section[data-testid="stSidebar"] > div {
-            padding-top: 0 !important;
-        }
-
-        /* ----- SIDEBAR DEKORASI ----- */
+        /* ----- SIDEBAR DEKORASI (padding atas dikurangi) ----- */
         .sidebar-header {
             text-align: center;
-            padding: 10px 0 0 0;
+            padding: 5px 0 5px 0;  /* padding atas kecil */
             border-bottom: 2px solid #F8BBD0;
             margin-bottom: 10px;
         }
         .sidebar-header .logo {
-            font-size: 50px;
+            font-size: 40px;
             display: block;
             margin-bottom: 2px;
         }
         .sidebar-header .title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: #AD1457;
             letter-spacing: 2px;
         }
         .sidebar-header .subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #880E4F;
             font-style: italic;
             margin-top: 2px;
@@ -79,7 +71,7 @@ st.markdown("""
             color: #AD1457;
             border-top: 1px solid #F8BBD0;
             padding-top: 8px;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         /* ----- TOMBOL UMUM ----- */
@@ -169,10 +161,10 @@ st.markdown("""
             margin-bottom: 8px;
         }
 
-        /* ----- PROFIL TIM DI SIDEBAR (kotak per anggota solid) ----- */
+        /* ----- PROFIL TIM DI SIDEBAR (kotak per anggota) ----- */
         .sidebar-profile {
-            margin-top: 10px;
-            padding: 8px 5px;
+            margin-top: 8px;
+            padding: 5px 5px;
             background: transparent !important;
             border: none !important;
         }
@@ -186,20 +178,20 @@ st.markdown("""
             display: flex;
             align-items: center;
             margin-bottom: 10px;
-            padding: 8px 10px;
-            border-radius: 12px;
-            background: white !important; /* solid putih */
-            box-shadow: 0 2px 8px rgba(173,20,87,0.15);
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 10px rgba(173,20,87,0.08);
             border: 1px solid #F8BBD0;
             transition: 0.2s;
         }
         .sidebar-profile .profile-item:hover {
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(173,20,87,0.2);
+            box-shadow: 0 4px 14px rgba(173,20,87,0.15);
         }
         .sidebar-profile .profile-avatar {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: linear-gradient(135deg, #EC407A, #D81B60);
             display: flex;
@@ -207,11 +199,12 @@ st.markdown("""
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 16px;
-            margin-right: 12px;
+            font-size: 18px;
+            margin-right: 14px;
             flex-shrink: 0;
             overflow: hidden;
             border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(173,20,87,0.15);
         }
         .sidebar-profile .profile-avatar img {
             width: 100%;
@@ -220,12 +213,13 @@ st.markdown("""
         }
         .sidebar-profile .profile-info .name {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #6A1B4D;
         }
         .sidebar-profile .profile-info .detail {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #880E4F;
+            margin-top: 2px;
         }
         .sidebar-university {
             text-align: center;
@@ -443,7 +437,7 @@ st.sidebar.markdown("""
 
 # --- PESAN DI BAWAH HEADER ---
 st.sidebar.markdown("""
-<div style="text-align: center; font-size: 14px; color: #880E4F; padding: 0 5px 10px 5px; font-style: italic;">
+<div style="text-align: center; font-size: 14px; color: #880E4F; padding: 0 5px 8px 5px; font-style: italic;">
     Lupakan dia yang membuatmu terluka,<br>semoga web ini bisa membuatmu bahagia.
 </div>
 """, unsafe_allow_html=True)
@@ -501,27 +495,31 @@ st.sidebar.markdown('<div class="sidebar-profile">', unsafe_allow_html=True)
 st.sidebar.markdown("### 👥 Pengembangan Aplikasi")
 st.sidebar.markdown("**Teknik Informatika**")
 
-# DATA ANGGOTA – GANTI DENGAN NAMA, KONTAK, DAN PATH FOTO (lokal atau URL)
+# DATA ANGGOTA – dengan inisial seperti di gambar
 anggota = [
     {
+        "inisial": "GDA",
         "nama": "Gea Destadia Al-Zahra",
         "ig": "@gea_destadia_10",
         "telp": "0831-5068-7481",
-        "foto": "assets/gea.jpg"
+        "foto": "assets/gea.jpg"   # opsional
     },
     {
+        "inisial": "LA",
         "nama": "Luna Amilia",
         "ig": "@luunaaamiiii",
         "telp": "0895-3780-96802",
         "foto": "assets/luna.jpg"
     },
     {
+        "inisial": "NA",
         "nama": "Nadia Azizah",
         "ig": "@ndyyzh",
         "telp": "0858-4631-3309",
         "foto": "assets/nadia.jpg"
     },
     {
+        "inisial": "DAAD",
         "nama": "Dalilah Arifah Ariandi DJR",
         "ig": "@adellianav",
         "telp": "0813-1211-6787",
@@ -530,9 +528,13 @@ anggota = [
 ]
 
 for member in anggota:
-    inisial = ''.join([kata[0] for kata in member["nama"].split()])
-    foto_b64 = get_image_base64(member["foto"])
-    avatar_html = f'<img src="data:image/jpeg;base64,{foto_b64}" />' if foto_b64 else inisial
+    # Tampilkan inisial sebagai avatar (jika ada foto, tampilkan foto, jika tidak pakai inisial)
+    foto_b64 = get_image_base64(member.get("foto", ""))
+    if foto_b64:
+        avatar_html = f'<img src="data:image/jpeg;base64,{foto_b64}" />'
+    else:
+        avatar_html = member["inisial"]
+    
     st.sidebar.markdown(f"""
     <div class="profile-item">
         <div class="profile-avatar">{avatar_html}</div>
