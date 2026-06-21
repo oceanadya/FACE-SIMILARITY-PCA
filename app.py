@@ -11,6 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
+from sklearn.datasets import fetch_lfw_people
 import tempfile
 import zipfile
 
@@ -1036,7 +1037,7 @@ elif page == "🔍 Deteksi":
 
     # --- Load data latih default (LFW) hanya sekali ---
     if not st.session_state.deteksi_model_loaded:
-        with st.spinner("⏳ Memuat dataset LFW untuk data latih default..."):
+        with st.spinner("⏳ Memuat dataset LFW untuk data latih default... Tunggu yaa ^^"):
             try:
                 from sklearn.datasets import fetch_lfw_people
                 lfw = fetch_lfw_people(min_faces_per_person=5, resize=0.4, color=False)
