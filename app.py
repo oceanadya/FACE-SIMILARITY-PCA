@@ -17,36 +17,37 @@ import zipfile
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
     page_title="ANGEL APP",
-    page_icon="🌸",
+    page_icon="🌸🐋",
     layout="wide"
 )
 
 # ======================== CSS GLOBAL ========================
 st.markdown("""
     <style>
-        /* ----- BACKGROUND & WARNA DASAR ----- */
-        .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
-            background-color: #FFF0F5 !important;
-        }
-        body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
-            color: #6A1B4D !important;
-        }
-        header {
-            background: linear-gradient(135deg, #880E4F, #AD1457) !important;
-            border-bottom: 2px solid #F8BBD0 !important;
-        }
-        header * {
-            color: #FFFFFF !important;
-            fill: #FFFFFF !important;
-        }
-        .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
-            border-right: 2px solid #F8BBD0 !important;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #AD1457 !important;
-            font-weight: bold !important;
-        }
+     <style>
+    /* ----- BACKGROUND & WARNA DASAR ----- */
+    .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
+        background-color: #FFF5F7 !important;
+    }
+    body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
+        color: #5C2E4A !important;
+    }
+    header {
+        background: linear-gradient(135deg, #B76E79, #D48A9E) !important;
+        border-bottom: 2px solid #FADADD !important;
+    }
+    header * {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+    }
+    .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
+        background: #FFF9FA !important;
+        border-right: 2px solid #FADADD !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #B76E79 !important;
+        font-weight: bold !important;
+    }
 
         /* ----- SIDEBAR DEKORASI ----- */
         .sidebar-header {
@@ -82,20 +83,20 @@ st.markdown("""
         }
 
         /* ----- TOMBOL UMUM ----- */
-        .stButton button {
-            background: linear-gradient(135deg, #EC407A, #D81B60) !important;
-            color: white !important;
-            font-size: 18px !important;
-            border-radius: 50px !important;
-            padding: 10px 30px !important;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
-            transition: 0.3s !important;
-        }
-        .stButton button:hover {
-            transform: scale(1.03) translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4) !important;
-        }
+       .stButton button {
+    background: linear-gradient(135deg, #D48A9E, #B76E79) !important;
+    color: white !important;
+    font-size: 18px !important;
+    border-radius: 50px !important;
+    padding: 10px 30px !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(183, 110, 121, 0.3) !important;
+    transition: 0.3s !important;
+}
+.stButton button:hover {
+    transform: scale(1.03) translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(183, 110, 121, 0.4) !important;
+}
 
         /* ----- FILE UPLOADER ----- */
         div[data-testid="stFileUploader"] {
@@ -568,16 +569,68 @@ elif st.session_state.page == "🔍 Deteksi":
     st.sidebar.markdown('<p class="sidebar-caption">🔍 Deteksi Kemiripan</p>', unsafe_allow_html=True)
 
 # ======================== PROFIL TIM DI SIDEBAR (dengan kotak tegas) ========================
+# ======================== PROFIL TIM DI SIDEBAR (GRID MODERN) ========================
 st.sidebar.markdown("---")
-st.sidebar.markdown('<div class="sidebar-profile">', unsafe_allow_html=True)
-st.sidebar.markdown("### 👥 Pengembangan Aplikasi")
-st.sidebar.markdown("**Teknik Informatika**")
+st.sidebar.markdown("""
+<style>
+    .profile-modern {
+        background: linear-gradient(135deg, #FFF5F7, #FFFFFF);
+        border-radius: 16px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #FADADD;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(183, 110, 121, 0.08);
+    }
+    .profile-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(183, 110, 121, 0.15);
+        border-color: #D48A9E;
+    }
+    .profile-modern .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #D48A9E, #B76E79);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        float: left;
+        margin-right: 12px;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(183, 110, 121, 0.2);
+    }
+    .profile-modern .profile-name {
+        font-weight: 600;
+        color: #5C2E4A;
+        font-size: 0.9rem;
+        padding-top: 2px;
+    }
+    .profile-modern .profile-detail {
+        font-size: 0.7rem;
+        color: #B76E79;
+        line-height: 1.4;
+    }
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-top: 8px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("### 👥 Team ANGEL")
+st.sidebar.markdown('<div class="profile-grid">', unsafe_allow_html=True)
 
 # DATA ANGGOTA
 anggota = [
     {
         "inisial": "GDA",
-        "nama": "Gea Destadia Al-Zahra",
+        "nama": "Gea Destadia",
         "ig": "@gea_destadia_10",
         "telp": "0831-5068-7481",
         "foto": "assets/gea.jpg"
@@ -598,7 +651,7 @@ anggota = [
     },
     {
         "inisial": "DAAD",
-        "nama": "Dalilah Arifah Ariandi DJR",
+        "nama": "Dalilah Ariandi",
         "ig": "@adellianav",
         "telp": "0813-1211-6787",
         "foto": "assets/dalilah.jpg"
@@ -608,23 +661,20 @@ anggota = [
 for member in anggota:
     foto_b64 = get_image_base64(member.get("foto", ""))
     if foto_b64:
-        avatar_html = f'<img src="data:image/jpeg;base64,{foto_b64}" />'
+        avatar_html = f'<img src="data:image/jpeg;base64,{foto_b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />'
     else:
         avatar_html = member["inisial"]
     
     st.sidebar.markdown(f"""
-    <div class="profile-item">
-        <div class="profile-avatar">{avatar_html}</div>
-        <div class="profile-info">
-            <div class="name">• {member['nama']} •</div>
-            <div class="detail">📸 {member['ig']}</div>
-            <div class="detail">📞 {member['telp']}</div>
-        </div>
+    <div class="profile-modern">
+        <div class="avatar-circle">{avatar_html}</div>
+        <div class="profile-name">{member['nama']}</div>
+        <div class="profile-detail">📱 {member['telp']}</div>
     </div>
     """, unsafe_allow_html=True)
 
-st.sidebar.markdown('<div class="sidebar-university">🎓 Universitas Negeri Semarang</div>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div style="text-align:center;color:#B76E79;font-size:0.75rem;padding:8px 0;border-top:1px solid #FADADD;margin-top:4px;">🎓 Universitas Negeri Semarang</div>', unsafe_allow_html=True)
 
 # --- FOOTER SIDEBAR ---
 st.sidebar.markdown("""
@@ -639,9 +689,20 @@ page = st.session_state.page
 
 if page == "🏠 Home":
     # ==================== HOME ====================
-    if not st.session_state.home_visited:
-        st.balloons()
-        st.session_state.home_visited = True
+  if not st.session_state.home_visited:
+    st.markdown("""
+    <div style="text-align: center; font-size: 2rem; animation: glitter 1.5s infinite;">
+        ✨ ✨ ✨ ✨ ✨
+    </div>
+    <style>
+        @keyframes glitter {
+            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
+            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.session_state.home_visited = True
 
     st.markdown("""
     <div class="home-header">
