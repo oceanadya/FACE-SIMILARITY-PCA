@@ -1026,70 +1026,75 @@ elif page == "🗜️ Kompresi":
 
 elif page == "🔍 Deteksi":
     # ==================== DETEKSI KEMIRIPAN DENGAN PCA (EIGENFACES) + COSINE SIMILARITY ====================
-    if not st.session_state.deteksi_visited:
-        st.balloons()
-        st.session_state.deteksi_visited = True
+    # ... (header dan penjelasan sama seperti di kode asli)
 
-    st.markdown("""
-    <div class="deteksi-header">
-        <div class="love-shower">❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖</div>
-        <h1>🔍 Deteksi Kemiripan Wajah</h1>
-        <p>Bandingkan dua wajah dengan metode PCA (Eigenfaces) dan Cosine Similarity.</p>
-        <div class="love-shower">❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖</div>
-    </div>
-    """, unsafe_allow_html=True)
+    # --- Inisialisasi session state untuk model default ---
+    if "deteksi_model_loaded" not in st.session_state:
+        st.session_state.deteksi_model_loaded = False
+        st.session_state.deteksi_pca_model = None
+        st.session_state.deteksi_X_train = None
 
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, #FCE4EC, #FFF0F5); 
-                padding: 1.5rem; border-radius: 16px; border: 1px solid #F8BBD0; 
-                margin-bottom: 2rem; text-align: center;">
-        <p style="font-size:1.2rem; color:#6A1B4D;">
-            ❤️ <b>Cara kerja:</b> PCA mengekstrak fitur utama (eigenfaces) dari data latih (wajah). 
-            Dua wajah yang dibandingkan diproyeksikan ke ruang PCA, lalu dihitung kemiripannya dengan <b>Cosine Similarity</b>.
-            Semakin tinggi skor, semakin mirip kedua wajah.
-        </p>
-        <p style="color:#880E4F; font-style:italic;">
-            "Setiap wajah unik, tapi kecocokan bisa ditemukan."
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    # --- Load data latih default (LFW) hanya sekali ---
+    if not st.session_state.deteksi_model_loaded:
+        with st.spinner("⏳ Memuat dataset LFW untuk data latih default..."):
+            try:
+                from sklearn.datasets import fetch_lfw_people
+                lfw = fetch_lfw_people(min_faces_per_person=5, resize=0.4, color=False)
+                # Ambil 2 orang dengan minimal 5 foto
+                unique_labels = np.unique(lfw.target)
+                valid_labels = [label for label in unique_labels if np.sum(lfw.target == label) >= 5]
+                if len(valid_labels) >= 2:
+                    selected = valid_labels[:2]
+                    X_train = []
+                    for label in selected:
+                        idx = np.where(lfw.target == label)[0][:5]
+                        for i in idx:
+                            img = cv2.resize(lfw.images[i], (100, 100)).flatten() / 255.0
+                            X_train.append(img)
+                    X_train = np.array(X_train)
+                    k = min(50, len(X_train)-1)
+                    pca = PCA(n_components=k)
+                    pca.fit(X_train)
+                    st.session_state.deteksi_pca_model = pca
+                    st.session_state.deteksi_X_train = X_train
+                    st.session_state.deteksi_model_loaded = True
+                    st.success(f"✅ Data latih default LFW dimuat ({len(X_train)} foto dari 2 orang)")
+                else:
+                    st.warning("⚠️ Dataset LFW tidak mencukupi (minimal 2 orang dengan 5 foto). Upload data latih sendiri.")
+            except Exception as e:
+                st.warning(f"Gagal memuat LFW: {e}. Upload data latih sendiri.")
 
-    # Upload dua gambar
+    # --- Pilihan data latih ---
+    st.markdown("---")
+    st.markdown("#### 📂 Data Latih")
+    data_mode = st.radio(
+        "Pilih sumber data latih:",
+        ["Gunakan data latih default (LFW)", "Upload file ZIP berisi gambar wajah"],
+        horizontal=True,
+        key="data_mode"
+    )
+
+    uploaded_zip = None
+    if data_mode == "Upload file ZIP berisi gambar wajah":
+        uploaded_zip = st.file_uploader("Unggah file ZIP", type=["zip"], key="train_zip_deteksi")
+        if uploaded_zip is not None:
+            st.success("✅ File ZIP berhasil diunggah.")
+
+    # --- Upload dua gambar uji ---
     col_upload1, col_upload2 = st.columns(2)
     with col_upload1:
-        img1 = st.file_uploader("📤 Foto Pertama", type=["jpg", "jpeg", "png"], key="img1")
+        img1 = st.file_uploader("📤 Foto Pertama", type=["jpg", "jpeg", "png"], key="img1_deteksi")
     with col_upload2:
-        img2 = st.file_uploader("📤 Foto Kedua", type=["jpg", "jpeg", "png"], key="img2")
+        img2 = st.file_uploader("📤 Foto Kedua", type=["jpg", "jpeg", "png"], key="img2_deteksi")
 
-    # Upload data latih (opsional)
-    st.markdown("---")
-    st.markdown("#### 📂 Data Latih (Opsional)")
-    st.markdown("Upload folder berisi gambar wajah untuk melatih PCA. Jika tidak diisi, akan digunakan dua gambar yang dibandingkan (dengan augmentasi).")
-    uploaded_zip = st.file_uploader("Unggah file ZIP berisi gambar wajah", type=["zip"], key="train_zip")
-
-    # Parameter
+    # --- Parameter PCA & threshold ---
     col_param1, col_param2 = st.columns(2)
     with col_param1:
-        n_components = st.slider(
-            "Jumlah komponen PCA (k)",
-            min_value=2,
-            max_value=50,
-            value=9,
-            step=1,
-            help="Semakin banyak komponen, semakin detail fitur wajah yang digunakan."
-        )
+        n_components = st.slider("Jumlah komponen PCA (k)", 2, 50, 9, 1, key="n_comp_deteksi")
     with col_param2:
-        threshold = st.slider(
-            "Threshold (batas kemiripan %)",
-            min_value=0,
-            max_value=100,
-            value=70,
-            step=5,
-            help="Jika skor kemiripan ≥ threshold, dianggap mirip."
-        ) / 100.0
+        threshold = st.slider("Threshold kemiripan (%)", 0, 100, 70, 5, key="thresh_deteksi") / 100.0
 
     if img1 is not None and img2 is not None:
-        # Tampilkan dua gambar
         col_show1, col_show2 = st.columns(2)
         with col_show1:
             st.image(img1, caption="Foto Pertama", use_container_width=True)
@@ -1098,21 +1103,23 @@ elif page == "🔍 Deteksi":
 
         if st.button("🔎 Hitung Kemiripan", use_container_width=True):
             try:
-                # Baca dan resize gambar ke ukuran yang sama (misal 100x100)
                 size = (100, 100)
                 im1 = Image.open(img1).convert("L").resize(size)
                 im2 = Image.open(img2).convert("L").resize(size)
                 arr1 = np.array(im1, dtype=np.float32).flatten() / 255.0
                 arr2 = np.array(im2, dtype=np.float32).flatten() / 255.0
 
-                # Siapkan data latih
-                train_vectors = []
-                if uploaded_zip is not None:
-                    # Ekstrak zip
+                # Tentukan data latih
+                train_vectors = None
+                if data_mode == "Gunakan data latih default (LFW)" and st.session_state.deteksi_model_loaded:
+                    train_vectors = st.session_state.deteksi_X_train
+                    pca = st.session_state.deteksi_pca_model
+                elif data_mode == "Upload file ZIP berisi gambar wajah" and uploaded_zip is not None:
+                    # Proses ZIP
                     with tempfile.TemporaryDirectory() as tmpdir:
                         with zipfile.ZipFile(uploaded_zip, 'r') as zip_ref:
                             zip_ref.extractall(tmpdir)
-                        # Baca semua gambar di folder
+                        train_vectors = []
                         for root, _, files in os.walk(tmpdir):
                             for file in files:
                                 if file.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -1123,34 +1130,20 @@ elif page == "🔍 Deteksi":
                                         train_vectors.append(vec)
                                     except:
                                         continue
-                    if len(train_vectors) < 2:
-                        st.warning("Data latih kurang dari 2 gambar. Gunakan data latih default.")
-                        train_vectors = []
-                
-                # Jika tidak ada data latih atau kurang, gunakan dua gambar + augmentasi
-                if len(train_vectors) < 2:
-                    # Buat data sintetis dengan augmentasi (flip, rotasi kecil, noise)
-                    train_vectors = [arr1, arr2]
-                    # Tambahkan variasi dari arr1 dan arr2
-                    for arr in [arr1, arr2]:
-                        for _ in range(5):
-                            noise = np.random.normal(0, 0.05, arr.shape)
-                            train_vectors.append(np.clip(arr + noise, 0, 1))
-                        # flip horizontal (dengan reshape dulu)
-                        reshaped = arr.reshape(100, 100)
-                        flipped = np.fliplr(reshaped).flatten()
-                        train_vectors.append(flipped)
-                    st.info("ℹ️ Tidak ada data latih. Digunakan 2 gambar + augmentasi (flip & noise) untuk melatih PCA.")
-                
-                # Ubah ke numpy array
-                train_vectors = np.array(train_vectors)
-                # PCA
-                pca = PCA(n_components=min(n_components, len(train_vectors)-1, len(train_vectors[0])))
-                pca.fit(train_vectors)
-                # Proyeksikan dua gambar
+                        if len(train_vectors) < 2:
+                            st.error("Data latih dari ZIP kurang dari 2 gambar. Gagal melatih PCA.")
+                            st.stop()
+                        train_vectors = np.array(train_vectors)
+                        k = min(n_components, len(train_vectors)-1, len(train_vectors[0]))
+                        pca = PCA(n_components=k)
+                        pca.fit(train_vectors)
+                else:
+                    st.error("Tidak ada data latih yang valid. Pilih sumber data latih atau upload ZIP.")
+                    st.stop()
+
+                # Proyeksi dan similarity
                 vec1_pca = pca.transform([arr1])[0]
                 vec2_pca = pca.transform([arr2])[0]
-                # Cosine similarity
                 sim = cosine_similarity([vec1_pca], [vec2_pca])[0][0]
                 persentase = sim * 100
                 var_ratio = pca.explained_variance_ratio_.sum() * 100
@@ -1166,7 +1159,7 @@ elif page == "🔍 Deteksi":
                 st.markdown(f'<div class="detail">Varians: {var_ratio:.1f}%</div>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
 
-                # Grafik akumulasi informasi PCA
+                # Grafik
                 st.markdown("### 📈 Grafik Akumulasi Informasi PCA")
                 cumsum_var = np.cumsum(pca.explained_variance_ratio_)
                 fig, ax = plt.subplots(figsize=(8, 5))
