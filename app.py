@@ -15,7 +15,6 @@ from sklearn.datasets import fetch_lfw_people
 import tempfile
 import zipfile
 import cv2
-import time  # <-- TAMBAHKAN INI!
 
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
@@ -478,53 +477,48 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ======================== FUNGSI GLITTER (MUNCUL 3 DETIK LALU HILANG) ========================
+# ======================== FUNGSI GLITTER (CSS MURNI, TANPA JS) ========================
 def show_glitter():
-    container = st.empty()
-    with container:
-        st.markdown("""
-        <style>
-            @keyframes glitterFloat {
-                0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
-                20% { opacity: 1; }
-                80% { opacity: 1; }
-                100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-            }
-            .glitter-particle {
-                position: fixed;
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 99999;
-                animation: glitterFloat 6s linear infinite;
-                box-shadow: 0 0 20px currentColor;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        colors = ["#FFD700", "#FF6B6B", "#FFB6C1", "#FFA500", "#FF69B4", "#FF1493", "#FFD700", "#FFA07A", "#FFE4B5", "#FF4500"]
-        particles = ""
-        for _ in range(60):
-            left = np.random.randint(0, 95)
-            size = np.random.randint(10, 30)
-            dur = np.random.uniform(4, 8)
-            delay = np.random.uniform(0, 6)
-            color = np.random.choice(colors)
-            particles += f"""
-            <div class="glitter-particle" style="
-                left: {left}%;
-                width: {size}px;
-                height: {size}px;
-                background: radial-gradient(circle, {color}, transparent);
-                color: {color};
-                animation-duration: {dur}s;
-                animation-delay: {delay}s;
-            "></div>
-            """
-        st.markdown(particles, unsafe_allow_html=True)
+    st.markdown("""
+    <style>
+        @keyframes glitterFloat {
+            0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .glitter-particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            animation: glitterFloat 6s linear infinite;
+            box-shadow: 0 0 20px currentColor;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     
-    # Tampilkan glitter selama 3 detik, lalu hilangkan
-    time.sleep(3)
-    container.empty()
+    # Generate 60 partikel dengan warna & posisi acak
+    colors = ["#FFD700", "#FF6B6B", "#FFB6C1", "#FFA500", "#FF69B4", "#FF1493", "#FFD700", "#FFA07A", "#FFE4B5", "#FF4500"]
+    particles = ""
+    for _ in range(60):
+        left = np.random.randint(0, 95)
+        size = np.random.randint(10, 30)
+        dur = np.random.uniform(4, 8)
+        delay = np.random.uniform(0, 6)
+        color = np.random.choice(colors)
+        particles += f"""
+        <div class="glitter-particle" style="
+            left: {left}%;
+            width: {size}px;
+            height: {size}px;
+            background: radial-gradient(circle, {color}, transparent);
+            color: {color};
+            animation-duration: {dur}s;
+            animation-delay: {delay}s;
+        "></div>
+        """
+    st.markdown(particles, unsafe_allow_html=True)
 
 # ======================== SESSION STATE ========================
 if "page" not in st.session_state:
