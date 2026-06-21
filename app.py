@@ -489,7 +489,8 @@ for col, (emoji, page_name, label) in zip(cols, menus):
                 st.session_state.kompresi_visited = False
             elif page_name == "🔍 Deteksi":
                 st.session_state.deteksi_visited = False
- st.rerun()
+             st.rerun()
+             
 # --- CAPTION DI BAWAH TOMBOL ---
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
