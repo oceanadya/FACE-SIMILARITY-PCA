@@ -1071,15 +1071,9 @@ elif page == "🔍 Deteksi":
         with col_show2:
             st.image(im2, caption="Gambar 2 (resize 100×100)", use_container_width=True)
 
-        # Slider untuk jumlah komponen PCA
-        n_components_pca = st.slider(
-            "Jumlah komponen PCA untuk ekstraksi fitur",
-            min_value=5,
-            max_value=50,
-            value=20,
-            step=5,
-            key="pca_deteksi"
-        )
+        # Slider untuk jumlah komponen PCA – tapi karena hanya 2 sampel, kita force n_components=1
+        st.info("ℹ️ Karena hanya ada 2 gambar, jumlah komponen PCA otomatis diset ke 1.")
+        n_components_pca = 1  # fixed
 
         if st.button("🔎 Hitung Kemiripan", use_container_width=True):
             try:
@@ -1102,7 +1096,7 @@ elif page == "🔍 Deteksi":
                 sim = cosine_similarity(vec1_pca, vec2_pca)[0][0]
                 persentase = sim * 100
 
-                # Varians yang dijelaskan
+                # Varians yang dijelaskan (selalu 100% karena hanya 1 komponen)
                 var_ratio = pca.explained_variance_ratio_.sum() * 100
 
                 # Tampilkan hasil
@@ -1118,6 +1112,17 @@ elif page == "🔍 Deteksi":
 
                 st.balloons()
 
+                # Tambahan penjelasan
+                st.markdown("""
+                <div style="background: #FCE4EC; padding: 1rem; border-radius: 12px; margin-top: 1rem; border: 1px solid #EC407A;">
+                    <p style="margin:0;"><b>💡 Interpretasi:</b><br>
+                    Skor kemiripan dihitung dari cosine similarity antara dua vektor PCA. 
+                    Semakin tinggi persentase, semakin mirip kedua gambar. 
+                    Karena hanya ada dua sampel, jumlah komponen PCA dibatasi menjadi 1.
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
 
@@ -1127,7 +1132,7 @@ elif page == "🔍 Deteksi":
     # --- KETERANGAN TAMBAHAN DI BAWAH DETEKSI ---
     st.markdown("""
     <div class="footer-note">
-        <p>📌 <b>Keterangan:</b> Deteksi kemiripan menggunakan PCA untuk ekstraksi fitur dan Cosine Similarity untuk mengukur kedekatan. 
+        <p>📌 <b>Keterangan:</b> Deteksi kemiripan menggunakan PCA (1 komponen) dan Cosine Similarity. 
         Semakin tinggi persentase, semakin mirip kedua gambar.</p>
     </div>
     """, unsafe_allow_html=True)
