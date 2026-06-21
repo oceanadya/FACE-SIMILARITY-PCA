@@ -14,6 +14,7 @@ from skimage.metrics import peak_signal_noise_ratio as psnr
 from sklearn.datasets import fetch_lfw_people
 import tempfile
 import zipfile
+import cv2  # <-- TAMBAH INI!
 
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
@@ -476,6 +477,21 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ======================== FUNGSI GLITTER ========================
+def show_glitter():
+    st.markdown("""
+    <div style="text-align: center; font-size: 2.5rem; animation: glitter 1.5s infinite; padding: 10px 0;">
+        ✨ ✨ ✨ ✨ ✨
+    </div>
+    <style>
+        @keyframes glitter {
+            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+            50% { opacity: 1; transform: scale(1.2); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
+            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 # ======================== SESSION STATE ========================
 if "page" not in st.session_state:
     st.session_state.page = "🏠 Home"
@@ -638,20 +654,11 @@ st.sidebar.markdown("""
 # ======================== HALAMAN UTAMA ========================
 page = st.session_state.page
 
-if not st.session_state.home_visited:
-    st.markdown("""
-    <div style="text-align: center; font-size: 2rem; animation: glitter 1.5s infinite;">
-        ✨ ✨ ✨ ✨ ✨
-    </div>
-    <style>
-        @keyframes glitter {
-            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
-            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
-            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
-        }
-    </style>
-    """, unsafe_allow_html=True)
-    st.session_state.home_visited = True
+if page == "🏠 Home":
+    # ==================== HOME ====================
+    if not st.session_state.home_visited:
+        show_glitter()  # <-- GLITTER
+        st.session_state.home_visited = True
 
     st.markdown("""
     <div class="home-header">
@@ -709,20 +716,9 @@ if not st.session_state.home_visited:
 
 elif page == "🌫️ Grayscale":
     # ==================== GRAYSCALE ====================
-  if not st.session_state.grayscale_visited:
-    st.markdown("""
-    <div style="text-align: center; font-size: 2rem; animation: glitter 1.5s infinite;">
-        ✨ ✨ ✨ ✨ ✨
-    </div>
-    <style>
-        @keyframes glitter {
-            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
-            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
-            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
-        }
-    </style>
-    """, unsafe_allow_html=True)
-    st.session_state.grayscale_visited = True
+    if not st.session_state.grayscale_visited:
+        show_glitter()  # <-- GLITTER
+        st.session_state.grayscale_visited = True
 
     st.markdown("""
     <div class="grayscale-header">
@@ -784,7 +780,7 @@ elif page == "🌫️ Grayscale":
                 st.markdown(href, unsafe_allow_html=True)
 
                 st.success("🌸 Semoga membantu, terima kasih banyak telah menggunakan jasa layanan kami, salam cinta ❤️")
-                st.balloons()
+                show_glitter()  # <-- GLITTER (dulu st.balloons())
 
                 st.markdown("""
                 <div class="info-box">
@@ -822,7 +818,7 @@ elif page == "🌫️ Grayscale":
 elif page == "🗜️ Kompresi":
     # ==================== KOMPRESI PCA WARNA (RGB) - TIDAK DIUBAH KE GRAYSCALE ====================
     if not st.session_state.kompresi_visited:
-        st.balloons()
+        show_glitter()  # <-- GLITTER
         st.session_state.kompresi_visited = True
 
     st.markdown("""
@@ -1029,7 +1025,7 @@ elif page == "🗜️ Kompresi":
                 st.pyplot(fig)
                 plt.close(fig)
 
-                st.balloons()
+                show_glitter()  # <-- GLITTER (dulu st.balloons())
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
@@ -1047,7 +1043,33 @@ elif page == "🗜️ Kompresi":
 
 elif page == "🔍 Deteksi":
     # ==================== DETEKSI KEMIRIPAN DENGAN PCA (EIGENFACES) + COSINE SIMILARITY ====================
-    # ... (header dan penjelasan sama seperti di kode asli)
+    if not st.session_state.deteksi_visited:
+        show_glitter()  # <-- GLITTER
+        st.session_state.deteksi_visited = True
+
+    st.markdown("""
+    <div class="deteksi-header">
+        <div class="love-shower">❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖</div>
+        <h1>🔍 Deteksi Kemiripan Wajah</h1>
+        <p>Bandingkan dua wajah dengan metode PCA (Eigenfaces) dan Cosine Similarity.</p>
+        <div class="love-shower">❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖 ❤️ 💖</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #FCE4EC, #FFF0F5); 
+                padding: 1.5rem; border-radius: 16px; border: 1px solid #F8BBD0; 
+                margin-bottom: 2rem; text-align: center;">
+        <p style="font-size:1.2rem; color:#6A1B4D;">
+            ❤️ <b>Cara kerja:</b> PCA mengekstrak fitur utama (eigenfaces) dari data latih (wajah). 
+            Dua wajah yang dibandingkan diproyeksikan ke ruang PCA, lalu dihitung kemiripannya dengan <b>Cosine Similarity</b>.
+            Semakin tinggi skor, semakin mirip kedua wajah.
+        </p>
+        <p style="color:#880E4F; font-style:italic;">
+            "Setiap wajah unik, tapi kecocokan bisa ditemukan."
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # --- Inisialisasi session state untuk model default ---
     if "deteksi_model_loaded" not in st.session_state:
@@ -1209,7 +1231,7 @@ elif page == "🔍 Deteksi":
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.balloons()
+                show_glitter()  # <-- GLITTER (dulu st.balloons())
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
