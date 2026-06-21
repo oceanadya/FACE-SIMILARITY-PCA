@@ -23,7 +23,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ======================== CSS GLOBAL ========================
+# ======================== CSS GLOBAL (SAMA KAYA SEBELUMNYA) ========================
 st.markdown("""
     <style>
         /* ----- BACKGROUND & WARNA DASAR ----- */
@@ -477,9 +477,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ======================== FUNGSI GLITTER FULL SCREEN ========================
+# ======================== FUNGSI GLITTER FULL SCREEN (PAKAI components.html) ========================
 def show_glitter():
-    st.markdown("""
+    st.components.v1.html("""
     <div id="glitter-container" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;">
     </div>
     <script>
@@ -522,7 +522,7 @@ def show_glitter():
         }
     })();
     </script>
-    """, unsafe_allow_html=True)
+    """, height=0)  # height=0 biar gak makan space
 
 # ======================== SESSION STATE ========================
 if "page" not in st.session_state:
