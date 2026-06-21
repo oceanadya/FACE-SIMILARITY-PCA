@@ -175,11 +175,11 @@ st.markdown("""
         .sidebar-profile .profile-item {
             display: flex;
             align-items: center;
-            margin-bottom: 14px !important;       /* jarak antar kotak */
+            margin-bottom: 14px !important;
             padding: 12px 14px;
             border-radius: 14px;
             background: #ffffff !important;
-            border: 2px solid #EC407A !important;  /* kotak tegas */
+            border: 2px solid #EC407A !important;
             box-shadow: 0 4px 12px rgba(173,20,87,0.15);
             transition: 0.2s;
         }
@@ -489,8 +489,8 @@ for col, (emoji, page_name, label) in zip(cols, menus):
                 st.session_state.kompresi_visited = False
             elif page_name == "🔍 Deteksi":
                 st.session_state.deteksi_visited = False
-             st.rerun()
-             
+            st.rerun()
+
 # --- CAPTION DI BAWAH TOMBOL ---
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
@@ -516,7 +516,6 @@ anggota = [
         "ig": "@gea_destadia_10",
         "telp": "0831-5068-7481",
         "foto": "assets/gea.jpg"
-        
     },
     {
         "inisial": "LA",
@@ -524,7 +523,6 @@ anggota = [
         "ig": "@luunaaamiiii",
         "telp": "0895-3780-96802",
         "foto": "assets/luna.jpg"
-        
     },
     {
         "inisial": "NA",
@@ -532,7 +530,6 @@ anggota = [
         "ig": "@ndyyzh",
         "telp": "0858-4631-3309",
         "foto": "assets/nadia.jpg"
-        
     },
     {
         "inisial": "DAAD",
@@ -540,7 +537,6 @@ anggota = [
         "ig": "@adellianav",
         "telp": "0813-1211-6787",
         "foto": "assets/dalilah.jpg"
-        
     },
 ]
 
