@@ -451,7 +451,7 @@ st.sidebar.markdown("""
 # --- PESAN DI BAWAH HEADER ---
 st.sidebar.markdown("""
 <div style="text-align: center; font-size: 14px; color: #880E4F; padding: 0 5px 8px 5px; font-style: italic;">
-    Lupakan dia yang membuatmu terluka,<br>semoga web ini bisa membuatmu bahagia.
+    Lupakan dia yang membuatmu terluka,<br>semoga web ini bisa membuatmu bahagia. <br> <br> Silahkan pilih menu yang diinginkan !
 </div>
 """, unsafe_allow_html=True)
 
@@ -489,13 +489,6 @@ for col, (emoji, page_name, label) in zip(cols, menus):
                 st.session_state.kompresi_visited = False
             elif page_name == "🔍 Deteksi":
                 st.session_state.deteksi_visited = False
-
-            st.sidebar.markdown("""
-<div style="text-align: center; font-size: 14px; color: #880E4F; padding: 0 5px 8px 5px; font-style: italic;">
-    HOME   GRAYSCALE   KOMPRESI   DETEKSI  <br> silahkan pilih menu yang anda inginkan.
-</div>
-""", unsafe_allow_html=True)
-
  st.rerun()
 # --- CAPTION DI BAWAH TOMBOL ---
 st.sidebar.markdown("---")
