@@ -14,7 +14,7 @@ from skimage.metrics import peak_signal_noise_ratio as psnr
 from sklearn.datasets import fetch_lfw_people
 import tempfile
 import zipfile
-import cv2  # <-- TAMBAH INI!
+import cv2
 
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
@@ -477,19 +477,51 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ======================== FUNGSI GLITTER ========================
+# ======================== FUNGSI GLITTER FULL SCREEN ========================
 def show_glitter():
     st.markdown("""
-    <div style="text-align: center; font-size: 2.5rem; animation: glitter 1.5s infinite; padding: 10px 0;">
-        ✨ ✨ ✨ ✨ ✨
+    <div id="glitter-container" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;">
     </div>
-    <style>
-        @keyframes glitter {
-            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
-            50% { opacity: 1; transform: scale(1.2); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
-            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+    <script>
+    (function() {
+        var container = document.getElementById('glitter-container');
+        if (!container) return;
+        var colors = ['#FFD700', '#FF6B6B', '#FFB6C1', '#FFA500', '#FF69B4', '#FF1493', '#FFD700', '#FFA07A', '#FFE4B5', '#FF4500', '#FF8C00'];
+        var particleCount = 80;
+        for (var i = 0; i < particleCount; i++) {
+            var particle = document.createElement('div');
+            var size = Math.random() * 30 + 10;
+            particle.style.position = 'absolute';
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            var color = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.background = 'radial-gradient(circle, ' + color + ', transparent)';
+            particle.style.borderRadius = '50%';
+            particle.style.boxShadow = '0 0 20px 5px ' + color;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '-10%';
+            particle.style.opacity = Math.random() * 0.8 + 0.2;
+            var duration = Math.random() * 8 + 5;
+            var delay = Math.random() * 6;
+            particle.style.animation = 'glitterFloat ' + duration + 's linear ' + delay + 's infinite';
+            particle.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            container.appendChild(particle);
         }
-    </style>
+        if (!document.getElementById('glitter-keyframes')) {
+            var style = document.createElement('style');
+            style.id = 'glitter-keyframes';
+            style.innerHTML = `
+                @keyframes glitterFloat {
+                    0% { transform: translateY(0) rotate(0deg) scale(0.3); opacity: 0; }
+                    15% { opacity: 1; transform: translateY(-15vh) rotate(15deg) scale(1.2); }
+                    85% { opacity: 1; }
+                    100% { transform: translateY(-115vh) rotate(45deg) scale(0.5); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    })();
+    </script>
     """, unsafe_allow_html=True)
 
 # ======================== SESSION STATE ========================
@@ -657,7 +689,7 @@ page = st.session_state.page
 if page == "🏠 Home":
     # ==================== HOME ====================
     if not st.session_state.home_visited:
-        show_glitter()  # <-- GLITTER
+        show_glitter()
         st.session_state.home_visited = True
 
     st.markdown("""
@@ -717,7 +749,7 @@ if page == "🏠 Home":
 elif page == "🌫️ Grayscale":
     # ==================== GRAYSCALE ====================
     if not st.session_state.grayscale_visited:
-        show_glitter()  # <-- GLITTER
+        show_glitter()
         st.session_state.grayscale_visited = True
 
     st.markdown("""
@@ -780,7 +812,7 @@ elif page == "🌫️ Grayscale":
                 st.markdown(href, unsafe_allow_html=True)
 
                 st.success("🌸 Semoga membantu, terima kasih banyak telah menggunakan jasa layanan kami, salam cinta ❤️")
-                show_glitter()  # <-- GLITTER (dulu st.balloons())
+                show_glitter()
 
                 st.markdown("""
                 <div class="info-box">
@@ -818,7 +850,7 @@ elif page == "🌫️ Grayscale":
 elif page == "🗜️ Kompresi":
     # ==================== KOMPRESI PCA WARNA (RGB) - TIDAK DIUBAH KE GRAYSCALE ====================
     if not st.session_state.kompresi_visited:
-        show_glitter()  # <-- GLITTER
+        show_glitter()
         st.session_state.kompresi_visited = True
 
     st.markdown("""
@@ -1025,7 +1057,7 @@ elif page == "🗜️ Kompresi":
                 st.pyplot(fig)
                 plt.close(fig)
 
-                show_glitter()  # <-- GLITTER (dulu st.balloons())
+                show_glitter()
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
@@ -1044,7 +1076,7 @@ elif page == "🗜️ Kompresi":
 elif page == "🔍 Deteksi":
     # ==================== DETEKSI KEMIRIPAN DENGAN PCA (EIGENFACES) + COSINE SIMILARITY ====================
     if not st.session_state.deteksi_visited:
-        show_glitter()  # <-- GLITTER
+        show_glitter()
         st.session_state.deteksi_visited = True
 
     st.markdown("""
@@ -1231,7 +1263,7 @@ elif page == "🔍 Deteksi":
                 </div>
                 """, unsafe_allow_html=True)
 
-                show_glitter()  # <-- GLITTER (dulu st.balloons())
+                show_glitter()
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
