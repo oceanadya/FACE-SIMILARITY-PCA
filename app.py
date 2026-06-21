@@ -355,8 +355,9 @@ for col, (emoji, page_name) in zip(cols, menus):
             st.rerun()
 
 st.sidebar.markdown("---")
+# PERUBAHAN DI SINI: caption Home menjadi "🏠 Beranda"
 if st.session_state.page == "🏠 Home":
-    st.sidebar.markdown('<p class="sidebar-caption">📌 Beranda & Profil</p>', unsafe_allow_html=True)
+    st.sidebar.markdown('<p class="sidebar-caption">🏠 Beranda</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🌫️ Grayscale":
     st.sidebar.markdown('<p class="sidebar-caption">🌫️ Ubah ke hitam-putih</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🗜️ Kompresi":
@@ -436,12 +437,10 @@ with col_right:
 
     elif page == "🌫️ Grayscale":
         # ---------- GRAYSCALE ----------
-        # Efek bunga + balloons saat pertama kali masuk
         if not st.session_state.grayscale_visited:
             st.balloons()
             st.session_state.grayscale_visited = True
 
-        # Header dengan semburan bunga
         st.markdown("""
         <div class="grayscale-header">
             <div class="flower-shower">🌸 🌺 🌷 🌹 🌻 🌼 🌸 🌺 🌷 🌹 🌻 🌼</div>
@@ -451,7 +450,6 @@ with col_right:
         </div>
         """, unsafe_allow_html=True)
 
-        # Deskripsi keren di tengah
         st.markdown("""
         <div style="background: linear-gradient(135deg, #FCE4EC, #FFF0F5); 
                     padding: 1.5rem; border-radius: 16px; border: 1px solid #F8BBD0; 
@@ -466,7 +464,6 @@ with col_right:
         </div>
         """, unsafe_allow_html=True)
 
-        # Uploader
         uploaded_file = st.file_uploader(
             "📤 Unggah gambar (JPG, PNG, WEBP)",
             type=["jpg", "jpeg", "png", "webp"],
@@ -495,7 +492,6 @@ with col_right:
                     st.markdown(f"*Ukuran: {gray_rgb.width} x {gray_rgb.height} px*")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-                    # Tombol download
                     buf = io.BytesIO()
                     gray_rgb.save(buf, format="PNG")
                     byte_im = buf.getvalue()
@@ -504,11 +500,9 @@ with col_right:
                     href += '<button class="download-btn">⬇️ Download Hasil</button></a>'
                     st.markdown(href, unsafe_allow_html=True)
 
-                    # Pesan sukses + balloons
                     st.success("🌸 Semoga membantu, terima kasih banyak telah menggunakan jasa layanan kami, salam cinta ❤️")
                     st.balloons()
 
-                    # Manfaat
                     st.markdown("""
                     <div class="info-box">
                         <b>💡 Manfaat Grayscale:</b><br>
@@ -519,7 +513,6 @@ with col_right:
                     """, unsafe_allow_html=True)
 
         else:
-            # Placeholder jika belum upload
             st.markdown("""
             <div style="text-align:center; padding:2rem 0;">
                 <p style="font-size:1.2rem; color:#6A1B4D;">👆 Unggah gambar untuk mulai mengubahnya menjadi hitam-putih</p>
@@ -527,7 +520,6 @@ with col_right:
             </div>
             """, unsafe_allow_html=True)
 
-            # Contoh gambar kotak warna-warni
             example_img = Image.new('RGB', (400, 300), color='#FCE4EC')
             draw = ImageDraw.Draw(example_img)
             draw.rectangle([50, 50, 150, 150], fill='#EC407A')
@@ -553,7 +545,6 @@ with col_right:
         </div>
         """, unsafe_allow_html=True)
 
-        # Upload gambar
         uploaded_file = st.file_uploader(
             "📤 Unggah gambar untuk dikompresi",
             type=["jpg", "jpeg", "png", "webp"],
@@ -562,12 +553,10 @@ with col_right:
 
         if uploaded_file is not None:
             image = Image.open(uploaded_file).convert("RGB")
-            # Konversi ke array numpy (sederhana)
             import numpy as np
             img_array = np.array(image)
             h, w, c = img_array.shape
 
-            # Slider untuk jumlah komponen PCA
             n_components = st.slider(
                 "Jumlah komponen PCA (semakin kecil, semakin besar kompresi)",
                 min_value=10,
@@ -577,22 +566,14 @@ with col_right:
             )
 
             if st.button("🚀 Kompresi dengan PCA", use_container_width=True):
-                # Proses PCA sederhana (ambil rata-rata channel atau gunakan SVD)
-                # Untuk demo, kita lakukan PCA pada setiap channel
                 from sklearn.decomposition import PCA
                 pca = PCA(n_components=n_components)
-                
-                # Reshape agar setiap piksel menjadi vektor fitur
                 flat_img = img_array.reshape(-1, c)
-                # Terapkan PCA
                 reduced = pca.fit_transform(flat_img)
-                # Rekonstruksi
                 reconstructed = pca.inverse_transform(reduced)
-                # Kembalikan ke bentuk gambar
                 compressed_img = reconstructed.reshape(h, w, c).astype(np.uint8)
                 compressed_pil = Image.fromarray(compressed_img)
 
-                # Tampilkan hasil
                 col_ori, col_comp = st.columns(2)
                 with col_ori:
                     st.markdown('<div class="image-card">', unsafe_allow_html=True)
@@ -608,7 +589,6 @@ with col_right:
                     st.markdown(f"*Ukuran: {w} x {h} px*")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-                # Tombol download hasil kompresi
                 buf = io.BytesIO()
                 compressed_pil.save(buf, format="PNG")
                 byte_im = buf.getvalue()
@@ -617,7 +597,6 @@ with col_right:
                 href += '<button class="download-btn">⬇️ Download Hasil Kompresi</button></a>'
                 st.markdown(href, unsafe_allow_html=True)
 
-                # Info manfaat kompresi
                 st.markdown("""
                 <div class="info-box">
                     <b>💡 Manfaat Kompresi PCA:</b><br>
@@ -655,8 +634,6 @@ with col_right:
         if img1 is not None and img2 is not None:
             image1 = Image.open(img1).convert("RGB")
             image2 = Image.open(img2).convert("RGB")
-
-            # Resize ke ukuran yang sama untuk perbandingan
             size = (300, 300)
             im1 = image1.resize(size)
             im2 = image2.resize(size)
@@ -675,8 +652,6 @@ with col_right:
 
                     arr1 = np.array(im1)
                     arr2 = np.array(im2)
-
-                    # Konversi ke grayscale untuk SSIM
                     gray1 = np.mean(arr1, axis=2).astype(np.float32) / 255.0
                     gray2 = np.mean(arr2, axis=2).astype(np.float32) / 255.0
 
