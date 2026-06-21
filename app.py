@@ -395,10 +395,10 @@ st.sidebar.markdown("Lupakan dia yang membuatmu terluka, Semoga web ini bisa mem
 st.sidebar.markdown("  🌸🌸🌸 ")
 
 menus = [
-    ("🏠", "🏠 Home"),
-    ("🌫️", "🌫️ Grayscale"),
-    ("🗜️", "🗜️ Kompresi"),
-    ("🔍", "🔍 Deteksi Kemiripan")
+    ("🏠 HOME", "🏠 Home"),
+    ("🌫️"GRAYSCALE, "🌫️ Grayscale"),
+    ("🗜️"KOMPRESI, "🗜️ Kompresi"),
+    ("🔍"DETEKSI KEMIRIPAN, "🔍 Deteksi Kemiripan")
 ]
 
 cols = st.sidebar.columns(4)
