@@ -1,8 +1,11 @@
 import streamlit as st
 import halaman.home as home
-import halaman.grayscale as grayscale
+# import halaman.grayscale as grayscale   # <-- Dinonaktifkan karena kita buat di sini
 import halaman.kompresi as kompresi
 import halaman.deteksi as deteksi
+from PIL import Image
+import io
+import base64
 
 st.set_page_config(
     page_title="LANG APP",
@@ -10,37 +13,29 @@ st.set_page_config(
     layout="wide"
 )
 
+# CSS GLOBAL (tetap seperti punya Anda)
 st.markdown("""
     <style>
         /* ----- BACKGROUND UTAMA ----- */
         .stApp, .main, .block-container, section.main, div[data-testid="stSidebar"] {
-            background-color: #FFF0F5 !important;  /* Pink soft */
+            background-color: #FFF0F5 !important;
             background-image: none !important;
         }
-
-        /* ----- WARNA TEKS DASAR ----- */
         body, p, div, span, label, h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, .stCaption {
-            color: #6A1B4D !important;  /* Pink tua */
+            color: #6A1B4D !important;
         }
-
-        /* ----- HEADER ----- */
         header {
             background: linear-gradient(135deg, #880E4F, #AD1457) !important;
             border-bottom: 2px solid #F8BBD0 !important;
         }
-        /* Semua elemen di header berwarna putih */
         header * {
             color: #FFFFFF !important;
             fill: #FFFFFF !important;
         }
-
-        /* ----- SIDEBAR ----- */
         .css-1d391kg, .css-12w0qpk, [data-testid="stSidebar"] {
             background: linear-gradient(180deg, #FCE4EC, #FFF0F5) !important;
             border-right: 2px solid #F8BBD0 !important;
         }
-
-        /* ----- JUDUL UTAMA ----- */
         .main-title {
             text-align: center !important;
             color: #AD1457 !important;
@@ -58,14 +53,10 @@ st.markdown("""
             display: block !important;
             width: 100% !important;
         }
-
-        /* ----- SEMUA HEADING (h1-h6) ----- */
         h1, h2, h3, h4, h5, h6, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
             color: #AD1457 !important;
             font-weight: bold !important;
         }
-
-        /* ----- TOMBOL UMUM (Proses Deteksi, dll) ----- */
         .stButton button {
             background: linear-gradient(135deg, #EC407A, #D81B60) !important;
             color: white !important;
@@ -80,8 +71,6 @@ st.markdown("""
             transform: scale(1.03) translateY(-2px) !important;
             box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4) !important;
         }
-
-        /* ----- FILE UPLOADER (Upload gambar) ----- */
         div[data-testid="stFileUploader"] {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
             border: 2px dashed #EC407A !important;
@@ -110,14 +99,10 @@ st.markdown("""
         div[data-testid="stFileUploader"]:hover {
             border-color: #D81B60 !important;
         }
-
-        /* ----- SLIDER ----- */
         .stSlider > div {
             background: rgba(255, 255, 255, 0.4) !important;
             border-radius: 10px !important;
         }
-
-        /* ----- BADGE ----- */
         .pink-badge {
             display: block !important;
             width: 100% !important;
@@ -132,8 +117,6 @@ st.markdown("""
             text-align: center !important;
             margin-bottom: 12px !important;
         }
-
-        /* ----- KOTAK HASIL ----- */
         .result-card {
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5) !important;
             padding: 20px !important;
@@ -143,8 +126,6 @@ st.markdown("""
             box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1) !important;
             height: 100% !important;
         }
-
-        /* ----- KOTAK PENJELASAN ----- */
         .explanation-box {
             background: rgba(255, 255, 255, 0.5) !important;
             padding: 15px !important;
@@ -162,8 +143,6 @@ st.markdown("""
         .explanation-box li {
             margin-bottom: 6px !important;
         }
-
-        /* ----- button 4 ----- */
         .stSidebar .stButton button {
             width: 48px !important;
             height: 48px !important;
@@ -184,14 +163,11 @@ st.markdown("""
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
             line-height: 1 !important;
         }
-        /* Efek hover pada tombol */
         .stSidebar .stButton button:hover {
             transform: scale(1.06) !important;
             background: rgba(236, 64, 122, 0.06) !important;
             box-shadow: 0 0 12px rgba(236, 64, 122, 0.08) !important;
         }
-
-        /* Keterangan fitur di bawah emoji */
         .sidebar-caption {
             text-align: center;
             color: #AD1457;
@@ -199,18 +175,90 @@ st.markdown("""
             font-size: 15px;
             padding-top: 5px;
         }
+
+        /* ----- CSS KHUSUS GRAYSCALE (ditambahkan) ----- */
+        .grayscale-header {
+            text-align: center;
+            padding: 2rem 0 0.5rem 0;
+            background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+        .grayscale-header h1 {
+            font-size: 3rem;
+            color: #AD1457;
+            margin: 0;
+            font-weight: 800;
+            text-shadow: 2px 2px 10px rgba(173,20,87,0.2);
+        }
+        .grayscale-header p {
+            font-size: 1.2rem;
+            color: #6A1B4D;
+            margin: 0.5rem 0 1.5rem 0;
+        }
+        .image-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(173,20,87,0.12);
+            padding: 1.5rem;
+            margin: 0.5rem;
+            transition: transform 0.3s ease;
+            border: 1px solid #F8BBD0;
+        }
+        .image-card:hover {
+            transform: translateY(-5px);
+        }
+        .image-card h3 {
+            color: #AD1457;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .image-card img {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid #F8BBD0;
+        }
+        .info-box {
+            background: rgba(255,255,255,0.7);
+            border-left: 5px solid #EC407A;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 10px rgba(233,30,99,0.08);
+        }
+        .info-box b {
+            color: #AD1457;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #EC407A, #D81B60);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.6rem 2rem;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(233,30,99,0.3);
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(233,30,99,0.4);
+        }
+        .stFileUploader > div {
+            background: rgba(255,255,255,0.6) !important;
+            border-radius: 12px !important;
+            border: 2px dashed #EC407A !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# `page` = halaman yang sedang aktif (default: Home)
+# Session state
 if "page" not in st.session_state:
     st.session_state.page = "🏠 Home"
-
-# `show_upload` = status tampilan upload data latih di halaman deteksi
 if "show_upload" not in st.session_state:
     st.session_state.show_upload = True
 
-#NAVIGASI SIDEBAR
+# SIDEBAR NAVIGASI (tetap sama)
 st.sidebar.markdown("🌸 **Haloo!!**")
 menus = [
     ("🏠", "🏠 Home"),
@@ -219,33 +267,25 @@ menus = [
     ("🔍", "🔍 Deteksi Kemiripan")
 ]
 
-# Bagi sidebar menjadi 4 kolom, masing-masing untuk 1 tombol
 cols = st.sidebar.columns(4)
-
 for col, (emoji, page_name) in zip(cols, menus):
     with col:
         is_active = (st.session_state.page == page_name)
-
-        # Jika tombol aktif, tambahkan CSS untuk memberi efek
         if is_active:
             st.markdown(f"""
                 <style>
-                    /* Target tombol yang sedang aktif */
                     .stSidebar .stButton button[data-testid="baseButton-secondary"]:has(> div:contains("{emoji}")) {{
-                        background: #F8BBD0 !important;           /* Pink tua */
+                        background: #F8BBD0 !important;
                         transform: translateY(2px) scale(1.03) !important;
                         box-shadow: 0 4px 14px rgba(236,64,122,0.25) !important;
                         border: none !important;
                     }}
                 </style>
             """, unsafe_allow_html=True)
-        # Tombol navigasi
         if st.button(emoji, key=f"nav_{emoji}", use_container_width=True):
             st.session_state.page = page_name
             st.rerun()
 
-
-# --- Keterangan fitur di bawah emoji ---
 st.sidebar.markdown("---")
 if st.session_state.page == "🏠 Home":
     st.sidebar.markdown('<p class="sidebar-caption">📌 Beranda & Profil</p>', unsafe_allow_html=True)
@@ -255,13 +295,89 @@ elif st.session_state.page == "🗜️ Kompresi":
     st.sidebar.markdown('<p class="sidebar-caption">🗜️ Kompresi dengan PCA</p>', unsafe_allow_html=True)
 elif st.session_state.page == "🔍 Deteksi Kemiripan":
     pass
+
+# ==================== HALAMAN ====================
 page = st.session_state.page
 
 if page == "🏠 Home":
     home.tampilkan()
+
 elif page == "🌫️ Grayscale":
-    grayscale.tampilkan()
+    # ---------- HALAMAN GRAYSCALE (langsung di sini) ----------
+    st.markdown("""
+    <div class="grayscale-header">
+        <h1>🌫️ Konversi ke Grayscale</h1>
+        <p>Ubah gambar berwarna menjadi hitam-putih dengan mudah.<br> 
+        <span style="font-size:0.9rem; color:#880E4F;">✨ Hasil lebih artistik dan fokus pada kontras & tekstur</span></p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    uploaded_file = st.file_uploader(
+        "📤 Unggah gambar (JPG, PNG, WEBP)",
+        type=["jpg", "jpeg", "png", "webp"],
+        accept_multiple_files=False
+    )
+
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        col1, col2 = st.columns(2, gap="large")
+
+        with col1:
+            st.markdown('<div class="image-card">', unsafe_allow_html=True)
+            st.markdown("### 🖼️ Gambar Asli")
+            st.image(image, use_container_width=True)
+            st.markdown(f"*Ukuran: {image.width} x {image.height} px*")
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        if st.button("🔄 Konversi ke Grayscale", use_container_width=True):
+            gray_image = image.convert("L")
+            gray_rgb = gray_image.convert("RGB")
+
+            with col2:
+                st.markdown('<div class="image-card">', unsafe_allow_html=True)
+                st.markdown("### ⚫ Hasil Grayscale")
+                st.image(gray_rgb, use_container_width=True)
+                st.markdown(f"*Ukuran: {gray_rgb.width} x {gray_rgb.height} px*")
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            # Tombol download
+            buf = io.BytesIO()
+            gray_rgb.save(buf, format="PNG")
+            byte_im = buf.getvalue()
+            b64 = base64.b64encode(byte_im).decode()
+            href = f'<a href="data:image/png;base64,{b64}" download="grayscale.png" style="text-decoration:none;">'
+            href += '<button class="download-btn">⬇️ Download Hasil</button></a>'
+            st.markdown(href, unsafe_allow_html=True)
+
+            st.markdown("""
+            <div class="info-box">
+                <b>💡 Manfaat Grayscale:</b><br>
+                • Mengurangi kompleksitas warna sehingga fokus pada bentuk dan tekstur.<br>
+                • Menghemat ruang penyimpanan (lebih kecil dari gambar berwarna).<br>
+                • Memberikan nuansa artistik dan klasik pada foto.
+            </div>
+            """, unsafe_allow_html=True)
+
+    else:
+        st.markdown("""
+        <div style="text-align:center; padding:2rem 0;">
+            <p style="font-size:1.2rem; color:#6A1B4D;">👆 Unggah gambar untuk mulai mengubahnya menjadi hitam-putih</p>
+            <p style="color:#AD1457; opacity:0.7;">Atau gunakan gambar contoh di bawah ini:</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Contoh gambar placeholder (kotak warna-warni)
+        from PIL import ImageDraw
+        example_img = Image.new('RGB', (400, 300), color='#FCE4EC')
+        draw = ImageDraw.Draw(example_img)
+        draw.rectangle([50, 50, 150, 150], fill='#EC407A')
+        draw.rectangle([200, 50, 300, 150], fill='#42A5F5')
+        draw.rectangle([50, 180, 150, 280], fill='#66BB6A')
+        draw.rectangle([200, 180, 300, 280], fill='#FFA726')
+        st.image(example_img, caption="Contoh gambar berwarna (unggah gambar Anda sendiri untuk hasil nyata)", use_container_width=True)
+
 elif page == "🗜️ Kompresi":
     kompresi.tampilkan()
+
 elif page == "🔍 Deteksi Kemiripan":
     deteksi.tampilkan()
