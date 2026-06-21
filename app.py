@@ -326,27 +326,27 @@ st.sidebar.markdown("**Teknik Informatika**")
 # Jika foto tidak ditemukan, akan ditampilkan inisial.
 anggota = [
     {
-        "nama": "Andi Pratama",
-        "ig": "@andi_p",
-        "telp": "0812-3456-7890",
-        "foto": "assets/andi.jpg"  # ganti dengan path foto Anda
+        "nama": "Gea Destadia Al-Zahra",
+        "ig": "@gea_destadia_10",
+        "telp": "0831-5068-7481",
+        "foto": "assets/C:\Users\acer\OneDrive\Pictures\Camera Roll\WIN_20260610_11_03_00_Pro.jpg"  # ganti dengan path foto Anda
     },
     {
-        "nama": "Budi Santoso",
-        "ig": "@budi_s",
-        "telp": "0813-4567-8901",
+        "nama": "Luna Amilia",
+        "ig": "@luunaaamiiii",
+        "telp": "0895-3780-96802",
         "foto": "assets/budi.jpg"
     },
     {
-        "nama": "Citra Dewi",
-        "ig": "@citra_d",
-        "telp": "0814-5678-9012",
+        "nama": "Nadia Azizah",
+        "ig": "@ndyyzh",
+        "telp": "0858-4631-3309",
         "foto": "assets/citra.jpg"
     },
     {
-        "nama": "Dian Sastro",
-        "ig": "@dian_s",
-        "telp": "0815-6789-0123",
+        "nama": "Dalilah Arifah Ariandi DJR",
+        "ig": "@adellianav",
+        "telp": "0813-1211-6787",
         "foto": "assets/dian.jpg"
     },
 ]
