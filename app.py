@@ -3,9 +3,10 @@ import halaman.home as home
 # import halaman.grayscale as grayscale   # <-- Dinonaktifkan karena kita buat di sini
 import halaman.kompresi as kompresi
 import halaman.deteksi as deteksi
-from PIL import Image
+from PIL import Image, ImageDraw
 import io
 import base64
+import random
 
 st.set_page_config(
     page_title="LANG APP",
@@ -13,7 +14,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS GLOBAL (tetap seperti punya Anda)
+# CSS GLOBAL (tetap seperti punya Anda) + tambahan untuk profil & bunga
 st.markdown("""
     <style>
         /* ----- BACKGROUND UTAMA ----- */
@@ -183,6 +184,8 @@ st.markdown("""
             background: linear-gradient(135deg, #FCE4EC, #FFF0F5);
             border-radius: 20px;
             margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
         }
         .grayscale-header h1 {
             font-size: 3rem;
@@ -249,6 +252,92 @@ st.markdown("""
             border-radius: 12px !important;
             border: 2px dashed #EC407A !important;
         }
+
+        /* Profil tim */
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(173,20,87,0.1);
+            border: 1px solid #F8BBD0;
+        }
+        .profile-card h3 {
+            color: #AD1457;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .profile-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 12px;
+            background: #FFF5F8;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #EC407A, #D81B60);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .profile-info {
+            flex: 1;
+        }
+        .profile-info .name {
+            font-weight: bold;
+            color: #6A1B4D;
+        }
+        .profile-info .detail {
+            font-size: 0.85rem;
+            color: #880E4F;
+        }
+        .profile-info .detail i {
+            margin-right: 5px;
+        }
+
+        /* Bunga berjatuhan (sederhana) */
+        .flower-shower {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .flower-shower span {
+            position: absolute;
+            display: block;
+            font-size: 24px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(300px) rotate(720deg); opacity: 0; }
+        }
+        /* Efek bunga di header */
+        .flower-header {
+            font-size: 2rem;
+            letter-spacing: 8px;
+            text-align: center;
+            color: #EC407A;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -257,8 +346,10 @@ if "page" not in st.session_state:
     st.session_state.page = "🏠 Home"
 if "show_upload" not in st.session_state:
     st.session_state.show_upload = True
+if "grayscale_visited" not in st.session_state:
+    st.session_state.grayscale_visited = False  # untuk efek bunga sekali
 
-# SIDEBAR NAVIGASI (tetap sama)
+# SIDEBAR NAVIGASI
 st.sidebar.markdown("🌸 **Haloo!!**")
 menus = [
     ("🏠", "🏠 Home"),
@@ -284,6 +375,8 @@ for col, (emoji, page_name) in zip(cols, menus):
             """, unsafe_allow_html=True)
         if st.button(emoji, key=f"nav_{emoji}", use_container_width=True):
             st.session_state.page = page_name
+            if page_name == "🌫️ Grayscale":
+                st.session_state.grayscale_visited = False  # reset agar efek muncul lagi
             st.rerun()
 
 st.sidebar.markdown("---")
@@ -303,78 +396,157 @@ if page == "🏠 Home":
     home.tampilkan()
 
 elif page == "🌫️ Grayscale":
-    # ---------- HALAMAN GRAYSCALE (langsung di sini) ----------
+    # ---------- HALAMAN GRAYSCALE (dengan layout dua kolom) ----------
+    
+    # Jika baru pertama kali masuk, tampilkan efek bunga & balloons
+    if not st.session_state.grayscale_visited:
+        st.balloons()  # efek meriah
+        st.session_state.grayscale_visited = True
+
+    # Header dengan semburan bunga (deretan emoji)
     st.markdown("""
     <div class="grayscale-header">
+        <div class="flower-header">
+            🌸 🌺 🌷 🌹 🌻 🌼 🌸 🌺 🌷 🌹 🌻 🌼
+        </div>
         <h1>🌫️ Konversi ke Grayscale</h1>
         <p>Ubah gambar berwarna menjadi hitam-putih dengan mudah.<br> 
         <span style="font-size:0.9rem; color:#880E4F;">✨ Hasil lebih artistik dan fokus pada kontras & tekstur</span></p>
+        <div class="flower-header">
+            🌸 🌺 🌷 🌹 🌻 🌼 🌸 🌺 🌷 🌹 🌻 🌼
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader(
-        "📤 Unggah gambar (JPG, PNG, WEBP)",
-        type=["jpg", "jpeg", "png", "webp"],
-        accept_multiple_files=False
-    )
+    # Layout dua kolom: kiri (konten grayscale), kanan (profil + deskripsi)
+    col_left, col_right = st.columns([2, 1], gap="large")
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        col1, col2 = st.columns(2, gap="large")
+    with col_left:
+        # Upload gambar
+        uploaded_file = st.file_uploader(
+            "📤 Unggah gambar (JPG, PNG, WEBP)",
+            type=["jpg", "jpeg", "png", "webp"],
+            accept_multiple_files=False
+        )
 
-        with col1:
-            st.markdown('<div class="image-card">', unsafe_allow_html=True)
-            st.markdown("### 🖼️ Gambar Asli")
-            st.image(image, use_container_width=True)
-            st.markdown(f"*Ukuran: {image.width} x {image.height} px*")
-            st.markdown('</div>', unsafe_allow_html=True)
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            col1, col2 = st.columns(2, gap="medium")
 
-        if st.button("🔄 Konversi ke Grayscale", use_container_width=True):
-            gray_image = image.convert("L")
-            gray_rgb = gray_image.convert("RGB")
-
-            with col2:
+            with col1:
                 st.markdown('<div class="image-card">', unsafe_allow_html=True)
-                st.markdown("### ⚫ Hasil Grayscale")
-                st.image(gray_rgb, use_container_width=True)
-                st.markdown(f"*Ukuran: {gray_rgb.width} x {gray_rgb.height} px*")
+                st.markdown("### 🖼️ Gambar Asli")
+                st.image(image, use_container_width=True)
+                st.markdown(f"*Ukuran: {image.width} x {image.height} px*")
                 st.markdown('</div>', unsafe_allow_html=True)
 
-            # Tombol download
-            buf = io.BytesIO()
-            gray_rgb.save(buf, format="PNG")
-            byte_im = buf.getvalue()
-            b64 = base64.b64encode(byte_im).decode()
-            href = f'<a href="data:image/png;base64,{b64}" download="grayscale.png" style="text-decoration:none;">'
-            href += '<button class="download-btn">⬇️ Download Hasil</button></a>'
-            st.markdown(href, unsafe_allow_html=True)
+            with col2:
+                # Tempat untuk hasil grayscale (akan diisi setelah tombol ditekan)
+                if st.button("🔄 Konversi ke Grayscale", use_container_width=True):
+                    gray_image = image.convert("L")
+                    gray_rgb = gray_image.convert("RGB")
 
+                    st.markdown('<div class="image-card">', unsafe_allow_html=True)
+                    st.markdown("### ⚫ Hasil Grayscale")
+                    st.image(gray_rgb, use_container_width=True)
+                    st.markdown(f"*Ukuran: {gray_rgb.width} x {gray_rgb.height} px*")
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+                    # Tombol download
+                    buf = io.BytesIO()
+                    gray_rgb.save(buf, format="PNG")
+                    byte_im = buf.getvalue()
+                    b64 = base64.b64encode(byte_im).decode()
+                    href = f'<a href="data:image/png;base64,{b64}" download="grayscale.png" style="text-decoration:none;">'
+                    href += '<button class="download-btn">⬇️ Download Hasil</button></a>'
+                    st.markdown(href, unsafe_allow_html=True)
+
+                    # Pesan setelah download (akan muncul setelah tombol download diklik?
+                    # Kita tampilkan pesan di sini saja, karena setelah download belum ada event.
+                    # Kita gunakan st.success untuk menampilkan pesan.
+                    st.success("🌸 Semoga membantu, terima kasih banyak telah menggunakan jasa layanan kami, salam cinta ❤️")
+                    st.balloons()  # tambahan meriah
+
+                    # Info manfaat grayscale
+                    st.markdown("""
+                    <div class="info-box">
+                        <b>💡 Manfaat Grayscale:</b><br>
+                        • Mengurangi kompleksitas warna sehingga fokus pada bentuk dan tekstur.<br>
+                        • Menghemat ruang penyimpanan (lebih kecil dari gambar berwarna).<br>
+                        • Memberikan nuansa artistik dan klasik pada foto.
+                    </div>
+                    """, unsafe_allow_html=True)
+
+        else:
+            # Jika belum upload, tampilkan placeholder
             st.markdown("""
-            <div class="info-box">
-                <b>💡 Manfaat Grayscale:</b><br>
-                • Mengurangi kompleksitas warna sehingga fokus pada bentuk dan tekstur.<br>
-                • Menghemat ruang penyimpanan (lebih kecil dari gambar berwarna).<br>
-                • Memberikan nuansa artistik dan klasik pada foto.
+            <div style="text-align:center; padding:2rem 0;">
+                <p style="font-size:1.2rem; color:#6A1B4D;">👆 Unggah gambar untuk mulai mengubahnya menjadi hitam-putih</p>
+                <p style="color:#AD1457; opacity:0.7;">Atau gunakan gambar contoh di bawah ini:</p>
             </div>
             """, unsafe_allow_html=True)
 
-    else:
+            # Contoh gambar placeholder (kotak warna-warni)
+            example_img = Image.new('RGB', (400, 300), color='#FCE4EC')
+            draw = ImageDraw.Draw(example_img)
+            draw.rectangle([50, 50, 150, 150], fill='#EC407A')
+            draw.rectangle([200, 50, 300, 150], fill='#42A5F5')
+            draw.rectangle([50, 180, 150, 280], fill='#66BB6A')
+            draw.rectangle([200, 180, 300, 280], fill='#FFA726')
+            st.image(example_img, caption="Contoh gambar berwarna (unggah gambar Anda sendiri untuk hasil nyata)", use_container_width=True)
+
+    # ---------- KOLOM KANAN: Profil Tim & Deskripsi ----------
+    with col_right:
+        # 1. Profil Tim
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        st.markdown("### 👥 Tim Pengembang")
+        st.markdown("**Teknik Informatika**")
+
+        # Data anggota (contoh, silakan ganti dengan data asli)
+        anggota = [
+            {"nama": "Andi Pratama", "ig": "@andi_p", "telp": "0812-3456-7890"},
+            {"nama": "Budi Santoso", "ig": "@budi_s", "telp": "0813-4567-8901"},
+            {"nama": "Citra Dewi", "ig": "@citra_d", "telp": "0814-5678-9012"},
+            {"nama": "Dian Sastro", "ig": "@dian_s", "telp": "0815-6789-0123"},
+        ]
+
+        for idx, member in enumerate(anggota):
+            inisial = ''.join([kata[0] for kata in member["nama"].split()])
+            st.markdown(f"""
+            <div class="profile-item">
+                <div class="profile-avatar">{inisial}</div>
+                <div class="profile-info">
+                    <div class="name">{member['nama']}</div>
+                    <div class="detail">📸 {member['ig']}</div>
+                    <div class="detail">📞 {member['telp']}</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # 2. Deskripsi Aplikasi & Manfaat
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        st.markdown("### 📘 Tentang Aplikasi")
         st.markdown("""
-        <div style="text-align:center; padding:2rem 0;">
-            <p style="font-size:1.2rem; color:#6A1B4D;">👆 Unggah gambar untuk mulai mengubahnya menjadi hitam-putih</p>
-            <p style="color:#AD1457; opacity:0.7;">Atau gunakan gambar contoh di bawah ini:</p>
+        **Aplikasi LANG** menyediakan tiga fitur utama:
+        - **Grayscale** – mengubah gambar berwarna menjadi hitam-putih untuk efek artistik dan mengurangi ukuran file.
+        - **Kompresi PCA** – mereduksi dimensi gambar dengan Principal Component Analysis, sehingga ukuran file mengecil tanpa kehilangan banyak informasi.
+        - **Deteksi Kemiripan** – membandingkan dua gambar dan menghitung tingkat kemiripannya.
+        
+        **Manfaat:**
+        - Menghemat ruang penyimpanan.
+        - Mempermudah analisis visual.
+        - Memberikan hasil yang cepat dan akurat.
+        """)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # 3. Universitas
+        st.markdown("""
+        <div style="text-align: center; padding: 1rem 0; color: #AD1457; font-weight: bold; font-size: 1.2rem;">
+            🎓 Universitas Negeri Semarang
         </div>
         """, unsafe_allow_html=True)
-
-        # Contoh gambar placeholder (kotak warna-warni)
-        from PIL import ImageDraw
-        example_img = Image.new('RGB', (400, 300), color='#FCE4EC')
-        draw = ImageDraw.Draw(example_img)
-        draw.rectangle([50, 50, 150, 150], fill='#EC407A')
-        draw.rectangle([200, 50, 300, 150], fill='#42A5F5')
-        draw.rectangle([50, 180, 150, 280], fill='#66BB6A')
-        draw.rectangle([200, 180, 300, 280], fill='#FFA726')
-        st.image(example_img, caption="Contoh gambar berwarna (unggah gambar Anda sendiri untuk hasil nyata)", use_container_width=True)
 
 elif page == "🗜️ Kompresi":
     kompresi.tampilkan()
