@@ -8,6 +8,9 @@ import requests
 from urllib.parse import urlparse
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
+import matplotlib.pyplot as plt
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 
 # ======================== KONFIGURASI HALAMAN ========================
 st.set_page_config(
@@ -16,7 +19,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ======================== CSS GLOBAL (sama seperti sebelumnya) ========================
+# ======================== CSS GLOBAL ========================
 st.markdown("""
     <style>
         /* ----- BACKGROUND & WARNA DASAR ----- */
@@ -435,6 +438,38 @@ st.markdown("""
             color: #6A1B4D;
             margin-top: 0.5rem;
         }
+
+        /* ----- METRIK KOMPRESI ----- */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .metric-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #F8BBD0;
+            box-shadow: 0 2px 8px rgba(173,20,87,0.08);
+        }
+        .metric-item .label {
+            font-size: 0.85rem;
+            color: #880E4F;
+        }
+        .metric-item .value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #AD1457;
+        }
+        .detail-comp {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #F8BBD0;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -762,7 +797,7 @@ elif page == "🌫️ Grayscale":
     """, unsafe_allow_html=True)
 
 elif page == "🗜️ Kompresi":
-    # ==================== KOMPRESI PCA (sudah diperbaiki) ====================
+    # ==================== KOMPRESI PCA LENGKAP ====================
     if not st.session_state.kompresi_visited:
         st.balloons()
         st.session_state.kompresi_visited = True
@@ -798,66 +833,139 @@ elif page == "🗜️ Kompresi":
     )
 
     if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert("RGB")
-        img_array = np.array(image)
-        h, w, c = img_array.shape
+        # Baca gambar dan konversi ke grayscale
+        image = Image.open(uploaded_file).convert("L")  # Grayscale
+        img_array = np.array(image, dtype=np.float32)
+        h, w = img_array.shape
 
-        # Batas komponen maksimal = jumlah kanal warna (3) karena PCA diterapkan per piksel
-        max_comp = min(3, c)  # c=3
-        default_comp = 2
-
-        n_components = st.slider(
-            "Jumlah komponen warna (1–3) – semakin kecil, semakin besar kompresi warna",
-            min_value=1,
-            max_value=max_comp,
-            value=default_comp,
-            step=1
+        # Pilihan mode: berdasarkan jumlah komponen (k) atau persentase varians
+        mode = st.radio(
+            "Pilih mode pengaturan kompresi:",
+            ["Jumlah komponen (k)", "Persentase varians"],
+            horizontal=True
         )
+
+        if mode == "Jumlah komponen (k)":
+            max_k = min(h, w)
+            k = st.slider(
+                "Jumlah komponen PCA (k)",
+                min_value=1,
+                max_value=max_k,
+                value=min(100, max_k),
+                step=1,
+                help="Semakin besar k, semakin mendekati gambar asli."
+            )
+        else:  # Persentase varians
+            variance_target = st.slider(
+                "Persentase varians yang dipertahankan (%)",
+                min_value=50,
+                max_value=100,
+                value=95,
+                step=1
+            ) / 100.0
+            # nanti kita hitung k dari PCA fit
 
         if st.button("🚀 Kompresi dengan PCA", use_container_width=True):
             try:
-                # PCA pada data piksel (setiap piksel adalah sampel, fitur = 3 kanal)
-                flat_img = img_array.reshape(-1, c)
-                pca = PCA(n_components=n_components)
-                reduced = pca.fit_transform(flat_img)
-                reconstructed = pca.inverse_transform(reduced)
-                compressed_img = reconstructed.reshape(h, w, c).astype(np.uint8)
-                compressed_pil = Image.fromarray(compressed_img)
+                # PCA pada matriks gambar (sampel = baris, fitur = kolom)
+                pca = PCA()
+                pca.fit(img_array)  # fit full PCA untuk dapat explained variance
+                
+                if mode == "Persentase varians":
+                    # Cari jumlah komponen yang mencapai varians target
+                    cumsum = np.cumsum(pca.explained_variance_ratio_)
+                    k = np.searchsorted(cumsum, variance_target) + 1
+                    if k > min(h, w):
+                        k = min(h, w)
+                    st.info(f"Untuk mempertahankan {variance_target*100:.0f}% varians, diperlukan k = {k} komponen.")
 
-                col_ori, col_comp = st.columns(2)
-                with col_ori:
+                # Lakukan PCA dengan k komponen
+                pca = PCA(n_components=k)
+                reduced = pca.fit_transform(img_array)  # shape (h, k)
+                reconstructed = pca.inverse_transform(reduced)  # shape (h, w)
+
+                # Normalisasi dan konversi ke uint8 untuk tampilan
+                reconstructed = np.clip(reconstructed, 0, 255).astype(np.uint8)
+                img_reconstructed = Image.fromarray(reconstructed, mode='L')
+
+                # Hitung metrik kualitas
+                original_norm = img_array / 255.0
+                recon_norm = reconstructed / 255.0
+                ssim_val = ssim(original_norm, recon_norm, data_range=1.0)
+                psnr_val = psnr(original_norm, recon_norm, data_range=1.0)
+
+                # Ukuran dan penghematan
+                ukuran_asli = h * w
+                ukuran_baru = h * k + k * w  # perkiraan koefisien
+                rasio = ukuran_baru / ukuran_asli
+                penghematan = (1 - rasio) * 100
+
+                # Tampilkan gambar
+                col1, col2 = st.columns(2)
+                with col1:
                     st.markdown('<div class="image-card">', unsafe_allow_html=True)
-                    st.markdown("### 🖼️ Gambar Asli")
+                    st.markdown("### 🖼️ Gambar Asli (Grayscale)")
                     st.image(image, use_container_width=True)
                     st.markdown(f"*Ukuran: {w} x {h} px*")
                     st.markdown('</div>', unsafe_allow_html=True)
 
-                with col_comp:
+                with col2:
                     st.markdown('<div class="image-card">', unsafe_allow_html=True)
-                    st.markdown(f"### 🗜️ Hasil Kompresi (n={n_components})")
-                    st.image(compressed_pil, use_container_width=True)
+                    st.markdown(f"### 🗜️ Hasil Kompresi (k={k})")
+                    st.image(img_reconstructed, use_container_width=True)
                     st.markdown(f"*Ukuran: {w} x {h} px*")
                     st.markdown('</div>', unsafe_allow_html=True)
 
+                # Tombol download
                 buf = io.BytesIO()
-                compressed_pil.save(buf, format="PNG")
+                img_reconstructed.save(buf, format="PNG")
                 byte_im = buf.getvalue()
                 b64 = base64.b64encode(byte_im).decode()
                 href = f'<a href="data:image/png;base64,{b64}" download="compressed_pca.png" style="text-decoration:none;">'
                 href += '<button class="download-btn">⬇️ Download Hasil Kompresi</button></a>'
                 st.markdown(href, unsafe_allow_html=True)
 
-                st.markdown("""
-                <div class="info-box">
-                    <b>💡 Manfaat Kompresi PCA:</b><br>
-                    • Mengurangi ukuran file secara signifikan (hingga 70% lebih kecil).<br>
-                    • Mempercepat transfer dan penyimpanan data.<br>
-                    • Tetap mempertahankan fitur utama gambar – hanya yang tidak penting yang dibuang.
+                # --- Metrik Kualitas ---
+                st.markdown("---")
+                st.markdown("### 📊 Metrik Kualitas")
+                col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+                col_m1.metric("SSIM", f"{ssim_val:.4f}")
+                col_m2.metric("PSNR", f"{psnr_val:.2f} dB")
+                col_m3.metric("Penghematan", f"{penghematan:.1f}%")
+                col_m4.metric("Rasio Kompresi", f"{rasio:.4f}")
+
+                # Detail kompresi
+                st.markdown("### 📋 Detail Kompresi")
+                st.markdown(f"""
+                <div class="detail-comp">
+                    <ul>
+                        <li><b>Ukuran asli:</b> {ukuran_asli} pixel</li>
+                        <li><b>Ukuran setelah PCA (approx):</b> {ukuran_baru} koefisien</li>
+                        <li><b>Rasio kompresi:</b> {rasio:.4f}</li>
+                        <li><b>Jumlah komponen PCA:</b> {k}</li>
+                    </ul>
                 </div>
                 """, unsafe_allow_html=True)
 
+                # --- Kurva Akumulasi Informasi PCA ---
+                st.markdown("### 📈 Kurva Akumulasi Informasi PCA")
+                fig, ax = plt.subplots(figsize=(8, 5))
+                cumsum_var = np.cumsum(pca.explained_variance_ratio_)
+                ax.plot(range(1, len(cumsum_var)+1), cumsum_var, 'b-', linewidth=2)
+                ax.axhline(y=1.0, color='r', linestyle='--', alpha=0.3)
+                ax.axvline(x=k, color='g', linestyle='--', alpha=0.5, label=f'k={k}')
+                ax.set_xlabel('Jumlah Komponen')
+                ax.set_ylabel('Akumulasi Varians')
+                ax.set_title('Kurva Akumulasi Informasi PCA')
+                ax.grid(True, alpha=0.3)
+                ax.legend()
+                st.pyplot(fig)
+                plt.close(fig)
+
+                st.balloons()
+
             except Exception as e:
-                st.error(f"Terjadi kesalahan saat kompresi: {e}")
+                st.error(f"Terjadi kesalahan: {e}")
 
     else:
         st.info("👆 Unggah gambar untuk memulai kompresi.")
@@ -865,8 +973,8 @@ elif page == "🗜️ Kompresi":
     # --- KETERANGAN TAMBAHAN DI BAWAH KOMPRESI ---
     st.markdown("""
     <div class="footer-note">
-        <p>📌 <b>Keterangan:</b> Kompresi PCA mengurangi jumlah kanal warna (RGB) menjadi 1–3 komponen. 
-        Geser slider untuk mengatur tingkat kompresi. Hasil dapat diunduh sebagai PNG.</p>
+        <p>📌 <b>Keterangan:</b> Kompresi PCA mereduksi dimensi gambar (baris) dengan mempertahankan komponen utama. 
+        Atur jumlah komponen (k) atau persentase varians yang diinginkan. Metrik kualitas (SSIM, PSNR) dan kurva akumulasi membantu mengevaluasi hasil.</p>
     </div>
     """, unsafe_allow_html=True)
 
