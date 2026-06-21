@@ -390,10 +390,9 @@ def get_image_base64(path_or_url):
     return None
 
 # ======================== SIDEBAR NAVIGASI & PROFIL ========================
-st.sidebar.markdown("🌸 **Haloo!! **")
-st.sidebar.markdown(" ** Lupakan dia yang membuatmu terluka **")
-st.sidebar.markdown(" ** Semoga web ini bisa membuatmu bahagia **")
-st.sidebar.markdown(" ** 🌸🌸🌸 **")
+st.sidebar.markdown("🌸 ** Haloo!! **")
+st.sidebar.markdown("Lupakan dia yang membuatmu terluka, Semoga web ini bisa membuatmu bahagia")
+st.sidebar.markdown("  🌸🌸🌸 ")
 
 menus = [
     ("🏠", "🏠 Home"),
