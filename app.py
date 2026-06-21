@@ -638,11 +638,20 @@ st.sidebar.markdown("""
 # ======================== HALAMAN UTAMA ========================
 page = st.session_state.page
 
-if page == "🏠 Home":
-    # ==================== HOME ====================
-    if not st.session_state.home_visited:
-        st.balloons()
-        st.session_state.home_visited = True
+if not st.session_state.home_visited:
+    st.markdown("""
+    <div style="text-align: center; font-size: 2rem; animation: glitter 1.5s infinite;">
+        ✨ ✨ ✨ ✨ ✨
+    </div>
+    <style>
+        @keyframes glitter {
+            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
+            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.session_state.home_visited = True
 
     st.markdown("""
     <div class="home-header">
@@ -700,9 +709,20 @@ if page == "🏠 Home":
 
 elif page == "🌫️ Grayscale":
     # ==================== GRAYSCALE ====================
-    if not st.session_state.grayscale_visited:
-        st.balloons()
-        st.session_state.grayscale_visited = True
+  if not st.session_state.grayscale_visited:
+    st.markdown("""
+    <div style="text-align: center; font-size: 2rem; animation: glitter 1.5s infinite;">
+        ✨ ✨ ✨ ✨ ✨
+    </div>
+    <style>
+        @keyframes glitter {
+            0% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+            50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B6B; }
+            100% { opacity: 0.3; transform: scale(0.9); text-shadow: 0 0 5px #FFD700; }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.session_state.grayscale_visited = True
 
     st.markdown("""
     <div class="grayscale-header">
