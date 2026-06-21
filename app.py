@@ -23,7 +23,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ======================== CSS GLOBAL (SAMA KAYA SEBELUMNYA) ========================
+# ======================== CSS GLOBAL ========================
 st.markdown("""
     <style>
         /* ----- BACKGROUND & WARNA DASAR ----- */
@@ -477,52 +477,48 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ======================== FUNGSI GLITTER FULL SCREEN (PAKAI components.html) ========================
+# ======================== FUNGSI GLITTER (CSS MURNI, TANPA JS) ========================
 def show_glitter():
-    st.components.v1.html("""
-    <div id="glitter-container" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;">
-    </div>
-    <script>
-    (function() {
-        var container = document.getElementById('glitter-container');
-        if (!container) return;
-        var colors = ['#FFD700', '#FF6B6B', '#FFB6C1', '#FFA500', '#FF69B4', '#FF1493', '#FFD700', '#FFA07A', '#FFE4B5', '#FF4500', '#FF8C00'];
-        var particleCount = 80;
-        for (var i = 0; i < particleCount; i++) {
-            var particle = document.createElement('div');
-            var size = Math.random() * 30 + 10;
-            particle.style.position = 'absolute';
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            var color = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.background = 'radial-gradient(circle, ' + color + ', transparent)';
-            particle.style.borderRadius = '50%';
-            particle.style.boxShadow = '0 0 20px 5px ' + color;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.bottom = '-10%';
-            particle.style.opacity = Math.random() * 0.8 + 0.2;
-            var duration = Math.random() * 8 + 5;
-            var delay = Math.random() * 6;
-            particle.style.animation = 'glitterFloat ' + duration + 's linear ' + delay + 's infinite';
-            particle.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-            container.appendChild(particle);
+    st.markdown("""
+    <style>
+        @keyframes glitterFloat {
+            0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
-        if (!document.getElementById('glitter-keyframes')) {
-            var style = document.createElement('style');
-            style.id = 'glitter-keyframes';
-            style.innerHTML = `
-                @keyframes glitterFloat {
-                    0% { transform: translateY(0) rotate(0deg) scale(0.3); opacity: 0; }
-                    15% { opacity: 1; transform: translateY(-15vh) rotate(15deg) scale(1.2); }
-                    85% { opacity: 1; }
-                    100% { transform: translateY(-115vh) rotate(45deg) scale(0.5); opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
+        .glitter-particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            animation: glitterFloat 6s linear infinite;
+            box-shadow: 0 0 20px currentColor;
         }
-    })();
-    </script>
-    """, height=0)  # height=0 biar gak makan space
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Generate 60 partikel dengan warna & posisi acak
+    colors = ["#FFD700", "#FF6B6B", "#FFB6C1", "#FFA500", "#FF69B4", "#FF1493", "#FFD700", "#FFA07A", "#FFE4B5", "#FF4500"]
+    particles = ""
+    for _ in range(60):
+        left = np.random.randint(0, 95)
+        size = np.random.randint(10, 30)
+        dur = np.random.uniform(4, 8)
+        delay = np.random.uniform(0, 6)
+        color = np.random.choice(colors)
+        particles += f"""
+        <div class="glitter-particle" style="
+            left: {left}%;
+            width: {size}px;
+            height: {size}px;
+            background: radial-gradient(circle, {color}, transparent);
+            color: {color};
+            animation-duration: {dur}s;
+            animation-delay: {delay}s;
+        "></div>
+        """
+    st.markdown(particles, unsafe_allow_html=True)
 
 # ======================== SESSION STATE ========================
 if "page" not in st.session_state:
